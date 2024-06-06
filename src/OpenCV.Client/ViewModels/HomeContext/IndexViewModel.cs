@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Microsoft.Win32;
+using OpenCV.Client.ViewModels.CalibrationContext;
 using OpenCV.Client.ViewModels.CommonContext;
 using OpenCV.Client.ViewModels.MorphContext;
 using OpenCvSharp;
@@ -588,6 +589,20 @@ namespace OpenCV.Client.ViewModels.HomeContext
             }
 
             this.Idle();
+        }
+        #endregion
+
+
+        //标定
+
+        #region 单目标定 —— async void MonoCalibrate()
+        /// <summary>
+        /// 单目标定
+        /// </summary>
+        public async void MonoCalibrate()
+        {
+            MonoViewModel viewModel = ResolveMediator.Resolve<MonoViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 
