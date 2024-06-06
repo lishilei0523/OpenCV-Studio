@@ -7,12 +7,12 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
                  Title="查看图像" 
-                 Width="1350" Height="929" FontSize="14"
+                 Width="1280" Height="800" FontSize="14"
                  WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
 
-    <Grid>
+    <Grid Background="LightGray">
         <controls:ImageViewer ImageSource="{Binding Image}" />
     </Grid>
 </mah:MetroWindow>

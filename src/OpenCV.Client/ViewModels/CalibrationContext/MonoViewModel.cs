@@ -336,9 +336,9 @@ namespace OpenCV.Client.ViewModels.CalibrationContext
 
             //标定内参
             this.CameraIntrinsics = await Task.Run(() => Calibrator.MonoCalibrate(cameraId, patternSideSize, patternSize, patternType, maxCount, epsilon, imageSize, grayImages, out IDictionary<string, Matrix<double>> extrinsicMatrices, out ICollection<string> failedImageKeys));
-            this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F7");
-            this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F7");
-            this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F8");
+            this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F9");
+            this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F9");
+            this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F10");
             this.IntrinsicMatrix = DenseMatrix.OfArray(this.CameraIntrinsics.IntrinsicMatrix).ToMatrixString("F4");
 
             //释放资源
@@ -372,8 +372,8 @@ namespace OpenCV.Client.ViewModels.CalibrationContext
             string json = this.CameraIntrinsics.ToJson();
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "(*.json)|*.json",
-                FileName = $"Intrinsics_{this.ParamViewModel.CameraId}_{DateTime.Now:yyyyMMddHHmmss}",
+                Filter = "(*.cins)|*.cins",
+                FileName = $"{this.ParamViewModel.CameraId}_{DateTime.Now:yyyyMMddHHmmss}",
                 AddExtension = true,
                 RestoreDirectory = true
             };
