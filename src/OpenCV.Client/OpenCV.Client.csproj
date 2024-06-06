@@ -42,6 +42,7 @@
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.9.0.20240103" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.9.0.20240103" />
     <PackageReference Include="SD.Common" Version="3.2.2" />
+    <PackageReference Include="SD.Toolkits.Json" Version="1.0.3" />
     <PackageReference Include="SD.Toolkits.Mathematics" Version="0.1.0" />
     <PackageReference Include="SD.Toolkits.OpenCV" Version="0.2.1" />
     <PackageReference Include="SD.Toolkits.OpenCV.Calibrations" Version="0.1.4" />

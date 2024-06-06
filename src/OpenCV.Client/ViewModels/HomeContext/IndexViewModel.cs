@@ -94,7 +94,7 @@ namespace OpenCV.Client.ViewModels.HomeContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.BackgroundColor = new SolidColorBrush(Colors.Black);
+            this.BackgroundColor = new SolidColorBrush(Colors.LightGray);
 
             return base.OnInitializeAsync(cancellationToken);
         }

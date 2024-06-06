@@ -36,24 +36,25 @@
         <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="240" />
                 </Grid.ColumnDefinitions>
                 <!--图像列表-->
                 <GroupBox Grid.Column="0" Header="图像列表" Margin="4,4,2,4">
-                    <ListBox ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage}">
+                    <ListBox ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage}"
+                             cm:Message.Attach="[Event SelectionChanged] = [Action SelectImage()]">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="3" Width="205" Height="28">
-                                    <TextBlock Text="{Binding Key}" FontSize="13" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding Key}" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </GroupBox>
                 <!--预览-->
-                <GroupBox Grid.Column="1" Margin="2,4,2,4">
+                <GroupBox Grid.Column="1" Margin="2,4,2,4" Background="LightGray">
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
@@ -68,7 +69,7 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding EffectiveImage}" />
+                    <Image Source="{Binding SelectedBitmap}" />
                 </GroupBox>
                 <!--标定结果-->
                 <Grid Grid.Column="2">
@@ -78,34 +79,47 @@
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Header="标定参数" Margin="2,4,4,2">
                         <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
-                            <sd:FormItem Label="重投影误差(E)：">
-                                <TextBlock Text="{Binding ApproxOverlap}" />
+                            <sd:FormItem Label="相机ID：">
+                                <TextBlock Text="{Binding ParamViewModel.CameraId}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="重投影误差(R)：">
-                                <TextBlock Text="{Binding Lambda}" />
+                            <sd:FormItem Label="标定板类型：">
+                                <TextBlock Text="{Binding ParamViewModel.SelectedPatternType, Converter={StaticResource Converters.EnumMemberConverter}}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="畸变向量：">
-                                <TextBlock Text="{Binding Delta}" />
+                            <sd:FormItem Label="网格边长：">
+                                <TextBlock Text="{Binding ParamViewModel.PatternSideSize}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="内参矩阵：">
-                                <TextBlock Text="{Binding MaxComputationTime}" />
+                            <sd:FormItem Label="行角点数：">
+                                <TextBlock Text="{Binding ParamViewModel.RowPointsCount}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="列角点数：">
+                                <TextBlock Text="{Binding ParamViewModel.ColumnPointsCount}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="图像宽度：">
+                                <TextBlock Text="{Binding ParamViewModel.ImageWidth}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="图像高度：">
+                                <TextBlock Text="{Binding ParamViewModel.ImageHeight}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="优化迭代次数：">
+                                <TextBlock Text="{Binding ParamViewModel.MaxCount}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="优化误差：">
+                                <TextBlock Text="{Binding ParamViewModel.Epsilon}" />
                             </sd:FormItem>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="标定结果" Margin="2,2,4,4">
                         <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
                             <sd:FormItem Label="重投影误差(E)：">
-                                <TextBlock Text="{Binding ApproxOverlap}" />
+                                <TextBlock Text="{Binding CalibratedReprojectionError}" />
                             </sd:FormItem>
                             <sd:FormItem Label="重投影误差(R)：">
-                                <TextBlock Text="{Binding Lambda}" />
+                                <TextBlock Text="{Binding ReprojectionError}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="畸变向量：">
-                                <TextBlock Text="{Binding Delta}" />
-                            </sd:FormItem>
-                            <sd:FormItem Label="内参矩阵：">
-                                <TextBlock Text="{Binding MaxComputationTime}" />
-                            </sd:FormItem>
+                            <sd:FormItem Label="内参矩阵：" />
+                            <TextBlock Text="{Binding IntrinsicMatrix}" HorizontalAlignment="Center" />
+                            <sd:FormItem Label="畸变向量：" />
+                            <TextBlock Text="{Binding DistortionVector}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>
