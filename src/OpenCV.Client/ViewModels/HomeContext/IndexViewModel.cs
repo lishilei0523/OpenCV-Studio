@@ -1,15 +1,18 @@
 ﻿using Caliburn.Micro;
 using Microsoft.Win32;
+using OpenCV.Client.ViewModels.CommonContext;
+using OpenCV.Client.ViewModels.MorphContext;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
-using OpenCV.Client.ViewModels.CommonContext;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
+using SD.Toolkits.OpenCV.Extensions;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -333,6 +336,297 @@ namespace OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
                 this.ToastSuccess("保存成功！");
+            }
+        }
+        #endregion
+
+
+        //形态学
+
+        #region 腐蚀 —— async void MorphErode()
+        /// <summary>
+        /// 腐蚀
+        /// </summary>
+        public async void MorphErode()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphErode(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 膨胀 —— async void MorphDilate()
+        /// <summary>
+        /// 膨胀
+        /// </summary>
+        public async void MorphDilate()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphDilate(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 开运算 —— async void MorphOpen()
+        /// <summary>
+        /// 开运算
+        /// </summary>
+        public async void MorphOpen()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphOpen(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 闭运算 —— async void MorphClose()
+        /// <summary>
+        /// 闭运算
+        /// </summary>
+        public async void MorphClose()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphClose(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 梯度运算 —— async void MorphGradient()
+        /// <summary>
+        /// 梯度运算
+        /// </summary>
+        public async void MorphGradient()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphGradient(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 击中运算 —— async void MorphHitMiss()
+        /// <summary>
+        /// 击中运算
+        /// </summary>
+        public async void MorphHitMiss()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphHitMiss(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 礼帽运算 —— async void MorphTopHat()
+        /// <summary>
+        /// 礼帽运算
+        /// </summary>
+        public async void MorphTopHat()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphTopHat(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 黑帽运算 —— async void MorphBlackHat()
+        /// <summary>
+        /// 黑帽运算
+        /// </summary>
+        public async void MorphBlackHat()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphBlackHat(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //事件
+
+        #region 键盘按下事件 —— void OnKeyDown()
+        /// <summary>
+        /// 键盘按下事件
+        /// </summary>
+        public void OnKeyDown()
+        {
+            if (Keyboard.IsKeyDown(Key.F5))
+            {
+                #region # 验证
+
+                if (this.EffectiveImage == null)
+                {
+                    MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.RefreshImage();
+            }
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+            {
+                #region # 验证
+
+                if (this.EffectiveImage == null)
+                {
+                    MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.SaveImage();
             }
         }
         #endregion

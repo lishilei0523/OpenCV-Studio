@@ -11,7 +11,8 @@
         Title="OpenCV Studio" 
         Width="1440" Height="900" FontSize="14"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource MetroWindow.Styles.Clean}">
+        Style="{StaticResource MetroWindow.Styles.Clean}"
+        cm:Message.Attach="[Event KeyDown] = [Action OnKeyDown()]">
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -58,7 +59,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <!--原始点云-->
+                <!--原始图像-->
                 <GroupBox Grid.Column="0" Margin="4,4,2,4" Background="{Binding BackgroundColor}">
                     <!--Header-->
                     <GroupBox.HeaderTemplate>
@@ -79,7 +80,7 @@
                 </GroupBox>
                 <!--效果点云-->
                 <GroupBox Grid.Column="1" Margin="2,4,4,4" Background="{Binding BackgroundColor}">
-                    <!--Header-->
+                    <!--效果图像-->
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
