@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OpenCV.Client": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
