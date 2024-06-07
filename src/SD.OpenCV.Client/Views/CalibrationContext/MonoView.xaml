@@ -53,12 +53,12 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </GroupBox>
-                <!--预览-->
+                <!--图像预览-->
                 <GroupBox Grid.Column="1" Margin="2,4,2,4" Background="LightGray">
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
-                                <TextBlock Text="预览" />
+                                <TextBlock Text="图像预览" />
                                 <Button cm:Message.Attach="PreviewImage()"
                                         Style="{StaticResource Button.Styles.Fluent.Transparent.Panel}">
                                     <WrapPanel>
@@ -100,7 +100,7 @@
                             <sd:FormItem Label="图像高度：">
                                 <TextBlock Text="{Binding ParamViewModel.ImageHeight}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="优化迭代次数：">
+                            <sd:FormItem Label="迭代次数：">
                                 <TextBlock Text="{Binding ParamViewModel.MaxCount}" />
                             </sd:FormItem>
                             <sd:FormItem Label="优化误差：">
@@ -109,10 +109,10 @@
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="标定结果" Margin="2,2,4,4">
-                        <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
-                            <sd:FormItem Label="内参矩阵：" />
+                        <StackPanel Grid.IsSharedSizeScope="True" Margin="0,10">
+                            <sd:FormItem Label="相机内参矩阵：" />
                             <TextBlock Text="{Binding IntrinsicMatrix}" HorizontalAlignment="Center" />
-                            <sd:FormItem Label="畸变向量：" />
+                            <sd:FormItem Label="相机畸变向量：" />
                             <TextBlock Text="{Binding DistortionVector}" HorizontalAlignment="Center" />
                             <sd:FormItem Label="重投影误差(E)：">
                                 <TextBlock Text="{Binding CalibratedReprojectionError}" />

@@ -11,8 +11,11 @@ using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Models;
+using SD.Toolkits.Mathematics.Extensions;
+using SD.Toolkits.Mathematics.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -24,9 +27,9 @@ using Size = OpenCvSharp.Size;
 namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 {
     /// <summary>
-    /// 单目标定视图模型
+    /// 手眼标定视图模型
     /// </summary>
-    public class MonoViewModel : ScreenBase
+    public class HandEyeViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -38,7 +41,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public MonoViewModel(IWindowManager windowManager)
+        public HandEyeViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -61,6 +64,22 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         /// </summary>
         [DependencyProperty]
         public KeyValuePair<string, Mat>? SelectedImage { get; set; }
+        #endregion
+
+        #region 已选位姿 —— Pose? SelectedPose
+        /// <summary>
+        /// 已选位姿
+        /// </summary>
+        [DependencyProperty]
+        public Pose? SelectedPose { get; set; }
+        #endregion
+
+        #region 已选位姿矩阵 —— string SelectedPoseMatrix
+        /// <summary>
+        /// 已选位姿矩阵
+        /// </summary>
+        [DependencyProperty]
+        public string SelectedPoseMatrix { get; set; }
         #endregion
 
         #region 标定重投影误差 —— string CalibratedReprojectionError
@@ -102,6 +121,21 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         public CameraIntrinsics CameraIntrinsics { get; set; }
         #endregion
 
+        #region 手眼矩阵 —— Matrix<double> HandEyeMatrix
+        /// <summary>
+        /// 手眼矩阵
+        /// </summary>
+        public Matrix<double> HandEyeMatrix { get; set; }
+        #endregion
+
+        #region 手眼矩阵文本 —— string HandEyeMatrixText
+        /// <summary>
+        /// 手眼矩阵文本
+        /// </summary>
+        [DependencyProperty]
+        public string HandEyeMatrixText { get; set; }
+        #endregion
+
         #region 图像字典 —— IDictionary<string, Mat> Images
         /// <summary>
         /// 图像字典
@@ -110,12 +144,20 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         public IDictionary<string, Mat> Images { get; set; }
         #endregion
 
-        #region 标定参数视图模型 —— MonoParamViewModel ParamViewModel
+        #region 位姿列表 —— ObservableCollection<Pose> Poses
+        /// <summary>
+        /// 位姿列表
+        /// </summary>
+        [DependencyProperty]
+        public ObservableCollection<Pose> Poses { get; set; }
+        #endregion
+
+        #region 标定参数视图模型 —— HandEyeParamViewModel ParamViewModel
         /// <summary>
         /// 标定参数视图模型
         /// </summary>
         [DependencyProperty]
-        public MonoParamViewModel ParamViewModel { get; set; }
+        public HandEyeParamViewModel ParamViewModel { get; set; }
         #endregion
 
         #endregion
@@ -217,13 +259,121 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         }
         #endregion
 
+        #region 加载位姿 —— async void LoadPoses()
+        /// <summary>
+        /// 加载位姿
+        /// </summary>
+        public async void LoadPoses()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.csv)|*.csv",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                #region # 验证
+
+                if (string.IsNullOrWhiteSpace(openFileDialog.FileName))
+                {
+                    MessageBox.Show("未选择位姿！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.Busy();
+
+                this.Poses = new ObservableCollection<Pose>();
+                string[] lines = await Task.Run(() => File.ReadAllLines(openFileDialog.FileName));
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    string[] locations = line.Split(',');
+                    double x = double.Parse(locations[0].Trim());
+                    double y = double.Parse(locations[1].Trim());
+                    double z = double.Parse(locations[2].Trim());
+                    double rx = double.Parse(locations[3].Trim());
+                    double ry = double.Parse(locations[4].Trim());
+                    double rz = double.Parse(locations[5].Trim());
+                    string id = $"Robot_Pose_{(i + 1):D3}";
+
+                    Pose pose = new Pose(id, x, y, z, rx, ry, rz);
+                    this.Poses.Add(pose);
+                }
+
+                //默认预览第一个位姿
+                Pose first = this.Poses.First();
+                this.SelectedPose = first;
+
+                this.Idle();
+            }
+        }
+        #endregion
+
+        #region 选择位姿 —— async void SelectPose()
+        /// <summary>
+        /// 选择位姿
+        /// </summary>
+        public async void SelectPose()
+        {
+            this.Busy();
+
+            if (this.SelectedPose != null)
+            {
+                this.SelectedPoseMatrix = this.SelectedPose.Value.ToRotationTranslationMatrix().ToMatrixString("F4");
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 加载内参 —— async void LoadCameraIntrinsics()
+        /// <summary>
+        /// 加载内参
+        /// </summary>
+        public async void LoadCameraIntrinsics()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.cins)|*.cins",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                #region # 验证
+
+                if (string.IsNullOrWhiteSpace(openFileDialog.FileName))
+                {
+                    MessageBox.Show("未选择相机内参！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.Busy();
+
+                string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
+                this.CameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
+                this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F9");
+                this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F9");
+                this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F10");
+                this.IntrinsicMatrix = DenseMatrix.OfArray(this.CameraIntrinsics.IntrinsicMatrix).ToMatrixString("F4");
+
+                this.Idle();
+            }
+        }
+        #endregion
+
         #region 标定参数 —— async void SetParameters()
         /// <summary>
         /// 标定参数
         /// </summary>
         public async void SetParameters()
         {
-            MonoParamViewModel viewModel = this.ParamViewModel ?? ResolveMediator.Resolve<MonoParamViewModel>();
+            HandEyeParamViewModel viewModel = this.ParamViewModel ?? ResolveMediator.Resolve<HandEyeParamViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -305,14 +455,24 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.Images.Count < 6)
+            if (this.Poses == null || !this.Poses.Any())
             {
-                MessageBox.Show("图像数量不可小于6！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("位姿未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.Images.Count != this.Poses.Count)
+            {
+                MessageBox.Show("图像与位姿数量不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.ParamViewModel == null)
             {
                 MessageBox.Show("标定参数未设置！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.CameraIntrinsics == null)
+            {
+                MessageBox.Show("相机内参未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -326,13 +486,18 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
             this.Busy();
 
-            string cameraId = this.ParamViewModel.CameraId;
             PatternType patternType = this.ParamViewModel.SelectedPatternType!.Value;
             int patternSideSize = this.ParamViewModel.PatternSideSize!.Value;
             Size patternSize = new Size(this.ParamViewModel.RowPointsCount!.Value, this.ParamViewModel.ColumnPointsCount!.Value);
-            Size imageSize = new Size(this.ParamViewModel.ImageWidth!.Value, this.ParamViewModel.ImageHeight!.Value);
             int maxCount = this.ParamViewModel.MaxCount!.Value;
             double epsilon = this.ParamViewModel.Epsilon!.Value;
+            IDictionary<string, Pose> robotPoses = new Dictionary<string, Pose>();
+            for (int i = 0; i < this.Images.Count; i++)
+            {
+                KeyValuePair<string, Mat> keyImage = this.Images.ElementAt(i);
+                Pose pose = this.Poses.ElementAt(i);
+                robotPoses.Add(keyImage.Key, pose);
+            }
 
             //转灰度图
             IDictionary<string, Mat> grayImages = new Dictionary<string, Mat>();
@@ -343,12 +508,9 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
                 grayImages.Add(kv.Key, grayImage);
             }
 
-            //标定内参
-            this.CameraIntrinsics = await Task.Run(() => Calibrator.MonoCalibrate(cameraId, patternSideSize, patternSize, patternType, maxCount, epsilon, imageSize, grayImages, out IDictionary<string, Matrix<double>> extrinsicMatrices, out ICollection<string> failedImageKeys));
-            this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F9");
-            this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F9");
-            this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F10");
-            this.IntrinsicMatrix = DenseMatrix.OfArray(this.CameraIntrinsics.IntrinsicMatrix).ToMatrixString("F4");
+            IDictionary<string, Matrix<double>> extrinsicMatrices = await Task.Run(() => Calibrator.SolveExtrinsicMatrices(patternSideSize, patternSize, patternType, maxCount, epsilon, this.CameraIntrinsics, grayImages));
+            this.HandEyeMatrix = await Task.Run(() => Calibrator.CalibrateEyeInHand(HandEyeCalibrationMethod.TSAI, robotPoses, extrinsicMatrices));
+            this.HandEyeMatrixText = this.HandEyeMatrix.ToMatrixString("F4");
 
             //释放资源
             foreach (Mat grayImage in grayImages.Values)
@@ -368,7 +530,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         {
             #region # 验证
 
-            if (this.CameraIntrinsics == null)
+            if (this.HandEyeMatrix == null)
             {
                 MessageBox.Show("没有标定结果可导出！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -380,14 +542,14 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "(*.cins)|*.cins",
-                FileName = $"{this.ParamViewModel.CameraId}_Intrinsics_{DateTime.Now:yyyyMMddHHmmss}",
+                Filter = "(*.chem)|*.chem",
+                FileName = $"{this.ParamViewModel.CameraId}_HandEye_{DateTime.Now:yyyyMMddHHmmss}",
                 AddExtension = true,
                 RestoreDirectory = true
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                string binaryText = this.CameraIntrinsics.ToBinaryString();
+                string binaryText = this.HandEyeMatrix.ToBinaryString();
                 await Task.Run(() => File.WriteAllText(saveFileDialog.FileName, binaryText));
             }
 

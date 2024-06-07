@@ -11,10 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Primitives", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Client", "src\SD.OpenCV.Client\SD.OpenCV.Client.csproj", "{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Client", "01 - Client", "{98E8DA74-CF26-47CC-BDAE-CFC6FE734217}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 - SDKs", "02 - SDKs", "{717DDBD0-0963-4F72-8CE4-33B607D5880B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,12 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{7FFF0A75-AC87-4341-8B33-E3004A6E9817} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
-		{660EDF13-673E-46C3-A81A-25E6A275C636} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
-		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
-		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7} = {98E8DA74-CF26-47CC-BDAE-CFC6FE734217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CB9E226-4C29-4FA3-B14A-DABA566BE585}

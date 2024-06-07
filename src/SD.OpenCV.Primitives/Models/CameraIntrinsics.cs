@@ -1,8 +1,11 @@
-﻿namespace SD.OpenCV.Primitives.Models
+﻿using System;
+
+namespace SD.OpenCV.Primitives.Models
 {
     /// <summary>
     /// 相机内参
     /// </summary>
+    [Serializable]
     public class CameraIntrinsics
     {
         #region # 构造器

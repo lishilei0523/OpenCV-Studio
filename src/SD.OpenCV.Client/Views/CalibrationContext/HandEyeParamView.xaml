@@ -1,0 +1,71 @@
+﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.CalibrationContext.HandEyeParamView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
+                 xmlns:cal="http://www.caliburnproject.org"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 mc:Ignorable="d"
+                 Title="标定参数"
+                 Width="500" Height="550" ResizeMode="NoResize"
+                 FontSize="14"
+                 WindowStyle="ThreeDBorderWindow"
+                 WindowStartupLocation="CenterOwner"
+                 Style="{StaticResource MetroWindow.Styles.Clean}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!--表单区-->
+            <RowDefinition Height="450" />
+            <!--占位区-->
+            <RowDefinition Height="*" />
+            <!--控制区-->
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <!--表单区-->
+        <StackPanel Grid.Row="0" Grid.IsSharedSizeScope="True" Margin="20,20">
+            <sd:FormItem Label="相机ID：">
+                <TextBox Text="{Binding CameraId}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="手眼模式：">
+                <ComboBox ItemsSource="{Binding HandEyeModes}" 
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding SelectedHandEyeMode}"
+                          Style="{StaticResource ComboBox.Styles.Fluent}" />
+            </sd:FormItem>
+            <sd:FormItem Label="标定板类型：">
+                <ComboBox ItemsSource="{Binding PatternTypes}" 
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding SelectedPatternType}"
+                          Style="{StaticResource ComboBox.Styles.Fluent}" />
+            </sd:FormItem>
+            <sd:FormItem Label="网格边长：">
+                <TextBox Text="{Binding PatternSideSize}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="行角点数：">
+                <TextBox Text="{Binding RowPointsCount}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="列角点数：">
+                <TextBox Text="{Binding ColumnPointsCount}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="优化迭代次数：">
+                <TextBox Text="{Binding MaxCount}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="优化误差：">
+                <TextBox Text="{Binding Epsilon}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+        </StackPanel>
+        <!--占位区-->
+        <Grid Grid.Row="1" />
+        <!--控制区-->
+        <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
+            <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">
+                <Button Content="确定" cal:Message.Attach="Submit()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
+                <Button Content="取消" cal:Message.Attach="TryCloseAsync('false')" Style="{StaticResource Button.Styles.Fluent.Default}" />
+            </WrapPanel>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

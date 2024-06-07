@@ -612,8 +612,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void CalibrateHandEye()
         {
-            //TODO 实现
-            MessageBox.Show("未实现");
+            HandEyeViewModel viewModel = ResolveMediator.Resolve<HandEyeViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 
