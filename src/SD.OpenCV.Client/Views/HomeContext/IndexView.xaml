@@ -40,6 +40,14 @@
                     <MenuItem Header="保存(_S)" cm:Message.Attach="SaveImage()" />
                     <MenuItem Header="另存为(_A)" cm:Message.Attach="SaveAsImage()" />
                 </MenuItem>
+                <MenuItem Header="颜色空间(_V)">
+                    <MenuItem Header="灰度空间(_G)" cm:Message.Attach="ConvertGray()" />
+                    <MenuItem Header="HSV色彩空间(_H)" cm:Message.Attach="ConvertHSV()" />
+                    <MenuItem Header="HLS色彩空间(_S)" cm:Message.Attach="ConvertHLS()" />
+                    <MenuItem Header="Lab色彩空间(_A)" cm:Message.Attach="ConvertLab()" />
+                    <MenuItem Header="Luv色彩空间(_U)" cm:Message.Attach="ConvertLuv()" />
+                    <MenuItem Header="YCrCb色彩空间(_Y)" cm:Message.Attach="ConvertYCrCb()" />
+                </MenuItem>
                 <MenuItem Header="形态学(_M)">
                     <MenuItem Header="腐蚀(_E)" cm:Message.Attach="MorphErode()" />
                     <MenuItem Header="膨胀(_D)" cm:Message.Attach="MorphDilate()" />
@@ -49,6 +57,76 @@
                     <MenuItem Header="击中运算(_H)" cm:Message.Attach="MorphHitMiss()" />
                     <MenuItem Header="礼帽运算(_T)" cm:Message.Attach="MorphTopHat()" />
                     <MenuItem Header="黑帽运算(_B)" cm:Message.Attach="MorphBlackHat()" />
+                </MenuItem>
+                <MenuItem Header="空间滤波(_B)">
+                    <MenuItem Header="均值滤波(_M)" cm:Message.Attach="MeanBlur()" />
+                    <MenuItem Header="高斯滤波(_G)" cm:Message.Attach="GaussBlur()" />
+                    <MenuItem Header="中值滤波(_C)" cm:Message.Attach="MedianBlur()" />
+                    <MenuItem Header="锐化滤波(_H)" cm:Message.Attach="SharpBlur()" />
+                    <MenuItem Header="方块滤波(_B)" cm:Message.Attach="BoxBlur()" />
+                    <MenuItem Header="双边滤波(_D)" cm:Message.Attach="BilateralBlur()" />
+                    <MenuItem Header="均值漂移滤波(_S)" cm:Message.Attach="MeanShiftBlur()" />
+                    <MenuItem Header="Retinex增强(_E)" cm:Message.Attach="SingleScaleRetinex()" />
+                </MenuItem>
+                <MenuItem Header="频率滤波(_H)">
+                    <MenuItem Header="理想低通滤波(_A)" cm:Message.Attach="IdealLPBlur()" />
+                    <MenuItem Header="理想高通滤波(_B)" cm:Message.Attach="IdealHPBlur()" />
+                    <MenuItem Header="理想带通滤波(_C)" cm:Message.Attach="IdealBPBlur()" />
+                    <MenuItem Header="理想带阻滤波(_D)" cm:Message.Attach="IdealBRBlur()" />
+                    <MenuItem Header="高斯低通滤波(_E)" cm:Message.Attach="GaussianLPBlur()" />
+                    <MenuItem Header="高斯高通滤波(_F)" cm:Message.Attach="GaussianHPBlur()" />
+                    <MenuItem Header="高斯带通滤波(_G)" cm:Message.Attach="GaussianBPBlur()" />
+                    <MenuItem Header="高斯带阻滤波(_H)" cm:Message.Attach="GaussianBRBlur()" />
+                    <MenuItem Header="高斯同态滤波(_I)" cm:Message.Attach="GaussianHomoBlur()" />
+                    <MenuItem Header="巴特沃斯低通滤波(_J)" cm:Message.Attach="ButterworthLPBlur()" />
+                    <MenuItem Header="巴特沃斯高通滤波(_K)" cm:Message.Attach="ButterworthHPBlur()" />
+                    <MenuItem Header="巴特沃斯带通滤波(_L)" cm:Message.Attach="ButterworthBPBlur()" />
+                    <MenuItem Header="巴特沃斯带阻滤波(_M)" cm:Message.Attach="ButterworthBRBlur()" />
+                    <MenuItem Header="巴特沃斯同态滤波(_N)" cm:Message.Attach="ButterworthHomoBlur()" />
+                </MenuItem>
+                <MenuItem Header="图像分割(_J)">
+                    <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
+                    <MenuItem Header="Otsu阈值分割(_T)" cm:Message.Attach="OtsuThresholSegment()" />
+                    <MenuItem Header="颜色分割(_C)" cm:Message.Attach="ColorSegment()" />
+                </MenuItem>
+                <MenuItem Header="边缘检测(_E)">
+                    <MenuItem Header="Sobel边缘检测(_S)" cm:Message.Attach="ApplySobel()" />
+                    <MenuItem Header="Canny边缘检测(_C)" cm:Message.Attach="ApplyCanny()" />
+                    <MenuItem Header="Scharr边缘检测(_A)" cm:Message.Attach="ApplyScharr()" />
+                    <MenuItem Header="Robert边缘检测(_R)" cm:Message.Attach="ApplyRobert()" />
+                    <MenuItem Header="Laplacian边缘检测(_L)" cm:Message.Attach="ApplyLaplacian()" />
+                </MenuItem>
+                <MenuItem Header="灰度变换(_G)">
+                    <MenuItem Header="线性变换(_L)" cm:Message.Attach="LinearTransform()" />
+                    <MenuItem Header="伽马变换(_G)" cm:Message.Attach="GammaTransform()" />
+                    <MenuItem Header="对数变换(_N)" cm:Message.Attach="LogarithmicTransform()" />
+                    <MenuItem Header="阴影变换(_S)" cm:Message.Attach="ShadingTransform()" />
+                </MenuItem>
+                <MenuItem Header="霍夫变换(_S)">
+                    <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="FindLines()" />
+                    <MenuItem Header="霍夫圆查找(_G)" cm:Message.Attach="FindCircles()" />
+                </MenuItem>
+                <MenuItem Header="直方图(_D)">
+                    <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />
+                    <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
+                    <MenuItem Header="直方图规定化(_S)" cm:Message.Attach="SpecifyHist()" />
+                </MenuItem>
+                <MenuItem Header="关键点(_K)">
+                    <MenuItem Header="Harris关键点(_H)" cm:Message.Attach="DetectHarris()" />
+                    <MenuItem Header="Shi-Tomasi关键点(_T)" cm:Message.Attach="DetectShiTomasi()" />
+                    <MenuItem Header="SIFT关键点(_S)" cm:Message.Attach="DetectSIFT()" />
+                    <MenuItem Header="SURF关键点(_U)" cm:Message.Attach="DetectSURF()" />
+                    <MenuItem Header="FAST关键点(_F)" cm:Message.Attach="DetectFAST()" />
+                    <MenuItem Header="ORB关键点(_O)" cm:Message.Attach="DetectORB()" />
+                    <MenuItem Header="Super关键点(_P)" cm:Message.Attach="DetectSuper()" />
+                </MenuItem>
+                <MenuItem Header="特征(_K)">
+                    <MenuItem Header="SIFT特征(_S)" cm:Message.Attach="ComputeSIFT()" />
+                    <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
+                    <MenuItem Header="FAST特征(_F)" cm:Message.Attach="ComputeFAST()" />
+                    <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
+                    <MenuItem Header="HOG特征(_H)" cm:Message.Attach="ComputeHOG()" />
+                    <MenuItem Header="Super特征(_P)" cm:Message.Attach="DetectSuper()" />
                 </MenuItem>
                 <MenuItem Header="标定(_C)">
                     <MenuItem Header="单目标定(_I)" cm:Message.Attach="MonoCalibrate()" />

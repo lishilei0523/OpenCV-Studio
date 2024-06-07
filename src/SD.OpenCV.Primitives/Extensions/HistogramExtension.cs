@@ -25,24 +25,24 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 映射直方图 —— static Mat MapHistogram(this Mat sourceMatrix, Mat referenceMatrix)
+        #region # 直方图规定化 —— static Mat SpecifyHist(this Mat sourceMatrix, Mat referenceMatrix)
         /// <summary>
-        /// 映射直方图
+        /// 直方图规定化
         /// </summary>
         /// <param name="sourceMatrix">源图像矩阵</param>
         /// <param name="referenceMatrix">参考图像矩阵</param>
         /// <returns>映射图像矩阵</returns>
-        public static Mat MapHistogram(this Mat sourceMatrix, Mat referenceMatrix)
+        public static Mat SpecifyHist(this Mat sourceMatrix, Mat referenceMatrix)
         {
             //计算源图像累计概率
             Size sourceSize = sourceMatrix.Size();
-            using Mat sourceHist = HistogramExtension.GenerateHistogram(sourceMatrix);
-            using Mat sourceRatios = HistogramExtension.GetHistAccumulations(sourceHist, sourceSize);
+            using Mat sourceHist = sourceMatrix.GenerateHistogram();
+            using Mat sourceRatios = sourceHist.GetHistAccumulations(sourceSize);
 
             //计算参考图像累计概率
             Size referenceSize = referenceMatrix.Size();
-            using Mat referenceHist = HistogramExtension.GenerateHistogram(referenceMatrix);
-            using Mat referenceRatios = HistogramExtension.GetHistAccumulations(referenceHist, referenceSize);
+            using Mat referenceHist = referenceMatrix.GenerateHistogram();
+            using Mat referenceRatios = referenceHist.GetHistAccumulations(referenceSize);
 
             //执行关系映射
             using Mat map = new Mat(256, 1, MatType.CV_8UC1);

@@ -342,6 +342,165 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
+        //颜色空间
+
+        #region 转换灰度空间 —— async void ConvertGray()
+        /// <summary>
+        /// 转换灰度空间
+        /// </summary>
+        public async void ConvertGray()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2GRAY));
+            this.EffectiveImage = grayImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 转换HSV空间 —— async void ConvertHSV()
+        /// <summary>
+        /// 转换HSV空间
+        /// </summary>
+        public async void ConvertHSV()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat hsvImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2HSV));
+            this.EffectiveImage = hsvImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 转换HLS空间 —— async void ConvertHLS()
+        /// <summary>
+        /// 转换HLS空间
+        /// </summary>
+        public async void ConvertHLS()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat hlsImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2HLS));
+            this.EffectiveImage = hlsImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 转换Lab空间 —— async void ConvertLab()
+        /// <summary>
+        /// 转换Lab空间
+        /// </summary>
+        public async void ConvertLab()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat labImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2Lab));
+            this.EffectiveImage = labImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 转换Luv空间 —— async void ConvertLuv()
+        /// <summary>
+        /// 转换Luv空间
+        /// </summary>
+        public async void ConvertLuv()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat luvImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2Luv));
+            this.EffectiveImage = luvImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 转换YCrCb空间 —— async void ConvertYCrCb()
+        /// <summary>
+        /// 转换YCrCb空间
+        /// </summary>
+        public async void ConvertYCrCb()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat yCrCbImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2YCrCb));
+            this.EffectiveImage = yCrCbImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+
         //形态学
 
         #region 腐蚀 —— async void MorphErode()
