@@ -50,13 +50,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         public string FilePath { get; set; }
         #endregion
 
-        #region 图像颜色类型 —— ImreadModes? ImageColorType
-        /// <summary>
-        /// 图像颜色类型
-        /// </summary>
-        public ImreadModes? ImageColorType { get; set; }
-        #endregion
-
         #region 原始图像 —— BitmapSource OriginalImage
         /// <summary>
         /// 原始图像
@@ -197,11 +190,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //文件
 
-        #region 打开灰度图像 —— async void OpenGrayImage()
+        #region 打开图像 —— async void OpenImage()
         /// <summary>
-        /// 打开灰度图像
+        /// 打开图像
         /// </summary>
-        public async void OpenGrayImage()
+        public async void OpenImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -214,32 +207,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 this.Busy();
 
                 this.FilePath = openFileDialog.FileName;
-                this.ImageColorType = ImreadModes.Grayscale;
-                await this.ReloadImage();
-
-                this.Idle();
-            }
-        }
-        #endregion
-
-        #region 打开彩色图像 —— async void OpenColorImage()
-        /// <summary>
-        /// 打开彩色图像
-        /// </summary>
-        public async void OpenColorImage()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
-                AddExtension = true,
-                RestoreDirectory = true
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                this.Busy();
-
-                this.FilePath = openFileDialog.FileName;
-                this.ImageColorType = ImreadModes.Color;
                 await this.ReloadImage();
 
                 this.Idle();
@@ -273,7 +240,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 this.FilePath = null;
                 this.OriginalImage = null;
                 this.EffectiveImage = null;
-                this.ImageColorType = null;
             }
         }
         #endregion
@@ -825,23 +791,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async Task ReloadImage()
         {
-            if (this.ImageColorType == ImreadModes.Grayscale)
-            {
-                await this.ReloadMonoImage();
-            }
-            if (this.ImageColorType == ImreadModes.Color)
-            {
-                await this.ReloadColorImage();
-            }
-        }
-        #endregion
-
-        #region 加载灰度图像 —— async Task ReloadMonoImage()
-        /// <summary>
-        /// 加载灰度图像
-        /// </summary>
-        private async Task ReloadMonoImage()
-        {
             #region # 验证
 
             if (string.IsNullOrWhiteSpace(this.FilePath))
@@ -851,29 +800,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             #endregion
 
-            using Mat image = await Task.Run(() => Cv2.ImRead(this.FilePath, ImreadModes.Grayscale));
-            BitmapSource bitmapSource = image.ToBitmapSource();
-            this.OriginalImage = bitmapSource;
-            this.EffectiveImage = bitmapSource;
-        }
-        #endregion
-
-        #region 加载彩色图像 —— async Task ReloadColorImage()
-        /// <summary>
-        /// 加载彩色图像
-        /// </summary>
-        private async Task ReloadColorImage()
-        {
-            #region # 验证
-
-            if (string.IsNullOrWhiteSpace(this.FilePath))
-            {
-                return;
-            }
-
-            #endregion
-
-            using Mat image = await Task.Run(() => Cv2.ImRead(this.FilePath, ImreadModes.Color));
+            using Mat image = await Task.Run(() => Cv2.ImRead(this.FilePath));
             BitmapSource bitmapSource = image.ToBitmapSource();
             this.OriginalImage = bitmapSource;
             this.EffectiveImage = bitmapSource;

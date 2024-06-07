@@ -34,8 +34,7 @@
         <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
             <Menu Margin="4,2">
                 <MenuItem Header="文件(_F)">
-                    <MenuItem Header="打开(灰度)(_M)" cm:Message.Attach="OpenGrayImage()" />
-                    <MenuItem Header="打开(彩色)(_C)" cm:Message.Attach="OpenColorImage()" />
+                    <MenuItem Header="打开(_O)" cm:Message.Attach="OpenImage()" />
                     <MenuItem Header="关闭(_C)" cm:Message.Attach="CloseImage()" />
                     <MenuItem Header="保存(_S)" cm:Message.Attach="SaveImage()" />
                     <MenuItem Header="另存为(_A)" cm:Message.Attach="SaveAsImage()" />
