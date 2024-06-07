@@ -1,7 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 
-namespace SD.Toolkits.OpenCV.Extensions
+namespace SD.OpenCV.Primitives.Extensions
 {
     /// <summary>
     /// 灰度变换扩展

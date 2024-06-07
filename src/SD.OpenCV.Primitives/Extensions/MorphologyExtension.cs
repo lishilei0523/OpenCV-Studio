@@ -1,6 +1,6 @@
 ﻿using OpenCvSharp;
 
-namespace SD.Toolkits.OpenCV.Extensions
+namespace SD.OpenCV.Primitives.Extensions
 {
     /// <summary>
     /// 形态学扩展

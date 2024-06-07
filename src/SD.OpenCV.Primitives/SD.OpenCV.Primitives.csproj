@@ -2,9 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Authors>Lee</Authors>
     <Company>SD</Company>
-    <Description>SD.Toolkits OpenCV重建扩展组件</Description>
+    <Description>SD.Framework OpenCV基元扩展</Description>
     <Copyright>Copyright © SD 2024</Copyright>
     <Version>0.1.0</Version>
     <AssemblyVersion>0.1.0</AssemblyVersion>
@@ -12,23 +13,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\$(TargetFramework)\SD.Toolkits.OpenCV.Reconstructions.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\SD.OpenCV.Primitives.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\$(TargetFramework)\SD.Toolkits.OpenCV.Reconstructions.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(TargetFramework)\SD.OpenCV.Primitives.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="Content\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.17.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SD.Toolkits.OpenCV\SD.Toolkits.OpenCV.csproj" />
+    <PackageReference Include="OpenCvSharp4" Version="4.9.0.20240103" />
+    <PackageReference Include="SD.Toolkits.Mathematics" Version="0.1.0" />
   </ItemGroup>
 </Project>

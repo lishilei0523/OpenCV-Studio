@@ -2,7 +2,7 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows.Media.Imaging;
 
-namespace OpenCV.Client.ViewModels.CommonContext
+namespace SD.OpenCV.Client.ViewModels.CommonContext
 {
     /// <summary>
     /// 图像查看视图模型

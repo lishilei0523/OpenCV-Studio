@@ -1,12 +1,12 @@
-﻿<Application x:Class="OpenCV.Client.App"
+﻿<Application x:Class="SD.OpenCV.Client.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OpenCV.Client">
+             xmlns:client="clr-namespace:SD.OpenCV.Client">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <local:Startup x:Key="Startup" />
+                    <client:Startup x:Key="Startup" />
                 </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/FluentWPF;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />

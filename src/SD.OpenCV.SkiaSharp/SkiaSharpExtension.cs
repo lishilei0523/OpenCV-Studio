@@ -1,11 +1,11 @@
 ﻿using OpenCvSharp;
 using ScottPlot;
-using SD.Toolkits.OpenCV.Extensions;
+using SD.OpenCV.Primitives.Extensions;
 using SkiaSharp;
 using System;
 using System.Linq;
 
-namespace SD.Toolkits.OpenCV.SkiaSharp
+namespace SD.OpenCV.SkiaSharp
 {
     /// <summary>
     /// SkiaSharp扩展

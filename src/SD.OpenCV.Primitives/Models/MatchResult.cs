@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SD.Toolkits.OpenCV.Models
+namespace SD.OpenCV.Primitives.Models
 {
     /// <summary>
     /// 匹配结果

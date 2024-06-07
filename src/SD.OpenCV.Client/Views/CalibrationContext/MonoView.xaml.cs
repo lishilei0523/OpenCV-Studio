@@ -1,4 +1,4 @@
-﻿namespace OpenCV.Client.Views.CalibrationContext
+﻿namespace SD.OpenCV.Client.Views.CalibrationContext
 {
     /// <summary>
     /// 单目标定视图

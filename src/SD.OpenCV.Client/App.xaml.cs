@@ -1,4 +1,4 @@
-﻿namespace OpenCV.Client
+﻿namespace SD.OpenCV.Client
 {
     /// <summary>
     /// 应用程序

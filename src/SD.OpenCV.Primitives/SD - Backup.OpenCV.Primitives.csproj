@@ -22,4 +22,8 @@
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4" Version="4.9.0.20240103" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="新文件夹\" />
+  </ItemGroup>
 </Project>

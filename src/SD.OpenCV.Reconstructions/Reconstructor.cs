@@ -1,10 +1,11 @@
 ﻿using OpenCvSharp;
-using SD.Toolkits.OpenCV.Extensions;
-using SD.Toolkits.OpenCV.Models;
+using SD.OpenCV.Primitives.Extensions;
+using SD.OpenCV.Primitives.Models;
+using SD.OpenCV.Primitives.Reconstructions;
 using System;
 using System.Collections.Generic;
 
-namespace SD.Toolkits.OpenCV.Reconstructions
+namespace SD.OpenCV.Reconstructions
 {
     /// <summary>
     /// 重建器

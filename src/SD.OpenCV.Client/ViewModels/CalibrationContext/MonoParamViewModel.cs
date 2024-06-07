@@ -1,13 +1,13 @@
 ﻿using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Toolkits.OpenCV.Models;
+using SD.OpenCV.Primitives.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace OpenCV.Client.ViewModels.CalibrationContext
+namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 {
     /// <summary>
     /// 单目标定参数视图模型

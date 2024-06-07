@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="OpenCV.Client.Views.CalibrationContext.MonoView"
+﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.CalibrationContext.MonoView"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -110,16 +110,16 @@
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="标定结果" Margin="2,2,4,4">
                         <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
+                            <sd:FormItem Label="内参矩阵：" />
+                            <TextBlock Text="{Binding IntrinsicMatrix}" HorizontalAlignment="Center" />
+                            <sd:FormItem Label="畸变向量：" />
+                            <TextBlock Text="{Binding DistortionVector}" HorizontalAlignment="Center" />
                             <sd:FormItem Label="重投影误差(E)：">
                                 <TextBlock Text="{Binding CalibratedReprojectionError}" />
                             </sd:FormItem>
                             <sd:FormItem Label="重投影误差(R)：">
                                 <TextBlock Text="{Binding ReprojectionError}" />
                             </sd:FormItem>
-                            <sd:FormItem Label="内参矩阵：" />
-                            <TextBlock Text="{Binding IntrinsicMatrix}" HorizontalAlignment="Center" />
-                            <sd:FormItem Label="畸变向量：" />
-                            <TextBlock Text="{Binding DistortionVector}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>

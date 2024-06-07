@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SD.Toolkits.OpenCV.Extensions
+namespace SD.OpenCV.Primitives.Extensions
 {
     /// <summary>
     /// 恢复扩展

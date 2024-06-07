@@ -1,14 +1,14 @@
 ﻿using Caliburn.Micro;
 using Microsoft.Win32;
-using OpenCV.Client.ViewModels.CalibrationContext;
-using OpenCV.Client.ViewModels.CommonContext;
-using OpenCV.Client.ViewModels.MorphContext;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
-using SD.Toolkits.OpenCV.Extensions;
+using SD.OpenCV.Client.ViewModels.CalibrationContext;
+using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Client.ViewModels.MorphContext;
+using SD.OpenCV.Primitives.Extensions;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace OpenCV.Client.ViewModels.HomeContext
+namespace SD.OpenCV.Client.ViewModels.HomeContext
 {
     /// <summary>
     /// 首页视图模型
@@ -603,6 +603,17 @@ namespace OpenCV.Client.ViewModels.HomeContext
         {
             MonoViewModel viewModel = ResolveMediator.Resolve<MonoViewModel>();
             await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
+        #region 手眼标定 —— async void CalibrateHandEye()
+        /// <summary>
+        /// 手眼标定
+        /// </summary>
+        public async void CalibrateHandEye()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现");
         }
         #endregion
 

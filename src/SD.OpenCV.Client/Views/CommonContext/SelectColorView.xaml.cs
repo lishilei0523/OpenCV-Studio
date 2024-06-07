@@ -1,4 +1,4 @@
-﻿namespace OpenCV.Client.Views.CommonContext
+﻿namespace SD.OpenCV.Client.Views.CommonContext
 {
     /// <summary>
     /// 选择颜色视图

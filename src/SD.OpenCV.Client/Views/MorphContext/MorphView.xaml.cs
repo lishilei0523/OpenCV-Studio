@@ -1,4 +1,4 @@
-﻿namespace OpenCV.Client.Views.MorphContext
+﻿namespace SD.OpenCV.Client.Views.MorphContext
 {
     /// <summary>
     /// 形态学视图

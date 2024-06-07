@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCV.Client", "src\OpenCV.Client\OpenCV.Client.csproj", "{B5A71803-675F-4BCF-9665-D6E14F1F84CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.SkiaSharp", "src\SD.OpenCV.SkiaSharp\SD.OpenCV.SkiaSharp.csproj", "{7FFF0A75-AC87-4341-8B33-E3004A6E9817}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Reconstructions", "src\SD.OpenCV.Reconstructions\SD.OpenCV.Reconstructions.csproj", "{660EDF13-673E-46C3-A81A-25E6A275C636}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Primitives", "src\SD.OpenCV.Primitives\SD.OpenCV.Primitives.csproj", "{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Client", "src\SD.OpenCV.Client\SD.OpenCV.Client.csproj", "{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Client", "01 - Client", "{98E8DA74-CF26-47CC-BDAE-CFC6FE734217}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 - SDKs", "02 - SDKs", "{717DDBD0-0963-4F72-8CE4-33B607D5880B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +21,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B5A71803-675F-4BCF-9665-D6E14F1F84CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5A71803-675F-4BCF-9665-D6E14F1F84CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5A71803-675F-4BCF-9665-D6E14F1F84CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5A71803-675F-4BCF-9665-D6E14F1F84CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{660EDF13-673E-46C3-A81A-25E6A275C636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{660EDF13-673E-46C3-A81A-25E6A275C636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{660EDF13-673E-46C3-A81A-25E6A275C636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{660EDF13-673E-46C3-A81A-25E6A275C636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FFF0A75-AC87-4341-8B33-E3004A6E9817} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
+		{660EDF13-673E-46C3-A81A-25E6A275C636} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
+		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D} = {717DDBD0-0963-4F72-8CE4-33B607D5880B}
+		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7} = {98E8DA74-CF26-47CC-BDAE-CFC6FE734217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CB9E226-4C29-4FA3-B14A-DABA566BE585}

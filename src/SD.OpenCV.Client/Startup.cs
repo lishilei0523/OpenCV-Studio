@@ -1,15 +1,15 @@
 ﻿using Autofac;
 using Caliburn.Micro;
-using OpenCV.Client.ViewModels.HomeContext;
 using SD.Infrastructure.WPF.Caliburn.Extensions;
 using SD.IOC.Core.Extensions;
 using SD.IOC.Core.Mediators;
+using SD.OpenCV.Client.ViewModels.HomeContext;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace OpenCV.Client
+namespace SD.OpenCV.Client
 {
     /// <summary>
     /// Caliburn启动器
@@ -48,7 +48,7 @@ namespace OpenCV.Client
         /// </summary>
         protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs eventArgs)
         {
-            Exception exception = GetInnerException(eventArgs.Exception);
+            Exception exception = Startup.GetInnerException(eventArgs.Exception);
             eventArgs.Handled = true;
 
             //释放遮罩
@@ -126,7 +126,7 @@ namespace OpenCV.Client
         {
             if (exception.InnerException != null)
             {
-                return GetInnerException(exception.InnerException);
+                return Startup.GetInnerException(exception.InnerException);
             }
 
             return exception;

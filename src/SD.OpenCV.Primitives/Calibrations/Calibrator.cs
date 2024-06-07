@@ -2,14 +2,14 @@
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Spatial.Euclidean;
 using OpenCvSharp;
+using SD.OpenCV.Primitives.Models;
 using SD.Toolkits.Mathematics.Extensions;
 using SD.Toolkits.Mathematics.Models;
-using SD.Toolkits.OpenCV.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SD.Toolkits.OpenCV.Calibrations
+namespace SD.OpenCV.Primitives.Calibrations
 {
     /// <summary>
     /// 相机标定者
@@ -293,6 +293,65 @@ namespace SD.Toolkits.OpenCV.Calibrations
         }
         #endregion
 
+        #region # 解析外参矩阵字典 —— static {string, Matrix<double>} SolveExtrinsicMatrices(int patternSideSize...
+        /// <summary>
+        /// 解析外参矩阵字典
+        /// </summary>
+        /// <param name="patternSideSize">标定板方格边长</param>
+        /// <param name="patternSize">标定板尺寸</param>
+        /// <param name="patternType">标定板类型</param>
+        /// <param name="maxCount">优化迭代次数</param>
+        /// <param name="epsilon">优化误差</param>
+        /// <param name="cameraIntrinsics">相机内参</param>
+        /// <param name="images">图像字典</param>
+        /// <returns>外参矩阵字典</returns>
+        public static IDictionary<string, Matrix<double>> SolveExtrinsicMatrices(int patternSideSize, Size patternSize, PatternType patternType, int maxCount, double epsilon, CameraIntrinsics cameraIntrinsics, IDictionary<string, Mat> images)
+        {
+            #region # 验证
+
+            images ??= new Dictionary<string, Mat>();
+            if (!images.Any())
+            {
+                throw new ArgumentNullException(nameof(images), "图像字典不可为空！");
+            }
+            if (cameraIntrinsics == null)
+            {
+                throw new ArgumentNullException(nameof(cameraIntrinsics), "相机内参不可为空！");
+            }
+
+            #endregion
+
+            IDictionary<string, Matrix<double>> extrinsicMatrices = new Dictionary<string, Matrix<double>>();
+            foreach (KeyValuePair<string, Mat> kv in images)
+            {
+                bool success;
+                ICollection<Point2f> cornerPoints;
+                if (patternType == PatternType.Chessboard)
+                {
+                    success = kv.Value.GetOptimizedChessboardCorners(patternSize, maxCount, epsilon, out cornerPoints);
+                }
+                else if (patternType == PatternType.CirclesGrid)
+                {
+                    success = kv.Value.GetOptimizedCirclesGridCorners(patternSize, maxCount, epsilon, out cornerPoints);
+                }
+                else
+                {
+                    throw new NotSupportedException("不支持的标定板格式！");
+                }
+
+                if (success)
+                {
+                    ICollection<Point3f> patternPoints = GeneratePatternPoints(patternSideSize, patternSize);
+                    Matrix<double> extrinsicMatrix = SolveExtrinsicMatrix(patternPoints, cornerPoints, cameraIntrinsics);
+
+                    extrinsicMatrices.Add(kv.Key, extrinsicMatrix);
+                }
+            }
+
+            return extrinsicMatrices;
+        }
+        #endregion
+
         #region # 解析外参矩阵 —— static Matrix<double> SolveExtrinsicMatrix(int patternSideSize, Size patternSize...
         /// <summary>
         /// 解析外参矩阵
@@ -386,9 +445,9 @@ namespace SD.Toolkits.OpenCV.Calibrations
             //构造RT矩阵
             Matrix<double> rMatrix = DenseMatrix.OfArray(rArray3x3);
             Vector3D tVector = new Vector3D(tArray3x1[0], tArray3x1[1], tArray3x1[2]);
-            Matrix<double> rtPatternToCameraMatrix = SpacialExtension.BuildRotationTranslationMatrix(rMatrix, tVector);
+            Matrix<double> extrinsicMatrix = SpacialExtension.BuildRotationTranslationMatrix(rMatrix, tVector);
 
-            return rtPatternToCameraMatrix;
+            return extrinsicMatrix;
         }
         #endregion
 

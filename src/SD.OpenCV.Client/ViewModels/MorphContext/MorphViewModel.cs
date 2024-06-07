@@ -2,7 +2,7 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace OpenCV.Client.ViewModels.MorphContext
+namespace SD.OpenCV.Client.ViewModels.MorphContext
 {
     /// <summary>
     /// 形态学视图模型

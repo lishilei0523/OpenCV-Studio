@@ -1,10 +1,10 @@
 ﻿using OpenCvSharp;
-using SD.Toolkits.OpenCV.Models;
+using SD.OpenCV.Primitives.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SD.Toolkits.OpenCV.Reconstructions
+namespace SD.OpenCV.Primitives.Reconstructions
 {
     /// <summary>
     /// Super特征工程

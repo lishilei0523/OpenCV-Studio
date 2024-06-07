@@ -1,7 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 
-namespace SD.Toolkits.OpenCV.Extensions
+namespace SD.OpenCV.Primitives.Extensions
 {
     /// <summary>
     /// 直方图扩展
@@ -36,13 +36,13 @@ namespace SD.Toolkits.OpenCV.Extensions
         {
             //计算源图像累计概率
             Size sourceSize = sourceMatrix.Size();
-            using Mat sourceHist = GenerateHistogram(sourceMatrix);
-            using Mat sourceRatios = GetHistAccumulations(sourceHist, sourceSize);
+            using Mat sourceHist = HistogramExtension.GenerateHistogram(sourceMatrix);
+            using Mat sourceRatios = HistogramExtension.GetHistAccumulations(sourceHist, sourceSize);
 
             //计算参考图像累计概率
             Size referenceSize = referenceMatrix.Size();
-            using Mat referenceHist = GenerateHistogram(referenceMatrix);
-            using Mat referenceRatios = GetHistAccumulations(referenceHist, referenceSize);
+            using Mat referenceHist = HistogramExtension.GenerateHistogram(referenceMatrix);
+            using Mat referenceRatios = HistogramExtension.GetHistAccumulations(referenceHist, referenceSize);
 
             //执行关系映射
             using Mat map = new Mat(256, 1, MatType.CV_8UC1);

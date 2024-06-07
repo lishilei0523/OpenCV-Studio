@@ -1,4 +1,4 @@
-﻿namespace OpenCV.Client.Views.HomeContext
+﻿namespace SD.OpenCV.Client.Views.HomeContext
 {
     /// <summary>
     /// 首页视图

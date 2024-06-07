@@ -2,15 +2,15 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Win32;
-using OpenCV.Client.ViewModels.CommonContext;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
+using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Primitives.Calibrations;
+using SD.OpenCV.Primitives.Models;
 using SD.Toolkits.Json;
-using SD.Toolkits.OpenCV.Calibrations;
-using SD.Toolkits.OpenCV.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +21,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Size = OpenCvSharp.Size;
 
-namespace OpenCV.Client.ViewModels.CalibrationContext
+namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 {
     /// <summary>
     /// 单目标定视图模型

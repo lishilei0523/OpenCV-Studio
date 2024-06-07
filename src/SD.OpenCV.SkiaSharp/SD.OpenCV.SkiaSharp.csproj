@@ -4,7 +4,7 @@
     <LangVersion>8.0</LangVersion>
     <Authors>Lee</Authors>
     <Company>SD</Company>
-    <Description>SD.Toolkits OpenCV SkiaSharp扩展组件</Description>
+    <Description>SD.Framework OpenCV SkiaSharp扩展</Description>
     <Copyright>Copyright © SD 2024</Copyright>
     <Version>0.1.0</Version>
     <AssemblyVersion>0.1.0</AssemblyVersion>
@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\$(TargetFramework)\SD.Toolkits.OpenCV.SkiaSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\SD.OpenCV.SkiaSharp.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\$(TargetFramework)\SD.Toolkits.OpenCV.SkiaSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(TargetFramework)\SD.OpenCV.SkiaSharp.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SD.Toolkits.OpenCV\SD.Toolkits.OpenCV.csproj" />
+    <ProjectReference Include="..\SD.OpenCV.Primitives\SD.OpenCV.Primitives.csproj" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 using System.Windows.Media;
 
-namespace OpenCV.Client.ViewModels.CommonContext
+namespace SD.OpenCV.Client.ViewModels.CommonContext
 {
     /// <summary>
     /// 选择颜色视图模型
