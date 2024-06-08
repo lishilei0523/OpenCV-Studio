@@ -200,6 +200,22 @@
     <Style x:Key="ToggleSwitch.Styles.Fluent" TargetType="{x:Type mah:ToggleSwitch}">
         <Setter Property="FontFamily" Value="微软雅黑" />
     </Style>
+
+
+    <!--MahApps.Metro.RangeSlider.Fluent样式-->
+    <Style x:Key="RangeSlider.Styles.Fluent" TargetType="{x:Type mah:RangeSlider}">
+        <Setter Property="FontFamily" Value="微软雅黑" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="TickPlacement" Value="TopLeft" />
+        <Setter Property="AutoToolTipPlacement" Value="BottomRight" />
+        <Setter Property="TickFrequency" Value="3" />
+        <Setter Property="SmallChange" Value="1" />
+        <Setter Property="LargeChange" Value="10" />
+        <Setter Property="mah:SliderHelper.EnableMouseWheel" Value="MouseHover" />
+    </Style>
+
+
     <!--MahApps.Metro.Watermark默认样式-->
     <Style x:Key="MahApps.Styles.TextBlock.Watermark" TargetType="{x:Type TextBlock}"
            BasedOn="{StaticResource MahApps.Styles.TextBlock}">

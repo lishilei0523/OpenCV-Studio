@@ -8,6 +8,7 @@ using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
+using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Primitives.Extensions;
 using System.IO;
 using System.Threading;
@@ -711,6 +712,39 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat resultImage = image.MorphBlackHat(viewModel.KernelSize!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //图像分割
+
+        #region 阈值分割 —— async void ThresholdSegment()
+        /// <summary>
+        /// 阈值分割
+        /// </summary>
+        public async void ThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ThresholdViewModel viewModel = ResolveMediator.Resolve<ThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
