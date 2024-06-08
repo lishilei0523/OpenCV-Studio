@@ -786,7 +786,27 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void ColorSegment()
         {
-            //TODO 实现
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
         }
         #endregion
 
