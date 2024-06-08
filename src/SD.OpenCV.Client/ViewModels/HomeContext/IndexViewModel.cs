@@ -751,6 +751,45 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
+        /// <summary>
+        /// Otsu阈值分割
+        /// </summary>
+        public async void OtsuThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat colorImage = this.EffectiveImage.ToMat();
+            using Mat grayImage = new Mat();
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
+            await Task.Run(() => Cv2.Threshold(grayImage, result, 0, 255, ThresholdTypes.Otsu));
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 颜色分割 —— async void ColorSegment()
+        /// <summary>
+        /// 颜色分割
+        /// </summary>
+        public async void ColorSegment()
+        {
+            //TODO 实现
+        }
+        #endregion
+
 
         //标定
 

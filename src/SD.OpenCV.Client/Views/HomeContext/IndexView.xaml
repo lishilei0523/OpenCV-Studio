@@ -85,7 +85,7 @@
                 </MenuItem>
                 <MenuItem Header="图像分割(_J)">
                     <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
-                    <MenuItem Header="Otsu阈值分割(_T)" cm:Message.Attach="OtsuThresholSegment()" />
+                    <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
                     <MenuItem Header="颜色分割(_C)" cm:Message.Attach="ColorSegment()" />
                 </MenuItem>
                 <MenuItem Header="边缘检测(_E)">
