@@ -8,9 +8,9 @@ namespace SD.OpenCV.Primitives.Extensions
     /// </summary>
     public static class EdgeExtension
     {
-        #region # 适用Robert边缘检测算子 —— static Mat ApplyRobert(this Mat matrix)
+        #region # 适用Robert边缘检测 —— static Mat ApplyRobert(this Mat matrix)
         /// <summary>
-        /// 适用Robert边缘检测算子
+        /// 适用Robert边缘检测
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <returns>边缘检测图像矩阵</returns>
@@ -46,9 +46,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 适用Sobel边缘检测算子 —— static Mat ApplySobel(this Mat matrix, int kernalSize...
+        #region # 适用Sobel边缘检测 —— static Mat ApplySobel(this Mat matrix, int kernalSize...
         /// <summary>
-        /// 适用Sobel边缘检测算子
+        /// 适用Sobel边缘检测
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="kernalSize">卷积核尺寸</param>
@@ -78,9 +78,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 适用Scharr边缘检测算子 —— static Mat ApplyScharr(this Mat matrix, double alpha...
+        #region # 适用Scharr边缘检测 —— static Mat ApplyScharr(this Mat matrix, double alpha...
         /// <summary>
-        /// 适用Scharr边缘检测算子
+        /// 适用Scharr边缘检测
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="alpha">X轴卷积权重</param>
@@ -108,9 +108,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 适用Laplacian边缘检测算子 —— static Mat ApplyLaplacian(this Mat matrix, int kernalSize...
+        #region # 适用Laplacian边缘检测 —— static Mat ApplyLaplacian(this Mat matrix, int kernalSize...
         /// <summary>
-        /// 适用Laplacian边缘检测算子
+        /// 适用Laplacian边缘检测
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="kernalSize">卷积核尺寸</param>

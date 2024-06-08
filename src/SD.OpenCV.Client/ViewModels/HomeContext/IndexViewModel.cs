@@ -8,6 +8,7 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Primitives.Calibrations;
@@ -860,6 +861,161 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+
+        //边缘检测
+
+        #region Sobel边缘检测 —— async void ApplySobel()
+        /// <summary>
+        /// Sobel边缘检测
+        /// </summary>
+        public async void ApplySobel()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SobelViewModel viewModel = ResolveMediator.Resolve<SobelViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ApplySobel(viewModel.KernelSize!.Value, viewModel.Alpha!.Value, viewModel.Beta!.Value, viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Canny边缘检测 —— async void ApplyCanny()
+        /// <summary>
+        /// Canny边缘检测
+        /// </summary>
+        public async void ApplyCanny()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            CannyViewModel viewModel = ResolveMediator.Resolve<CannyViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.Canny(viewModel.Threshold1!.Value, viewModel.Threshold2!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Scharr边缘检测 —— async void ApplyScharr()
+        /// <summary>
+        /// Scharr边缘检测
+        /// </summary>
+        public async void ApplyScharr()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ScharrViewModel viewModel = ResolveMediator.Resolve<ScharrViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ApplyScharr(viewModel.Alpha!.Value, viewModel.Beta!.Value, viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Robert边缘检测 —— async void ApplyRobert()
+        /// <summary>
+        /// Robert边缘检测
+        /// </summary>
+        public async void ApplyRobert()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat colorImage = this.EffectiveImage.ToMat();
+            using Mat grayImage = new Mat();
+            await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
+            using Mat result = await Task.Run(() => grayImage.ApplyRobert());
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Laplacian边缘检测 —— async void ApplyLaplacian()
+        /// <summary>
+        /// Sobel边缘检测
+        /// </summary>
+        public async void ApplyLaplacian()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LaplacianViewModel viewModel = ResolveMediator.Resolve<LaplacianViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ApplyLaplacian(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
         }
         #endregion
 
