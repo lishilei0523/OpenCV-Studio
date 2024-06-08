@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
@@ -9,7 +10,9 @@ using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
+using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
+using SD.OpenCV.Primitives.Models;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -807,6 +810,56 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             }
 
             this.Idle();
+        }
+        #endregion
+
+
+        //图像矫正
+
+        #region 矫正畸变 —— async void RectifyDistortions()
+        /// <summary>
+        /// 矫正畸变
+        /// </summary>
+        public async void RectifyDistortions()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.cins)|*.cins",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                #region # 验证
+
+                if (string.IsNullOrWhiteSpace(openFileDialog.FileName))
+                {
+                    MessageBox.Show("未选择相机内参！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.Busy();
+
+                string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
+                CameraIntrinsics cameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
+                using Mat colorImage = this.EffectiveImage.ToMat();
+                using Mat rectifiedImage = await Task.Run(() => colorImage.RectifyDistortions(cameraIntrinsics));
+                this.EffectiveImage = rectifiedImage.ToBitmapSource();
+
+                this.Idle();
+            }
         }
         #endregion
 

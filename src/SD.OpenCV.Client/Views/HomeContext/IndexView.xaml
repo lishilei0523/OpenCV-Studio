@@ -88,6 +88,10 @@
                     <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
                     <MenuItem Header="颜色分割(_C)" cm:Message.Attach="ColorSegment()" />
                 </MenuItem>
+                <MenuItem Header="图像矫正(_R)">
+                    <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
+                    <MenuItem Header="矫正位姿(_P)" cm:Message.Attach="RectifyPose()" />
+                </MenuItem>
                 <MenuItem Header="边缘检测(_E)">
                     <MenuItem Header="Sobel边缘检测(_S)" cm:Message.Attach="ApplySobel()" />
                     <MenuItem Header="Canny边缘检测(_C)" cm:Message.Attach="ApplyCanny()" />
@@ -119,7 +123,7 @@
                     <MenuItem Header="ORB关键点(_O)" cm:Message.Attach="DetectORB()" />
                     <MenuItem Header="Super关键点(_P)" cm:Message.Attach="DetectSuper()" />
                 </MenuItem>
-                <MenuItem Header="特征(_K)">
+                <MenuItem Header="特征(_T)">
                     <MenuItem Header="SIFT特征(_S)" cm:Message.Attach="ComputeSIFT()" />
                     <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
                     <MenuItem Header="FAST特征(_F)" cm:Message.Attach="ComputeFAST()" />
