@@ -421,7 +421,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             }
             else if (patternType == PatternType.CirclesGrid)
             {
-                success = await Task.Run(() => grayImage.GetOptimizedChessboardCorners(patternSize, maxCount, epsilon, out cornerPoints));
+                success = await Task.Run(() => grayImage.GetOptimizedCirclesGridCorners(patternSize, maxCount, epsilon, out cornerPoints));
             }
             else
             {
