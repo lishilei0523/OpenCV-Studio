@@ -150,7 +150,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowDialogAsync(viewModel);
+            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }

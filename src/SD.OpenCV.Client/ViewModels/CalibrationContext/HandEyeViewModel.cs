@@ -253,7 +253,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(this.SelectedBitmap);
-            await this._windowManager.ShowDialogAsync(viewModel);
+            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }

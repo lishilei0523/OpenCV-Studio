@@ -148,10 +148,10 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <param name="matrix">图像矩阵</param>
         /// <param name="kernelSize">滤波核尺寸</param>
         /// <param name="gain">增益</param>
-        /// <param name="norse">噪声</param>
+        /// <param name="noise">噪声</param>
         /// <param name="offset">亮度补偿</param>
         /// <returns>变换图像矩阵</returns>
-        public static unsafe Mat ShadingTransform(this Mat matrix, Size kernelSize, byte gain = 60, byte norse = 0, byte offset = 140)
+        public static unsafe Mat ShadingTransform(this Mat matrix, Size kernelSize, byte gain = 60, byte noise = 0, byte offset = 140)
         {
             //克隆前景图，转32F1
             Mat foreMatrix = matrix.Clone();
@@ -169,11 +169,11 @@ namespace SD.OpenCV.Primitives.Extensions
                 float backValue = backMatrix.At<float>(rowIndex, colIndex);
                 if (foreValue > backValue)
                 {
-                    foreMatrix.At<float>(rowIndex, colIndex) = gain * (foreValue - backValue - norse) + offset;
+                    foreMatrix.At<float>(rowIndex, colIndex) = gain * (foreValue - backValue - noise) + offset;
                 }
                 else
                 {
-                    foreMatrix.At<float>(rowIndex, colIndex) = gain * (foreValue - backValue + norse) + offset;
+                    foreMatrix.At<float>(rowIndex, colIndex) = gain * (foreValue - backValue + noise) + offset;
                 }
             });
 

@@ -9,6 +9,7 @@ using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
+using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Primitives.Calibrations;
@@ -21,6 +22,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.HomeContext
 {
@@ -145,7 +147,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(this.OriginalImage);
-            await this._windowManager.ShowDialogAsync(viewModel);
+            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }
@@ -171,7 +173,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(this.EffectiveImage);
-            await this._windowManager.ShowDialogAsync(viewModel);
+            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }
@@ -1012,6 +1014,134 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             {
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat resultImage = image.ApplyLaplacian(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //灰度变换
+
+        #region 灰度变换 —— async void LinearTransform()
+        /// <summary>
+        /// 灰度变换
+        /// </summary>
+        public async void LinearTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LinearViewModel viewModel = ResolveMediator.Resolve<LinearViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.LinearTransform(viewModel.Alpha!.Value, viewModel.Beta!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 伽马变换 —— async void GammaTransform()
+        /// <summary>
+        /// 伽马变换
+        /// </summary>
+        public async void GammaTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GammaViewModel viewModel = ResolveMediator.Resolve<GammaViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GammaTransform(viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 对数变换 —— async void LogarithmicTransform()
+        /// <summary>
+        /// 对数变换
+        /// </summary>
+        public async void LogarithmicTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LogarithmicViewModel viewModel = ResolveMediator.Resolve<LogarithmicViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.LogarithmicTransform(viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 阴影变换 —— async void ShadingTransform()
+        /// <summary>
+        /// 阴影变换
+        /// </summary>
+        public async void ShadingTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ShadingViewModel viewModel = ResolveMediator.Resolve<ShadingViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
+                using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 
