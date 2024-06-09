@@ -312,11 +312,11 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         }
         #endregion
 
-        #region 选择位姿 —— async void SelectPose()
+        #region 选择位姿 —— void SelectPose()
         /// <summary>
         /// 选择位姿
         /// </summary>
-        public async void SelectPose()
+        public void SelectPose()
         {
             this.Busy();
 
@@ -509,7 +509,18 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             }
 
             IDictionary<string, Matrix<double>> extrinsicMatrices = await Task.Run(() => Calibrator.SolveExtrinsicMatrices(patternSideSize, patternSize, patternType, maxCount, epsilon, this.CameraIntrinsics, grayImages));
-            this.HandEyeMatrix = await Task.Run(() => Calibrator.CalibrateEyeInHand(HandEyeCalibrationMethod.TSAI, robotPoses, extrinsicMatrices));
+            if (this.ParamViewModel.SelectedHandEyeMode == HandEyeMode.EyeInHand)
+            {
+                this.HandEyeMatrix = await Task.Run(() => Calibrator.CalibrateEyeInHand(HandEyeCalibrationMethod.TSAI, robotPoses, extrinsicMatrices));
+            }
+            else if (this.ParamViewModel.SelectedHandEyeMode == HandEyeMode.EyeToHand)
+            {
+                this.HandEyeMatrix = await Task.Run(() => Calibrator.CalibrateEyeToHand(HandEyeCalibrationMethod.TSAI, robotPoses, extrinsicMatrices));
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
             this.HandEyeMatrixText = this.HandEyeMatrix.ToMatrixString("F4");
 
             //释放资源

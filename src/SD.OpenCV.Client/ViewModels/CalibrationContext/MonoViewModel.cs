@@ -344,7 +344,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             }
 
             //标定内参
-            this.CameraIntrinsics = await Task.Run(() => Calibrator.MonoCalibrate(cameraId, patternSideSize, patternSize, patternType, maxCount, epsilon, imageSize, grayImages, out IDictionary<string, Matrix<double>> extrinsicMatrices, out ICollection<string> failedImageKeys));
+            this.CameraIntrinsics = await Task.Run(() => Calibrator.MonoCalibrate(cameraId, patternSideSize, patternSize, patternType, maxCount, epsilon, imageSize, grayImages, out IDictionary<string, Matrix<double>> _, out ICollection<string> _));
             this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F9");
             this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F9");
             this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F10");

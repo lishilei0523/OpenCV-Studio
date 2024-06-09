@@ -33,7 +33,7 @@ namespace SD.OpenCV.Client.Controls
         static ImageViewer()
         {
             //注册依赖属性
-            ImageViewer.ImageSourceProperty = DependencyProperty.Register(nameof(ImageViewer.ImageSource), typeof(ImageSource), typeof(ImageViewer), new PropertyMetadata(null));
+            ImageSourceProperty = DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageViewer), new PropertyMetadata(null));
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace SD.OpenCV.Client.Controls
         /// </summary>
         public ImageSource ImageSource
         {
-            get { return (ImageSource)base.GetValue(ImageViewer.ImageSourceProperty); }
-            set { base.SetValue(ImageViewer.ImageSourceProperty, value); }
+            get { return (ImageSource)base.GetValue(ImageSourceProperty); }
+            set { base.SetValue(ImageSourceProperty, value); }
         }
 
         #endregion
@@ -82,11 +82,11 @@ namespace SD.OpenCV.Client.Controls
 
             if (eventArgs.Delta > 0)
             {
-                matrix.ScaleAtPrepend(ImageViewer.ScaleFactor, ImageViewer.ScaleFactor, position.X, position.Y);
+                matrix.ScaleAtPrepend(ScaleFactor, ScaleFactor, position.X, position.Y);
             }
             else
             {
-                matrix.ScaleAtPrepend(1 / ImageViewer.ScaleFactor, 1 / ImageViewer.ScaleFactor, position.X, position.Y);
+                matrix.ScaleAtPrepend(1 / ScaleFactor, 1 / ScaleFactor, position.X, position.Y);
             }
 
             this.Viewbox.RenderTransform = new MatrixTransform(matrix);
