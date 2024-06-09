@@ -9,6 +9,7 @@ using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
+using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
@@ -941,6 +942,443 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             {
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat resultImage = image.SingleScaleRetinex(viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //频率滤波
+
+        #region 理想低通滤波 —— async void IdealLPBlur()
+        /// <summary>
+        /// 理想低通滤波
+        /// </summary>
+        public async void IdealLPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            IdealLowViewModel viewModel = ResolveMediator.Resolve<IdealLowViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.IdealLPBlur(viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 理想高通滤波 —— async void IdealHPBlur()
+        /// <summary>
+        /// 理想高通滤波
+        /// </summary>
+        public async void IdealHPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            IdealHighViewModel viewModel = ResolveMediator.Resolve<IdealHighViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.IdealHPBlur(viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 理想带通滤波 —— async void IdealBPBlur()
+        /// <summary>
+        /// 理想带通滤波
+        /// </summary>
+        public async void IdealBPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            IdealBandViewModel viewModel = ResolveMediator.Resolve<IdealBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.IdealBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 理想带阻滤波 —— async void IdealBRBlur()
+        /// <summary>
+        /// 理想带阻滤波
+        /// </summary>
+        public async void IdealBRBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            IdealBandViewModel viewModel = ResolveMediator.Resolve<IdealBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.IdealBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯低通滤波 —— async void GaussianLPBlur()
+        /// <summary>
+        /// 高斯低通滤波
+        /// </summary>
+        public async void GaussianLPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianLowViewModel viewModel = ResolveMediator.Resolve<GaussianLowViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GaussianLPBlur(viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯高通滤波 —— async void GaussianHPBlur()
+        /// <summary>
+        /// 高斯高通滤波
+        /// </summary>
+        public async void GaussianHPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianHighViewModel viewModel = ResolveMediator.Resolve<GaussianHighViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GaussianHPBlur(viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯带通滤波 —— async void GaussianBPBlur()
+        /// <summary>
+        /// 高斯带通滤波
+        /// </summary>
+        public async void GaussianBPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianBandViewModel viewModel = ResolveMediator.Resolve<GaussianBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GaussianBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯带阻滤波 —— async void GaussianBRBlur()
+        /// <summary>
+        /// 高斯带阻滤波
+        /// </summary>
+        public async void GaussianBRBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianBandViewModel viewModel = ResolveMediator.Resolve<GaussianBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GaussianBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯同态滤波 —— async void GaussianHomoBlur()
+        /// <summary>
+        /// 高斯同态滤波
+        /// </summary>
+        public async void GaussianHomoBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianHomoViewModel viewModel = ResolveMediator.Resolve<GaussianHomoViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GaussianHomoBlur(viewModel.GammaH!.Value, viewModel.GammaL!.Value, viewModel.Sigma!.Value, viewModel.Slope!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 巴特沃斯低通滤波 —— async void ButterworthLPBlur()
+        /// <summary>
+        /// 巴特沃斯低通滤波
+        /// </summary>
+        public async void ButterworthLPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ButterworthLowViewModel viewModel = ResolveMediator.Resolve<ButterworthLowViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ButterworthLPBlur(viewModel.Sigma!.Value, viewModel.N!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 巴特沃斯高通滤波 —— async void ButterworthHPBlur()
+        /// <summary>
+        /// 巴特沃斯高通滤波
+        /// </summary>
+        public async void ButterworthHPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ButterworthHighViewModel viewModel = ResolveMediator.Resolve<ButterworthHighViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ButterworthHPBlur(viewModel.Sigma!.Value, viewModel.N!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 巴特沃斯带通滤波 —— async void ButterworthBPBlur()
+        /// <summary>
+        /// 巴特沃斯带通滤波
+        /// </summary>
+        public async void ButterworthBPBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ButterworthBandViewModel viewModel = ResolveMediator.Resolve<ButterworthBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ButterworthBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value, viewModel.N!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 巴特沃斯带阻滤波 —— async void ButterworthBRBlur()
+        /// <summary>
+        /// 巴特沃斯带阻滤波
+        /// </summary>
+        public async void ButterworthBRBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ButterworthBandViewModel viewModel = ResolveMediator.Resolve<ButterworthBandViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ButterworthBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value, viewModel.N!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 巴特沃斯同态滤波 —— async void ButterworthHomoBlur()
+        /// <summary>
+        /// 巴特沃斯同态滤波
+        /// </summary>
+        public async void ButterworthHomoBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ButterworthHomoViewModel viewModel = ResolveMediator.Resolve<ButterworthHomoViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.ButterworthHomoBlur(viewModel.GammaH!.Value, viewModel.GammaL!.Value, viewModel.Sigma!.Value, viewModel.Slope!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 

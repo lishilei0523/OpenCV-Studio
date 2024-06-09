@@ -145,7 +145,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat IdealLPBlur(this Mat matrix, float sigma)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateIdealLPKernel(borderedMatrix.Size(), sigma);
+            using Mat kernelMatrix = GenerateIdealLPKernel(borderedMatrix.Size(), sigma);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -164,7 +164,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat IdealHPBlur(this Mat matrix, float sigma)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateIdealHPKernel(borderedMatrix.Size(), sigma);
+            using Mat kernelMatrix = GenerateIdealHPKernel(borderedMatrix.Size(), sigma);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -184,7 +184,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat IdealBPBlur(this Mat matrix, float sigma, float bandWidth)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateIdealBPKernel(borderedMatrix.Size(), sigma, bandWidth);
+            using Mat kernelMatrix = GenerateIdealBPKernel(borderedMatrix.Size(), sigma, bandWidth);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -204,7 +204,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat IdealBRBlur(this Mat matrix, float sigma, float bandWidth)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateIdealBRKernel(borderedMatrix.Size(), sigma, bandWidth);
+            using Mat kernelMatrix = GenerateIdealBRKernel(borderedMatrix.Size(), sigma, bandWidth);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -223,7 +223,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat GaussianLPBlur(this Mat matrix, float sigma)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateGaussianLPKernel(borderedMatrix.Size(), sigma);
+            using Mat kernelMatrix = GenerateGaussianLPKernel(borderedMatrix.Size(), sigma);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -242,7 +242,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat GaussianHPBlur(this Mat matrix, float sigma)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateGaussianHPKernel(borderedMatrix.Size(), sigma);
+            using Mat kernelMatrix = GenerateGaussianHPKernel(borderedMatrix.Size(), sigma);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -262,7 +262,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat GaussianBPBlur(this Mat matrix, float sigma, float bandWidth)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateGaussianBPKernel(borderedMatrix.Size(), sigma, bandWidth);
+            using Mat kernelMatrix = GenerateGaussianBPKernel(borderedMatrix.Size(), sigma, bandWidth);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -282,7 +282,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat GaussianBRBlur(this Mat matrix, float sigma, float bandWidth)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateGaussianBRKernel(borderedMatrix.Size(), sigma, bandWidth);
+            using Mat kernelMatrix = GenerateGaussianBRKernel(borderedMatrix.Size(), sigma, bandWidth);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -312,7 +312,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //频域滤波
             using Mat borderedMatrix = homoMatrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateGaussianHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
+            using Mat kernelMatrix = GenerateGaussianHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
 
             //指数化
@@ -341,7 +341,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat ButterworthLPBlur(this Mat matrix, float sigma, int n = 2)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateButterworthLPKernel(borderedMatrix.Size(), sigma, n);
+            using Mat kernelMatrix = GenerateButterworthLPKernel(borderedMatrix.Size(), sigma, n);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -361,7 +361,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat ButterworthHPBlur(this Mat matrix, float sigma, int n = 2)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateButterworthHPKernel(borderedMatrix.Size(), sigma, n);
+            using Mat kernelMatrix = GenerateButterworthHPKernel(borderedMatrix.Size(), sigma, n);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -382,7 +382,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat ButterworthBPBlur(this Mat matrix, float sigma, float bandWidth, int n = 2)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateButterworthBPKernel(borderedMatrix.Size(), sigma, bandWidth, n);
+            using Mat kernelMatrix = GenerateButterworthBPKernel(borderedMatrix.Size(), sigma, bandWidth, n);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -403,7 +403,7 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat ButterworthBRBlur(this Mat matrix, float sigma, float bandWidth, int n = 2)
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateButterworthBRKernel(borderedMatrix.Size(), sigma, bandWidth, n);
+            using Mat kernelMatrix = GenerateButterworthBRKernel(borderedMatrix.Size(), sigma, bandWidth, n);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
             result = result[matrix.BoundingRect()];
             result.ConvertTo(result, MatType.CV_8UC1);
@@ -433,7 +433,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //频域滤波
             using Mat borderedMatrix = homoMatrix.GenerateDFTBorderedMatrix();
-            using Mat kernelMatrix = BlurExtension.GenerateButterworthHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
+            using Mat kernelMatrix = GenerateButterworthHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
             Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
 
             //指数化
