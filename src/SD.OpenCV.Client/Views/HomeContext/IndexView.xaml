@@ -181,6 +181,7 @@
                     </GroupBox.HeaderTemplate>
                     <Image Source="{Binding EffectiveImage}" />
                 </GroupBox>
+                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
         <!--Footer-->

@@ -100,6 +100,7 @@
                             <TextBlock Text="{Binding SelectedPoseMatrix}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
+                    <GridSplitter Grid.Row="0" Style="{StaticResource GridSplitter.Horizontal}" />
                 </Grid>
                 <!--图像预览-->
                 <GroupBox Grid.Column="1" Margin="2,4,2,4" Background="LightGray">
@@ -175,7 +176,11 @@
                             <TextBlock Text="{Binding HandEyeMatrixText}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
+                    <GridSplitter Grid.Row="0" Style="{StaticResource GridSplitter.Horizontal}" />
+                    <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitter.Horizontal}" />
                 </Grid>
+                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
+                <GridSplitter Grid.Column="1" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
         <!--Footer-->

@@ -62,4 +62,18 @@
         <Setter Property="Background" Value="{DynamicResource SystemListLowColorBrush}" />
         <Setter Property="Padding" Value="10,3" />
     </Style>
+    <!--横向GridSplitter样式-->
+    <Style x:Key="GridSplitter.Horizontal" TargetType="{x:Type GridSplitter}"
+           BasedOn="{StaticResource MahApps.Styles.GridSplitter}">
+        <Setter Property="Height" Value="2" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+    <!--纵向GridSplitter样式-->
+    <Style x:Key="GridSplitter.Vertical" TargetType="{x:Type GridSplitter}" 
+           BasedOn="{StaticResource MahApps.Styles.GridSplitter}">
+        <Setter Property="Width" Value="2" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
 </ResourceDictionary>

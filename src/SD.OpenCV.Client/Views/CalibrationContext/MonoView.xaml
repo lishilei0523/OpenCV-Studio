@@ -122,7 +122,10 @@
                             </sd:FormItem>
                         </StackPanel>
                     </GroupBox>
+                    <GridSplitter Grid.Row="0" Style="{StaticResource GridSplitter.Horizontal}" />
                 </Grid>
+                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
+                <GridSplitter Grid.Column="1" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
         <!--Footer-->

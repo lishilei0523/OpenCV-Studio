@@ -80,7 +80,7 @@
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>
-                <GridSplitter Grid.Column="0" Width="2" Background="Transparent" HorizontalAlignment="Right"/>
+                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
         <!--控制区-->
