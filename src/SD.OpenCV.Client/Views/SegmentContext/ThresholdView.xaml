@@ -56,7 +56,7 @@
                                       mah:TextBoxHelper.ClearTextButton="False"
                                       Style="{StaticResource ComboBox.Styles.Fluent}" />
                         </sd:FormItem>
-                        <sd:FormItem Label="阈值：">
+                        <sd:FormItem Label="灰度阈值：">
                             <mah:RangeSlider Minimum="0" Maximum="255"
                                              LowerValue="{Binding Threshold}"
                                              UpperValue="{Binding MaxValue}"
