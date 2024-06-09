@@ -12,6 +12,7 @@ using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
+using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
@@ -717,6 +718,229 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             {
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat resultImage = image.MorphBlackHat(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //空间滤波
+
+        #region 均值滤波 —— async void MeanBlur()
+        /// <summary>
+        /// 均值滤波
+        /// </summary>
+        public async void MeanBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MeanViewModel viewModel = ResolveMediator.Resolve<MeanViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = new Mat();
+                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
+                Cv2.Blur(image, resultImage, kernelSize);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 高斯滤波 —— async void GaussianBlur()
+        /// <summary>
+        /// 高斯滤波
+        /// </summary>
+        public async void GaussianBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GaussianViewModel viewModel = ResolveMediator.Resolve<GaussianViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = new Mat();
+                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
+                Cv2.GaussianBlur(image, resultImage, kernelSize, viewModel.Sigma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 中值滤波 —— async void MedianBlur()
+        /// <summary>
+        /// 中值滤波
+        /// </summary>
+        public async void MedianBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MedianViewModel viewModel = ResolveMediator.Resolve<MedianViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = new Mat();
+                Cv2.MedianBlur(image, resultImage, viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 锐化滤波 —— async void SharpBlur()
+        /// <summary>
+        /// 锐化滤波
+        /// </summary>
+        public async void SharpBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat colorImage = this.EffectiveImage.ToMat();
+            using Mat result = await Task.Run(() => colorImage.SharpBlur());
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 方块滤波 —— async void BoxBlur()
+        /// <summary>
+        /// 方块滤波
+        /// </summary>
+        public async void BoxBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            BoxViewModel viewModel = ResolveMediator.Resolve<BoxViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = new Mat();
+                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
+                Cv2.BoxFilter(image, resultImage, viewModel.Depth!.Value, kernelSize, null, viewModel.NeedToNormalize);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 双边滤波 —— async void BilateralBlur()
+        /// <summary>
+        /// 双边滤波
+        /// </summary>
+        public async void BilateralBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            BilateralViewModel viewModel = ResolveMediator.Resolve<BilateralViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = new Mat();
+                Cv2.BilateralFilter(image, resultImage, viewModel.Diameter!.Value, viewModel.SigmaColor!.Value, viewModel.SigmaSpace!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Retinex增强 —— async void SingleScaleRetinex()
+        /// <summary>
+        /// Retinex增强
+        /// </summary>
+        public async void SingleScaleRetinex()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            RetinexViewModel viewModel = ResolveMediator.Resolve<RetinexViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.SingleScaleRetinex(viewModel.Sigma!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 

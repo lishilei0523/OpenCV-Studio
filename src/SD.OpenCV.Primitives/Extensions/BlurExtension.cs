@@ -13,7 +13,7 @@ namespace SD.OpenCV.Primitives.Extensions
         /// 单尺度Retinex增强
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
-        /// <param name="sigma">标准偏差值</param>
+        /// <param name="sigma">标准差</param>
         /// <returns>增强图像矩阵</returns>
         public static unsafe Mat SingleScaleRetinex(this Mat matrix, float sigma)
         {
