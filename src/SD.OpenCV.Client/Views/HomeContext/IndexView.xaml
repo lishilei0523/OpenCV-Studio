@@ -128,7 +128,7 @@
                     <MenuItem Header="FAST特征(_F)" cm:Message.Attach="ComputeFAST()" />
                     <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
                     <MenuItem Header="HOG特征(_H)" cm:Message.Attach="ComputeHOG()" />
-                    <MenuItem Header="Super特征(_P)" cm:Message.Attach="DetectSuper()" />
+                    <MenuItem Header="Super特征(_P)" cm:Message.Attach="ComputeSuper()" />
                 </MenuItem>
                 <MenuItem Header="标定(_C)">
                     <MenuItem Header="单目标定(_I)" cm:Message.Attach="MonoCalibrate()" />

@@ -13,6 +13,7 @@ using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.HoughContext;
+using SD.OpenCV.Client.ViewModels.KeyPointContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -1996,6 +1997,48 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+
+        //关键点
+
+        #region 检测Harris关键点 —— async void DetectHarris()
+        /// <summary>
+        /// 检测Harris关键点
+        /// </summary>
+        public async void DetectHarris()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            HarrisViewModel viewModel = ResolveMediator.Resolve<HarrisViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Point[] points = await Task.Run(() => grayImage.DetectHarris(viewModel.BlockSize!.Value, viewModel.KernelSize!.Value, viewModel.K!.Value));
+
+                //绘制角点
+                foreach (Point point in points)
+                {
+                    Cv2.Circle(image, point, 2, Scalar.Red);
+                }
+
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
         }
         #endregion
 
