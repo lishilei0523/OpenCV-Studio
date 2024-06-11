@@ -105,8 +105,8 @@
                     <MenuItem Header="阴影变换(_S)" cm:Message.Attach="ShadingTransform()" />
                 </MenuItem>
                 <MenuItem Header="霍夫变换(_S)">
-                    <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="FindLines()" />
-                    <MenuItem Header="霍夫圆查找(_G)" cm:Message.Attach="FindCircles()" />
+                    <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="HoughFindLines()" />
+                    <MenuItem Header="霍夫圆查找(_G)" cm:Message.Attach="HoughFindCircles()" />
                 </MenuItem>
                 <MenuItem Header="直方图(_D)">
                     <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />

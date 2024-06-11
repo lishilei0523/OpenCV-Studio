@@ -12,6 +12,7 @@ using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
+using SD.OpenCV.Client.ViewModels.HoughContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -19,6 +20,7 @@ using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
 using SD.OpenCV.SkiaSharp;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +28,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.HomeContext
@@ -1807,6 +1810,88 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
                 using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //霍夫变换
+
+        #region 霍夫线查找 —— async void HoughFindLines()
+        /// <summary>
+        /// 霍夫线查找
+        /// </summary>
+        public async void HoughFindLines()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                LineSegmentPoint[] lines = Cv2.HoughLinesP(grayImage, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
+                foreach (LineSegmentPoint line in lines)
+                {
+                    Cv2.Line(image, line.P1, line.P2, Scalar.Red, 2);
+                }
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 霍夫圆查找 —— async void HoughFindCircles()
+        /// <summary>
+        /// 霍夫圆查找
+        /// </summary>
+        public async void HoughFindCircles()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                CircleSegment[] circles = Cv2.HoughCircles(grayImage, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
+                foreach (CircleSegment circle in circles)
+                {
+                    Point center = circle.Center.ToPoint();
+                    int radius = (int)Math.Ceiling(circle.Radius);
+
+                    //绘制圆
+                    Cv2.Circle(image, center, radius, Scalar.Red, 2);
+
+                    //绘制圆心
+                    Cv2.Circle(image, center, 2, Scalar.Red, 2);
+                }
+                this.EffectiveImage = image.ToBitmapSource();
             }
 
             this.Idle();
