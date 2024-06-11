@@ -125,9 +125,7 @@
                 <MenuItem Header="特征(_T)">
                     <MenuItem Header="SIFT特征(_S)" cm:Message.Attach="ComputeSIFT()" />
                     <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
-                    <MenuItem Header="FAST特征(_F)" cm:Message.Attach="ComputeFAST()" />
                     <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
-                    <MenuItem Header="HOG特征(_H)" cm:Message.Attach="ComputeHOG()" />
                     <MenuItem Header="Super特征(_P)" cm:Message.Attach="ComputeSuper()" />
                 </MenuItem>
                 <MenuItem Header="标定(_C)">

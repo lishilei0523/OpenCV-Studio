@@ -1,7 +1,7 @@
-﻿namespace SD.OpenCV.Client.Views.KeyPointContext
+﻿namespace SD.OpenCV.Client.Views.FeatureContext
 {
     /// <summary>
-    /// Harris关键点视图
+    /// Harris特征视图
     /// </summary>
     public partial class HarrisView
     {

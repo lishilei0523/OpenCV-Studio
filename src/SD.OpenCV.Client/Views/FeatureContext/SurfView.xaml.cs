@@ -1,7 +1,7 @@
-﻿namespace SD.OpenCV.Client.Views.KeyPointContext
+﻿namespace SD.OpenCV.Client.Views.FeatureContext
 {
     /// <summary>
-    /// SURF关键点视图
+    /// SURF特征视图
     /// </summary>
     public partial class SurfView
     {

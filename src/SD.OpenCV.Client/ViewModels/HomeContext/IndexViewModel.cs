@@ -4,6 +4,7 @@ using OpenCvSharp;
 using OpenCvSharp.Features2D;
 using OpenCvSharp.WpfExtensions;
 using OpenCvSharp.XFeatures2D;
+using ScottPlot;
 using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
@@ -11,11 +12,11 @@ using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
+using SD.OpenCV.Client.ViewModels.FeatureContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.HoughContext;
-using SD.OpenCV.Client.ViewModels.KeyPointContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -24,6 +25,8 @@ using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
 using SD.OpenCV.Reconstructions;
 using SD.OpenCV.SkiaSharp;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +36,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Colors = System.Windows.Media.Colors;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
@@ -2260,6 +2264,172 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             //绘制关键点
             await Task.Run(() => Cv2.DrawKeypoints(image, scaledSrcKpts, image, Scalar.Red));
             this.EffectiveImage = image.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //特征
+
+        #region 计算SIFT特征 —— async void ComputeSIFT()
+        /// <summary>
+        /// 计算SIFT特征
+        /// </summary>
+        public async void ComputeSIFT()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+            using SIFT sift = SIFT.Create();
+            using Mat descriptors = new Mat();
+            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out _, descriptors));
+
+            //绘制直方图
+            using Plot plot = new Plot();
+            plot.AddDescriptors(descriptors);
+            using SKImage skImage = plot.GetSKImage(1280, 800);
+            BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+            ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+            imageViewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(imageViewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 计算SURF特征 —— async void ComputeSURF()
+        /// <summary>
+        /// 计算SURF特征
+        /// </summary>
+        public async void ComputeSURF()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SurfViewModel viewModel = ResolveMediator.Resolve<SurfViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                using SURF surf = SURF.Create(viewModel.HessianThreshold!.Value);
+                using Mat descriptors = new Mat();
+                await Task.Run(() => surf.DetectAndCompute(grayImage, null, out _, descriptors));
+
+                //绘制直方图
+                using Plot plot = new Plot();
+                plot.AddDescriptors(descriptors);
+                using SKImage skImage = plot.GetSKImage(1280, 800);
+                BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+                ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+                imageViewModel.Load(bitmapSource);
+                await this._windowManager.ShowWindowAsync(imageViewModel);
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 计算ORB特征 —— async void ComputeORB()
+        /// <summary>
+        /// 计算ORB特征
+        /// </summary>
+        public async void ComputeORB()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            FastViewModel viewModel = ResolveMediator.Resolve<FastViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                using ORB orb = ORB.Create(viewModel.Threshold!.Value);
+                using Mat descriptors = new Mat();
+                await Task.Run(() => orb.DetectAndCompute(grayImage, null, out _, descriptors));
+
+                //绘制直方图
+                using Plot plot = new Plot();
+                plot.AddDescriptors(descriptors);
+                using SKImage skImage = plot.GetSKImage(1280, 800);
+                BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+                ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+                imageViewModel.Load(bitmapSource);
+                await this._windowManager.ShowWindowAsync(imageViewModel);
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 计算Super特征 —— async void ComputeSuper()
+        /// <summary>
+        /// 计算Super特征
+        /// </summary>
+        public async void ComputeSuper()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            const int scaledSize = 512;
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat scaledImage = image.ResizeAdaptively(scaledSize);
+            using SuperFeature superFeature = new SuperFeature();
+            using Mat descriptors = new Mat();
+            await Task.Run(() => superFeature.DetectAndCompute(scaledImage, null, out _, descriptors));
+
+            //绘制直方图
+            using Plot plot = new Plot();
+            plot.AddDescriptors(descriptors);
+            using SKImage skImage = plot.GetSKImage(1280, 800);
+            BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+            ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+            imageViewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(imageViewModel);
 
             this.Idle();
         }

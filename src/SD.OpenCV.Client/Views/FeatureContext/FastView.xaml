@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.KeyPointContext.OrbView"
+﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.FeatureContext.FastView"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,8 +7,8 @@
                  xmlns:cm="http://www.caliburnproject.org"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
-                 Title="ORB关键点"
-                 Width="500" Height="260" ResizeMode="NoResize"
+                 Title="FAST特征"
+                 Width="500" Height="270" ResizeMode="NoResize"
                  FontSize="14"
                  WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterOwner"
@@ -17,7 +17,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <!--表单区-->
-            <RowDefinition Height="160" />
+            <RowDefinition Height="200" />
             <!--占位区-->
             <RowDefinition Height="*" />
             <!--控制区-->
@@ -27,6 +27,9 @@
         <StackPanel Grid.Row="0" Grid.IsSharedSizeScope="True" Margin="20,30">
             <sd:FormItem Label="阈值：">
                 <TextBox Text="{Binding Threshold}" Style="{StaticResource TextBoxRevealStyle}" />
+            </sd:FormItem>
+            <sd:FormItem Label="非极大值抑制：">
+                <mah:ToggleSwitch IsOn="{Binding NonmaxSuppression}" OnContent="是" OffContent="否" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
             </sd:FormItem>
         </StackPanel>
         <!--占位区-->

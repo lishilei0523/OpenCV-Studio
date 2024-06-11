@@ -2,10 +2,10 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.KeyPointContext
+namespace SD.OpenCV.Client.ViewModels.FeatureContext
 {
     /// <summary>
-    /// Shi-Tomasi关键点视图模型
+    /// Shi-Tomasi视图模型
     /// </summary>
     public class ShiTomasiViewModel : ScreenBase
     {
