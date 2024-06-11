@@ -1,7 +1,9 @@
 ﻿using Caliburn.Micro;
 using Microsoft.Win32;
 using OpenCvSharp;
+using OpenCvSharp.Features2D;
 using OpenCvSharp.WpfExtensions;
+using OpenCvSharp.XFeatures2D;
 using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
@@ -20,8 +22,10 @@ using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
+using SD.OpenCV.Reconstructions;
 using SD.OpenCV.SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -2029,7 +2033,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
                 Point[] points = await Task.Run(() => grayImage.DetectHarris(viewModel.BlockSize!.Value, viewModel.KernelSize!.Value, viewModel.K!.Value));
 
-                //绘制角点
+                //绘制关键点
                 foreach (Point point in points)
                 {
                     Cv2.Circle(image, point, 2, Scalar.Red);
@@ -2037,6 +2041,225 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.EffectiveImage = image.ToBitmapSource();
             }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测Shi-Tomasi关键点 —— async void DetectShiTomasi()
+        /// <summary>
+        /// 检测Shi-Tomasi关键点
+        /// </summary>
+        public async void DetectShiTomasi()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ShiTomasiViewModel viewModel = ResolveMediator.Resolve<ShiTomasiViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Point2f[] points = await Task.Run(() => Cv2.GoodFeaturesToTrack(grayImage, viewModel.MaxCorners!.Value, viewModel.QualityLevel!.Value, viewModel.MinDistance!.Value, null!, viewModel.BlockSize!.Value, false, 0));
+
+                //绘制关键点
+                foreach (Point point in points)
+                {
+                    Cv2.Circle(image, point, 2, Scalar.Red);
+                }
+
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测SIFT关键点 —— async void DetectSIFT()
+        /// <summary>
+        /// 检测SIFT关键点
+        /// </summary>
+        public async void DetectSIFT()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+            using SIFT sift = SIFT.Create();
+            using Mat descriptors = new Mat();
+            KeyPoint[] keyPoints = { };
+            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
+
+            //绘制关键点
+            await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+            this.EffectiveImage = image.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测SURF关键点 —— async void DetectSURF()
+        /// <summary>
+        /// 检测SURF关键点
+        /// </summary>
+        public async void DetectSURF()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SurfViewModel viewModel = ResolveMediator.Resolve<SurfViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                using SURF surf = SURF.Create(viewModel.HessianThreshold!.Value);
+                using Mat descriptors = new Mat();
+                KeyPoint[] keyPoints = { };
+                await Task.Run(() => surf.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
+
+                //绘制关键点
+                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测FAST关键点 —— async void DetectFAST()
+        /// <summary>
+        /// 检测FAST关键点
+        /// </summary>
+        public async void DetectFAST()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            FastViewModel viewModel = ResolveMediator.Resolve<FastViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                using FastFeatureDetector fast = FastFeatureDetector.Create(viewModel.Threshold!.Value, viewModel.NonmaxSuppression);
+                KeyPoint[] keyPoints = await Task.Run(() => fast.Detect(grayImage));
+
+                //绘制关键点
+                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测ORB关键点 —— async void DetectORB()
+        /// <summary>
+        /// 检测ORB关键点
+        /// </summary>
+        public async void DetectORB()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            OrbViewModel viewModel = ResolveMediator.Resolve<OrbViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                using ORB orb = ORB.Create(viewModel.Threshold!.Value);
+                using Mat descriptors = new Mat();
+                KeyPoint[] keyPoints = { };
+                await Task.Run(() => orb.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
+
+                //绘制关键点
+                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+                this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测Super关键点 —— async void DetectSuper()
+        /// <summary>
+        /// 检测Super关键点
+        /// </summary>
+        public async void DetectSuper()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            const int scaledSize = 512;
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat scaledImage = image.ResizeAdaptively(scaledSize);
+            using SuperFeature superFeature = new SuperFeature();
+            using Mat descriptors = new Mat();
+            KeyPoint[] keyPoints = { };
+            await Task.Run(() => superFeature.DetectAndCompute(scaledImage, null, out keyPoints, descriptors));
+            IList<KeyPoint> scaledSrcKpts = keyPoints.ScaleKeyPoints(image.Width, image.Height, scaledSize);
+
+            //绘制关键点
+            await Task.Run(() => Cv2.DrawKeypoints(image, scaledSrcKpts, image, Scalar.Red));
+            this.EffectiveImage = image.ToBitmapSource();
 
             this.Idle();
         }
