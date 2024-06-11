@@ -11,12 +11,14 @@ using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
+using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
+using SD.OpenCV.SkiaSharp;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1808,6 +1810,107 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             }
 
             this.Idle();
+        }
+        #endregion
+
+
+        //直方图
+
+        #region 查看灰度直方图 —— async void LookHistogram()
+        /// <summary>
+        /// 查看灰度直方图
+        /// </summary>
+        public async void LookHistogram()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat colorImage = this.EffectiveImage.ToMat();
+            using Mat grayImage = new Mat();
+            await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
+            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 800));
+            BitmapSource bitmapSource = histImage.ToBitmapSource();
+            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
+            viewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 直方图均衡化 —— async void EqualizeHist()
+        /// <summary>
+        /// 直方图均衡化
+        /// </summary>
+        public async void EqualizeHist()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 直方图规定化 —— async void SpecifyHist()
+        /// <summary>
+        /// 直方图规定化
+        /// </summary>
+        public async void SpecifyHist()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.Busy();
+
+                using Mat referenceImage = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = await Task.Run(() => image.SpecifyHist(referenceImage));
+                this.EffectiveImage = resultImage.ToBitmapSource();
+
+                this.Idle();
+            }
         }
         #endregion
 
