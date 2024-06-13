@@ -6,11 +6,11 @@
              mc:Ignorable="d"
              Name="Control">
 
-    <Grid Name="Frame">
-        <Viewbox Name="Viewbox" 
-                 MouseWheel="OnViewBoxMouseWheel"
+    <Grid Name="Frame" ClipToBounds="True">
+        <Viewbox Name="Viewbox"
                  MouseLeftButtonDown="OnViewBoxMouseLeftButtonDown"
                  MouseMove="OnViewBoxMouseMove"
+                 MouseWheel="OnViewBoxMouseWheel"
                  MouseLeftButtonUp="OnViewBoxMouseLeftButtonUp">
             <Viewbox.RenderTransform>
                 <MatrixTransform>
@@ -19,9 +19,7 @@
                     </MatrixTransform.Matrix>
                 </MatrixTransform>
             </Viewbox.RenderTransform>
-            <Grid>
-                <Image Source="{Binding ElementName=Control, Path=ImageSource}" Stretch="Uniform" />
-            </Grid>
+            <Image Source="{Binding ElementName=Control, Path=ImageSource}" Stretch="Uniform" />
         </Viewbox>
     </Grid>
 </UserControl>

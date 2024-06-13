@@ -70,29 +70,6 @@ namespace SD.OpenCV.Client.Controls
 
         #region # 事件处理程序
 
-        #region ViewBox鼠标滚轮滚动事件 —— void OnViewBoxMouseWheel(object sender...
-        /// <summary>
-        /// ViewBox鼠标滚轮滚动事件
-        /// </summary>
-        private void OnViewBoxMouseWheel(object sender, MouseWheelEventArgs eventArgs)
-        {
-            Point position = eventArgs.GetPosition(this.Viewbox);
-            MatrixTransform matrixTransform = (MatrixTransform)this.Viewbox.RenderTransform;
-            Matrix matrix = matrixTransform.Matrix;
-
-            if (eventArgs.Delta > 0)
-            {
-                matrix.ScaleAtPrepend(ScaleFactor, ScaleFactor, position.X, position.Y);
-            }
-            else
-            {
-                matrix.ScaleAtPrepend(1 / ScaleFactor, 1 / ScaleFactor, position.X, position.Y);
-            }
-
-            this.Viewbox.RenderTransform = new MatrixTransform(matrix);
-        }
-        #endregion
-
         #region ViewBox鼠标左键点击事件 —— void OnViewBoxMouseLeftButtonDown(object sender...
         /// <summary>
         /// ViewBox鼠标左键点击事件
@@ -113,18 +90,6 @@ namespace SD.OpenCV.Client.Controls
             this._vertex = eventArgs.MouseDevice.GetPosition(this.Frame);
             this._moving = true;
             eventArgs.Handled = true;
-        }
-        #endregion
-
-        #region ViewBox鼠标左键松开事件 —— void OnViewBoxMouseLeftButtonUp(object sender...
-        /// <summary>
-        /// ViewBox鼠标左键松开事件
-        /// </summary>
-        private void OnViewBoxMouseLeftButtonUp(object sender, MouseButtonEventArgs eventArgs)
-        {
-            this.Cursor = Cursors.Arrow;
-            this.Viewbox.ReleaseMouseCapture();
-            this._moving = false;
         }
         #endregion
 
@@ -155,6 +120,41 @@ namespace SD.OpenCV.Client.Controls
             this.Viewbox.RenderTransform = new MatrixTransform(matrix);
         }
         #endregion 
+
+        #region ViewBox鼠标滚轮滚动事件 —— void OnViewBoxMouseWheel(object sender...
+        /// <summary>
+        /// ViewBox鼠标滚轮滚动事件
+        /// </summary>
+        private void OnViewBoxMouseWheel(object sender, MouseWheelEventArgs eventArgs)
+        {
+            Point position = eventArgs.GetPosition(this.Viewbox);
+            MatrixTransform matrixTransform = (MatrixTransform)this.Viewbox.RenderTransform;
+            Matrix matrix = matrixTransform.Matrix;
+
+            if (eventArgs.Delta > 0)
+            {
+                matrix.ScaleAtPrepend(ScaleFactor, ScaleFactor, position.X, position.Y);
+            }
+            else
+            {
+                matrix.ScaleAtPrepend(1 / ScaleFactor, 1 / ScaleFactor, position.X, position.Y);
+            }
+
+            this.Viewbox.RenderTransform = new MatrixTransform(matrix);
+        }
+        #endregion
+
+        #region ViewBox鼠标左键松开事件 —— void OnViewBoxMouseLeftButtonUp(object sender...
+        /// <summary>
+        /// ViewBox鼠标左键松开事件
+        /// </summary>
+        private void OnViewBoxMouseLeftButtonUp(object sender, MouseButtonEventArgs eventArgs)
+        {
+            this.Cursor = Cursors.Arrow;
+            this.Viewbox.ReleaseMouseCapture();
+            this._moving = false;
+        }
+        #endregion
 
         #endregion
     }
