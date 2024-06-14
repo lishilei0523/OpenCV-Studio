@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
+    <IsPackable>false</IsPackable>
+    <Authors>Lee</Authors>
+    <Company>SD</Company>
+    <Copyright>Copyright © SD 2024</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="Content\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="$(OpenCvSharp4ExternalNativeDlls)\win-x86\native\*.*">
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(OpenCvSharp4ExternalNativeDlls)\win-x64\native\*.*">
+      <Visible>False</Visible>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.Equals('net48'))">
+    <Reference Include="PresentationCore" />
+    <Reference Include="WindowsBase" />
+    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.9.0.20240103" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.9.0.20240103" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SD.OpenCV.Primitives\SD.OpenCV.Primitives.csproj" />
+    <ProjectReference Include="..\SD.OpenCV.Reconstructions\SD.OpenCV.Reconstructions.csproj" />
+    <ProjectReference Include="..\SD.OpenCV.SkiaSharp\SD.OpenCV.SkiaSharp.csproj" />
+  </ItemGroup>
+</Project>

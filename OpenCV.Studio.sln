@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Primitives", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Client", "src\SD.OpenCV.Client\SD.OpenCV.Client.csproj", "{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Tests", "src\SD.OpenCV.Tests\SD.OpenCV.Tests.csproj", "{B75212EB-60A8-4C5F-8D76-F6BFC9F94F95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B75212EB-60A8-4C5F-8D76-F6BFC9F94F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B75212EB-60A8-4C5F-8D76-F6BFC9F94F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B75212EB-60A8-4C5F-8D76-F6BFC9F94F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B75212EB-60A8-4C5F-8D76-F6BFC9F94F95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
