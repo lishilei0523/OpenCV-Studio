@@ -616,68 +616,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 梯度运算 —— async void MorphGradient()
-        /// <summary>
-        /// 梯度运算
-        /// </summary>
-        public async void MorphGradient()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphGradient(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 击中运算 —— async void MorphHitMiss()
-        /// <summary>
-        /// 击中运算
-        /// </summary>
-        public async void MorphHitMiss()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphHitMiss(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
-            }
-
-            this.Idle();
-        }
-        #endregion
-
         #region 礼帽运算 —— async void MorphTopHat()
         /// <summary>
         /// 礼帽运算
@@ -733,6 +671,68 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             {
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat resultImage = image.MorphBlackHat(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 梯度运算 —— async void MorphGradient()
+        /// <summary>
+        /// 梯度运算
+        /// </summary>
+        public async void MorphGradient()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphGradient(viewModel.KernelSize!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 击否运算 —— async void MorphHitMiss()
+        /// <summary>
+        /// 击否运算
+        /// </summary>
+        public async void MorphHitMiss()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.MorphHitMiss(viewModel.KernelSize!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 

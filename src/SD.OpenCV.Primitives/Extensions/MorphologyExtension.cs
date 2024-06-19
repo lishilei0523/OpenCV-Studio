@@ -83,25 +83,6 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 梯度运算 —— static Mat MorphGradient(this Mat matrix, int kernelSize)
-        /// <summary>
-        /// 梯度运算
-        /// </summary>
-        /// <param name="matrix">图像矩阵</param>
-        /// <param name="kernelSize">核矩阵尺寸</param>
-        /// <returns>梯度运算图像矩阵</returns>
-        /// <remarks>膨胀图像与腐蚀图像差值</remarks>
-        public static Mat MorphGradient(this Mat matrix, int kernelSize = 3)
-        {
-            using Mat kernel = Mat.Ones(kernelSize, kernelSize, MatType.CV_8UC1);
-
-            Mat result = new Mat();
-            Cv2.MorphologyEx(matrix, result, MorphTypes.Gradient, kernel);
-
-            return result;
-        }
-        #endregion
-
         #region # 礼帽运算 —— static Mat MorphTopHat(this Mat matrix, int kernelSize)
         /// <summary>
         /// 礼帽运算
@@ -140,13 +121,32 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 击中与否运算 —— static Mat MorphHitMiss(this Mat matrix, int kernelSize)
+        #region # 梯度运算 —— static Mat MorphGradient(this Mat matrix, int kernelSize)
         /// <summary>
-        /// 击中与否运算
+        /// 梯度运算
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="kernelSize">核矩阵尺寸</param>
-        /// <returns>击中与否运算图像矩阵</returns>
+        /// <returns>梯度运算图像矩阵</returns>
+        /// <remarks>膨胀图像与腐蚀图像差值</remarks>
+        public static Mat MorphGradient(this Mat matrix, int kernelSize = 3)
+        {
+            using Mat kernel = Mat.Ones(kernelSize, kernelSize, MatType.CV_8UC1);
+
+            Mat result = new Mat();
+            Cv2.MorphologyEx(matrix, result, MorphTypes.Gradient, kernel);
+
+            return result;
+        }
+        #endregion
+
+        #region # 击否运算 —— static Mat MorphHitMiss(this Mat matrix, int kernelSize)
+        /// <summary>
+        /// 击否运算
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="kernelSize">核矩阵尺寸</param>
+        /// <returns>击否运算图像矩阵</returns>
         public static Mat MorphHitMiss(this Mat matrix, int kernelSize = 3)
         {
             using Mat kernel = Mat.Ones(kernelSize, kernelSize, MatType.CV_8UC1);

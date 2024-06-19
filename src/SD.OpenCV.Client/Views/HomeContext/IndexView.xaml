@@ -47,15 +47,29 @@
                     <MenuItem Header="Luv色彩空间(_U)" cm:Message.Attach="ConvertLuv()" />
                     <MenuItem Header="YCrCb色彩空间(_Y)" cm:Message.Attach="ConvertYCrCb()" />
                 </MenuItem>
+                <MenuItem Header="算术(_I)">
+                    <MenuItem Header="图像加法(_A)" cm:Message.Attach="AddImage()" />
+                    <MenuItem Header="图像减法(_M)" cm:Message.Attach="MinusImage()" />
+                </MenuItem>
+                <MenuItem Header="绘制(_P)">
+                    <MenuItem Header="绘制线(_R)" cm:Message.Attach="DrawLine()" />
+                    <MenuItem Header="绘制矩形(_R)" cm:Message.Attach="DrawRectangle()" />
+                    <MenuItem Header="绘制圆形(_C)" cm:Message.Attach="DrawCircle()" />
+                    <MenuItem Header="绘制轮廓(_P)" cm:Message.Attach="DrawContour()" />
+                </MenuItem>
+                <MenuItem Header="掩膜(_A)">
+                    <MenuItem Header="矩形掩膜(_R)" cm:Message.Attach="ApplyRectangleMask()" />
+                    <MenuItem Header="轮廓掩膜(_P)" cm:Message.Attach="ApplyContourMask()" />
+                </MenuItem>
                 <MenuItem Header="形态学(_M)">
                     <MenuItem Header="腐蚀(_E)" cm:Message.Attach="MorphErode()" />
                     <MenuItem Header="膨胀(_D)" cm:Message.Attach="MorphDilate()" />
                     <MenuItem Header="开运算(_O)" cm:Message.Attach="MorphOpen()" />
                     <MenuItem Header="闭运算(_C)" cm:Message.Attach="MorphClose()" />
-                    <MenuItem Header="梯度运算(_G)" cm:Message.Attach="MorphGradient()" />
-                    <MenuItem Header="击中运算(_H)" cm:Message.Attach="MorphHitMiss()" />
                     <MenuItem Header="礼帽运算(_T)" cm:Message.Attach="MorphTopHat()" />
                     <MenuItem Header="黑帽运算(_B)" cm:Message.Attach="MorphBlackHat()" />
+                    <MenuItem Header="梯度运算(_G)" cm:Message.Attach="MorphGradient()" />
+                    <MenuItem Header="击否运算(_H)" cm:Message.Attach="MorphHitMiss()" />
                 </MenuItem>
                 <MenuItem Header="空间滤波(_B)">
                     <MenuItem Header="均值滤波(_M)" cm:Message.Attach="MeanBlur()" />
@@ -86,6 +100,8 @@
                     <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
                     <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
                     <MenuItem Header="颜色分割(_C)" cm:Message.Attach="ColorSegment()" />
+                    <MenuItem Header="矩形分割(_R)" cm:Message.Attach="RectangleSegment()" />
+                    <MenuItem Header="轮廓分割(_P)" cm:Message.Attach="ContourSegment()" />
                 </MenuItem>
                 <MenuItem Header="图像矫正(_R)">
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
@@ -104,9 +120,17 @@
                     <MenuItem Header="对数变换(_N)" cm:Message.Attach="LogarithmicTransform()" />
                     <MenuItem Header="阴影变换(_S)" cm:Message.Attach="ShadingTransform()" />
                 </MenuItem>
+                <MenuItem Header="几何变换(_Y)">
+                    <MenuItem Header="缩放(_S)" cm:Message.Attach="ScaleTransform()" />
+                    <MenuItem Header="旋转(_R)" cm:Message.Attach="RotateTransform()" />
+                    <MenuItem Header="平移(_T)" cm:Message.Attach="TranslateTransform()" />
+                    <MenuItem Header="仿射变换(_A)" cm:Message.Attach="AffineTransform()" />
+                    <MenuItem Header="透视变换(_P)" cm:Message.Attach="PerspectiveTransform()" />
+                    <MenuItem Header="距离变换(_D)" cm:Message.Attach="DistanceTransform()" />
+                </MenuItem>
                 <MenuItem Header="霍夫变换(_S)">
                     <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="HoughFindLines()" />
-                    <MenuItem Header="霍夫圆查找(_G)" cm:Message.Attach="HoughFindCircles()" />
+                    <MenuItem Header="霍夫圆查找(_C)" cm:Message.Attach="HoughFindCircles()" />
                 </MenuItem>
                 <MenuItem Header="直方图(_D)">
                     <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />

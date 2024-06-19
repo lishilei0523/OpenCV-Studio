@@ -120,9 +120,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 透射变换 —— static Mat PerspectiveTrans(this Mat matrix, IEnumerable<Point2f> sourcePoints...
+        #region # 透视变换 —— static Mat PerspectiveTrans(this Mat matrix, IEnumerable<Point2f> sourcePoints...
         /// <summary>
-        /// 透射变换
+        /// 透视变换
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="sourcePoints">源定位点集</param>
@@ -158,9 +158,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 透射变换 —— static Point2f[] PerspectiveTrans(this IEnumerable<Point2f> contourPoints...
+        #region # 透视变换 —— static Point2f[] PerspectiveTrans(this IEnumerable<Point2f> contourPoints...
         /// <summary>
-        /// 透射变换
+        /// 透视变换
         /// </summary>
         /// <param name="contourPoints">轮廓坐标点集</param>
         /// <param name="sourcePoints">源定位点集</param>
@@ -195,9 +195,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 透射变换 —— static Point2d[] PerspectiveTrans(this IEnumerable<Point2d> contourPoints...
+        #region # 透视变换 —— static Point2d[] PerspectiveTrans(this IEnumerable<Point2d> contourPoints...
         /// <summary>
-        /// 透射变换
+        /// 透视变换
         /// </summary>
         /// <param name="contourPoints">轮廓坐标点集</param>
         /// <param name="sourcePoints">源定位点集</param>
