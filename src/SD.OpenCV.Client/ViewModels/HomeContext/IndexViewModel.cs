@@ -1883,7 +1883,28 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void RotateTransform()
         {
-            //TODO 实现
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            RotationViewModel viewModel = ResolveMediator.Resolve<RotationViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.RotateTrans(viewModel.Angle!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
         }
         #endregion
 
@@ -1893,7 +1914,28 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void TranslateTransform()
         {
-            //TODO 实现
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            TranslationViewModel viewModel = ResolveMediator.Resolve<TranslationViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.TranslateTrans(viewModel.OffsetX!.Value, viewModel.OffsetY!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
         }
         #endregion
 

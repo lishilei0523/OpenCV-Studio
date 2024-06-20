@@ -82,6 +82,49 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # 旋转变换 —— static Mat RotateTrans(this Mat matrix, float angle)
+        /// <summary>
+        /// 旋转变换
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="angle">旋转角度</param>
+        /// <returns>变换后图像矩阵</returns>
+        public static Mat RotateTrans(this Mat matrix, float angle)
+        {
+            Point center = new Point(matrix.Cols / 2.0f, matrix.Rows / 2.0f);
+            using Mat rotatedMatrix = Cv2.GetRotationMatrix2D(center, angle, 1);
+
+            Mat result = new Mat();
+            Cv2.WarpAffine(matrix, result, rotatedMatrix, matrix.Size());
+
+            return result;
+        }
+        #endregion
+
+        #region # 平移变换 —— static Mat TranslateTrans(this Mat matrix, float offsetX...
+        /// <summary>
+        /// 平移变换
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="offsetX">X轴平移量</param>
+        /// <param name="offsetY">Y轴平移量</param>
+        /// <returns>变换后图像矩阵</returns>
+        public static Mat TranslateTrans(this Mat matrix, float offsetX, float offsetY)
+        {
+            float[,] translationArray =
+            {
+                {1, 0, offsetX},
+                {0, 1, offsetY}
+            };
+            using Mat translationMatrix = Mat.FromArray(translationArray);
+
+            Mat result = new Mat();
+            Cv2.WarpAffine(matrix, result, translationMatrix, matrix.Size());
+
+            return result;
+        }
+        #endregion
+
         #region # 仿射变换 —— static Mat AffineTrans(this Mat matrix, IEnumerable<Point2f> sourcePoints...
         /// <summary>
         /// 仿射变换

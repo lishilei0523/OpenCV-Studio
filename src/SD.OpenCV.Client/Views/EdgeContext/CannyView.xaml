@@ -8,7 +8,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
                  Title="Canny边缘检测"
-                 Width="500" Height="270" ResizeMode="NoResize"
+                 Width="500" Height="280" ResizeMode="NoResize"
                  FontSize="14"
                  WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterOwner"
