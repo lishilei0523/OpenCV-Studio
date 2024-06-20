@@ -14,6 +14,7 @@ using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FeatureContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
+using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.HoughContext;
@@ -1820,6 +1821,125 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //几何变换
+
+        #region 缩放 —— async void ScaleTransform()
+        /// <summary>
+        /// 缩放
+        /// </summary>
+        public async void ScaleTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ScaleViewModel viewModel = ResolveMediator.Resolve<ScaleViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                Mat resultImage;
+                switch (viewModel.SelectedScaleMode)
+                {
+                    case ScaleMode.Absolute:
+                        resultImage = image.ResizeAbsolutely(viewModel.Width!.Value, viewModel.Height!.Value);
+                        break;
+                    case ScaleMode.Relative:
+                        resultImage = image.ResizeRelatively(viewModel.ScaleRatio!.Value);
+                        break;
+                    case ScaleMode.Adaptive:
+                        resultImage = image.ResizeAdaptively(viewModel.SideSize!.Value);
+                        break;
+                    case null:
+                        throw new NotSupportedException();
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 旋转 —— async void RotateTransform()
+        /// <summary>
+        /// 旋转
+        /// </summary>
+        public async void RotateTransform()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region 平移 —— async void TranslateTransform()
+        /// <summary>
+        /// 平移
+        /// </summary>
+        public async void TranslateTransform()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region 仿射变换 —— async void AffineTransform()
+        /// <summary>
+        /// 仿射变换
+        /// </summary>
+        public async void AffineTransform()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region 透视变换 —— async void PerspectiveTransform()
+        /// <summary>
+        /// 透视变换
+        /// </summary>
+        public async void PerspectiveTransform()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region 距离变换 —— async void DistanceTransform()
+        /// <summary>
+        /// 距离变换
+        /// </summary>
+        public async void DistanceTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat colorImage = this.EffectiveImage.ToMat();
+            using Mat grayImage = new Mat();
+            await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
+            using Mat result = grayImage.DistanceTrans();
+            this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();
         }
