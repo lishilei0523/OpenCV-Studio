@@ -112,11 +112,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         {
             //默认值
             this.MinH = 0;
-            this.MaxH = 360;
+            this.MaxH = 180;
             this.MinS = 0;
-            this.MaxS = 100;
+            this.MaxS = 255;
             this.MinV = 0;
-            this.MaxV = 100;
+            this.MaxV = 255;
 
             return base.OnInitializeAsync(cancellationToken);
         }
