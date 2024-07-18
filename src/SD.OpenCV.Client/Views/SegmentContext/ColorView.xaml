@@ -49,7 +49,7 @@
                 <GroupBox Grid.Column="1" Header="分割参数" Margin="2,4,4,4">
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="H通道：">
-                            <mah:RangeSlider Minimum="0" Maximum="255"
+                            <mah:RangeSlider Minimum="0" Maximum="360"
                                              LowerValue="{Binding MinH}"
                                              UpperValue="{Binding MaxH}"
                                              Style="{StaticResource RangeSlider.Styles.Fluent}"
@@ -59,7 +59,7 @@
                                              [Event RangeSelectionChanged] = [Action SlideColorChannel()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="S通道：">
-                            <mah:RangeSlider Minimum="0" Maximum="255"
+                            <mah:RangeSlider Minimum="0" Maximum="100"
                                              LowerValue="{Binding MinS}"
                                              UpperValue="{Binding MaxS}"
                                              Style="{StaticResource RangeSlider.Styles.Fluent}"
@@ -69,7 +69,7 @@
                                              [Event RangeSelectionChanged] = [Action SlideColorChannel()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="V通道：">
-                            <mah:RangeSlider Minimum="0" Maximum="255"
+                            <mah:RangeSlider Minimum="0" Maximum="100"
                                              LowerValue="{Binding MinV}"
                                              UpperValue="{Binding MaxV}"
                                              Style="{StaticResource RangeSlider.Styles.Fluent}"
