@@ -4,8 +4,6 @@ using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -154,40 +152,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void SwitchGridLines()
         {
-            if (this.ShowGridLines)
-            {
-                this.GridLinesVisibility = Visibility.Visible;
-            }
-            else
-            {
-                this.GridLinesVisibility = Visibility.Collapsed;
-            }
-        }
-        #endregion
-
-        #region 预览图像 —— async void PreviewImage()
-        /// <summary>
-        /// 预览图像
-        /// </summary>
-        public async void PreviewImage()
-        {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
+            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
         }
         #endregion
 
