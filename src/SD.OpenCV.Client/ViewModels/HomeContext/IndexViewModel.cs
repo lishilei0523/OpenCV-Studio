@@ -491,6 +491,116 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
+        //算术
+
+        #region 图像加法 —— async void AddImage()
+        /// <summary>
+        /// 图像加法
+        /// </summary>
+        public async void AddImage()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.Busy();
+
+                using Mat source = this.EffectiveImage.ToMat();
+                using Mat target = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
+                using Mat result = new Mat();
+                Cv2.Add(source, target, result);
+                this.EffectiveImage = result.ToBitmapSource();
+
+                this.Idle();
+            }
+        }
+        #endregion
+
+        #region 图像减法 —— async void MinusImage()
+        /// <summary>
+        /// 图像减法
+        /// </summary>
+        public async void MinusImage()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.Busy();
+
+                using Mat source = this.EffectiveImage.ToMat();
+                using Mat target = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
+                using Mat result = new Mat();
+                Cv2.Subtract(source, target, result);
+                this.EffectiveImage = result.ToBitmapSource();
+
+                this.Idle();
+            }
+        }
+        #endregion
+
+
+        //绘制
+
+        #region 绘制线段 —— async void DrawLine()
+        /// <summary>
+        /// 绘制线段
+        /// </summary>
+        public async void DrawLine()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            DrawContext.LineViewModel viewModel = ResolveMediator.Resolve<DrawContext.LineViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
         //形态学
 
         #region 腐蚀 —— async void MorphErode()
