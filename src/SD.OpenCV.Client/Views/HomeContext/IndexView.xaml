@@ -52,7 +52,7 @@
                     <MenuItem Header="图像减法(_M)" cm:Message.Attach="MinusImage()" />
                 </MenuItem>
                 <MenuItem Header="绘制(_P)">
-                    <MenuItem Header="绘制线段(_R)" cm:Message.Attach="DrawLine()" />
+                    <MenuItem Header="绘制线段(_L)" cm:Message.Attach="DrawLine()" />
                     <MenuItem Header="绘制矩形(_R)" cm:Message.Attach="DrawRectangle()" />
                     <MenuItem Header="绘制圆形(_C)" cm:Message.Attach="DrawCircle()" />
                     <MenuItem Header="绘制轮廓(_P)" cm:Message.Attach="DrawContour()" />
