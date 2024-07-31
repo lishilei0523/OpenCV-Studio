@@ -11,6 +11,7 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Client.ViewModels.DrawContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FeatureContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
@@ -38,6 +39,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
+using LineViewModel = SD.OpenCV.Client.ViewModels.HoughContext.LineViewModel;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
@@ -589,6 +591,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             DrawContext.LineViewModel viewModel = ResolveMediator.Resolve<DrawContext.LineViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 绘制矩形 —— async void DrawRectangle()
+        /// <summary>
+        /// 绘制矩形
+        /// </summary>
+        public async void DrawRectangle()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
