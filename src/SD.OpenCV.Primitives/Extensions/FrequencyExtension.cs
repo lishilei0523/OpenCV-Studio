@@ -144,7 +144,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //幅度太大，适用自然对数尺度替换线性尺度
             magnitudeMatrix += Scalar.All(1);
-            Cv2.Log(magnitudeMatrix + 1, magnitudeMatrix);
+            Cv2.Log(magnitudeMatrix + Scalar.FromDouble(1), magnitudeMatrix);
 
             //行、列都为偶数，如果有奇数行或奇数列，进行频谱裁剪
             magnitudeMatrix = magnitudeMatrix[new Rect(0, 0, magnitudeMatrix.Cols & -2, magnitudeMatrix.Rows & -2)];
@@ -190,7 +190,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //适用自然对数尺度替换线性尺度
             phaseMatrix += Scalar.All(1);
-            Cv2.Log(phaseMatrix + 1, phaseMatrix);
+            Cv2.Log(phaseMatrix + Scalar.FromDouble(1), phaseMatrix);
 
             //行、列都为偶数，如果有奇数行或奇数列，进行频谱裁剪
             phaseMatrix = phaseMatrix[new Rect(0, 0, phaseMatrix.Cols & -2, phaseMatrix.Rows & -2)];

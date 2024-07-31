@@ -66,11 +66,11 @@ namespace SD.OpenCV.SkiaSharp
             Mat matrix;
             if (bitmap.ColorType == SKColorType.Gray8)
             {
-                matrix = new Mat(bitmap.Height, bitmap.Width, MatType.CV_8UC1, bitmap.GetPixels(), bitmap.RowBytes);
+                matrix = Mat.FromPixelData(bitmap.Height, bitmap.Width, MatType.CV_8UC1, bitmap.GetPixels(), bitmap.RowBytes);
             }
             else if (bitmap.ColorType == SKColorType.Bgra8888)
             {
-                Mat matrix8UC4 = new Mat(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bitmap.GetPixels(), bitmap.RowBytes);
+                Mat matrix8UC4 = Mat.FromPixelData(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bitmap.GetPixels(), bitmap.RowBytes);
                 matrix = new Mat();
                 Cv2.CvtColor(matrix8UC4, matrix, ColorConversionCodes.BGRA2BGR);
                 matrix8UC4.Dispose();

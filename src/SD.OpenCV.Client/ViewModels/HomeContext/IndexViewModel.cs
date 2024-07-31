@@ -18,7 +18,6 @@ using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
-using SD.OpenCV.Client.ViewModels.HoughContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -39,7 +38,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
-using LineViewModel = SD.OpenCV.Client.ViewModels.HoughContext.LineViewModel;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
@@ -621,6 +619,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 绘制圆形 —— async void DrawCircle()
+        /// <summary>
+        /// 绘制圆形
+        /// </summary>
+        public async void DrawCircle()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            DrawContext.CircleViewModel viewModel = ResolveMediator.Resolve<DrawContext.CircleViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
@@ -2150,7 +2178,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
+            HoughContext.LineViewModel viewModel = ResolveMediator.Resolve<HoughContext.LineViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2186,7 +2214,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
+            HoughContext.CircleViewModel viewModel = ResolveMediator.Resolve<HoughContext.CircleViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
