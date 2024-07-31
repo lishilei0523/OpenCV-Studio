@@ -233,12 +233,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             if (this._points.Count > 1)
             {
-                //清空遮罩
-                foreach (CircleVisual2D shade in this._shades)
-                {
-                    canvas.Children.Remove(shade);
-                }
-
                 PointCollection points = new PointCollection(this._points);
                 points = points.Sequentialize();
                 Polygon polygon = new Polygon
@@ -251,6 +245,12 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 };
                 canvas.Children.Add(polygon);
                 this.Polygons.Add(polygon);
+            }
+
+            //清空遮罩
+            foreach (CircleVisual2D shade in this._shades)
+            {
+                canvas.Children.Remove(shade);
             }
 
             this._points.Clear();
