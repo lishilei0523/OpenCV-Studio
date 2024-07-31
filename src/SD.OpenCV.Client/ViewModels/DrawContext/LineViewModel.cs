@@ -7,7 +7,7 @@ using SD.Infrastructure.WPF.CustomControls;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -69,6 +69,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public int? Thickness { get; set; }
         #endregion
 
+        #region 显示网格线 —— bool ShowGridLines
+        /// <summary>
+        /// 显示网格线
+        /// </summary>
+        [DependencyProperty]
+        public bool ShowGridLines { get; set; }
+        #endregion
+
+        #region 网格线可见性 —— Visibility GridLinesVisibility
+        /// <summary>
+        /// 网格线可见性
+        /// </summary>
+        [DependencyProperty]
+        public Visibility GridLinesVisibility { get; set; }
+        #endregion
+
         #region 图像 —— Mat Image
         /// <summary>
         /// 图像
@@ -84,11 +100,20 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public BitmapSource BitmapSource { get; set; }
         #endregion
 
-        #region 线段集 —— IList<Line> Lines
+        #region 已选线段 —— Line SelectedLine
+        /// <summary>
+        /// 已选线段
+        /// </summary>
+        [DependencyProperty]
+        public Line SelectedLine { get; set; }
+        #endregion
+
+        #region 线段集 —— ObservableCollection<Line> Lines
         /// <summary>
         /// 线段集
         /// </summary>
-        public IList<Line> Lines { get; set; }
+        [DependencyProperty]
+        public ObservableCollection<Line> Lines { get; set; }
         #endregion
 
         #endregion
@@ -104,7 +129,9 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             //默认值
             this.Color = Colors.Red;
             this.Thickness = 2;
-            this.Lines = new List<Line>();
+            this.ShowGridLines = true;
+            this.GridLinesVisibility = Visibility.Visible;
+            this.Lines = new ObservableCollection<Line>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -118,6 +145,23 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             this.Image = bitmapSource.ToMat();
             this.BitmapSource = this.Image.ToBitmapSource();
+        }
+        #endregion
+
+        #region 切换显示网格线 —— void SwitchGridLines()
+        /// <summary>
+        /// 切换显示网格线
+        /// </summary>
+        public void SwitchGridLines()
+        {
+            if (this.ShowGridLines)
+            {
+                this.GridLinesVisibility = Visibility.Visible;
+            }
+            else
+            {
+                this.GridLinesVisibility = Visibility.Collapsed;
+            }
         }
         #endregion
 
@@ -265,6 +309,21 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             this._vertex = null;
             this._line = null;
+        }
+        #endregion
+
+        #region 选中线段改变事件 —— void OnLinesChanged()
+        /// <summary>
+        /// 选中线段改变事件
+        /// </summary>
+        public void OnLinesChanged()
+        {
+            if (this.SelectedLine != null)
+            {
+                string line = $"A({this.SelectedLine.X1}, {this.SelectedLine.Y1}) | B({this.SelectedLine.X2}, {this.SelectedLine.Y2})";
+                Clipboard.SetText(line);
+                base.ToastSuccess("已复制剪贴板！");
+            }
         }
         #endregion
 

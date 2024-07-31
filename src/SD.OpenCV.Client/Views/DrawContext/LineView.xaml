@@ -25,7 +25,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="275" />
                 </Grid.ColumnDefinitions>
                 <!--图像预览-->
                 <GroupBox Grid.Column="0" Margin="4,4,2,4" Background="LightGray">
@@ -43,28 +43,64 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <sd:ScalableCanvas ShowGridLines="True"
-                                       cm:Message.Attach="
+                    <sd:ScalableCanvas cm:Message.Attach="
                                        [Event MouseLeftButtonDown] = [Action OnMouseLeftDown($source, $eventArgs)];
                                        [Event MouseMove] = [Action OnMouseMove($source, $eventArgs)];
                                        [Event MouseUp] = [Action OnMouseUp()]">
                         <sd:ScalableCanvas.BackgroundImage>
                             <Image Source="{Binding BitmapSource}" />
                         </sd:ScalableCanvas.BackgroundImage>
+                        <sd:GridLinesVisual2D Visibility="{Binding GridLinesVisibility}" Rows="2000" Cols="1200" StepSize="{Binding GridLinesStepSize}" />
                     </sd:ScalableCanvas>
                 </GroupBox>
-                <!--绘制设置-->
-                <GroupBox Grid.Column="1" Header="绘制参数" Margin="2,4,4,4">
-                    <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
-                        <sd:FormItem Label="颜色：">
-                            <mah:ColorPicker SelectedColor="{Binding Color}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
-                        </sd:FormItem>
-                        <sd:FormItem Label="粗细：">
-                            <TextBox Text="{Binding Thickness, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource TextBoxRevealStyle}" />
-                        </sd:FormItem>
-                    </StackPanel>
-                </GroupBox>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="210"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--绘制设置-->
+                    <GroupBox Grid.Row="0" Header="绘制参数" Margin="2,4,4,2">
+                        <StackPanel Grid.IsSharedSizeScope="True" Margin="0,20">
+                            <sd:FormItem Label="颜色：">
+                                <mah:ColorPicker SelectedColor="{Binding Color}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="粗细：">
+                                <TextBox Text="{Binding Thickness, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource TextBoxRevealStyle}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="网格线：">
+                                <mah:ToggleSwitch IsOn="{Binding ShowGridLines}" OnContent="显示" OffContent="隐藏" 
+                                                  Style="{StaticResource ToggleSwitch.Styles.Fluent}"
+                                                  cm:Message.Attach="[Event Toggled] = [Action SwitchGridLines()]" />
+                            </sd:FormItem>
+                        </StackPanel>
+                    </GroupBox>
+                    <!--绘制设置-->
+                    <GroupBox Grid.Row="1" Header="线段列表" Margin="2,2,4,4">
+                        <ListBox ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}"
+                                 cm:Message.Attach="[Event SelectionChanged] = [Action OnLinesChanged()]">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <TextBlock Text="A" />
+                                        <TextBlock Text="(" />
+                                        <TextBlock Text="{Binding X1}" />
+                                        <TextBlock Text=", " />
+                                        <TextBlock Text="{Binding Y1}" />
+                                        <TextBlock Text=")" />
+                                        <TextBlock Text=" | " />
+                                        <TextBlock Text="B" />
+                                        <TextBlock Text="(" />
+                                        <TextBlock Text="{Binding X2}" />
+                                        <TextBlock Text=", " />
+                                        <TextBlock Text="{Binding Y2}" />
+                                        <TextBlock Text=")" />
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+                </Grid>
                 <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
