@@ -6,7 +6,6 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:cm="http://caliburnmicro.com"
                  xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
-                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  mc:Ignorable="d"
                  Title="绘制矩形" 
