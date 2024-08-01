@@ -7,6 +7,7 @@
                  xmlns:cm="http://caliburnmicro.com"
                  xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  mc:Ignorable="d"
                  Title="绘制圆形" 
                  Width="1440" Height="900" FontSize="14"
@@ -14,13 +15,59 @@
                  Style="{StaticResource MetroWindow.Styles.Clean}">
     <Grid>
         <Grid.RowDefinitions>
+            <!--Header-->
+            <RowDefinition Height="30" />
             <!--Body-->
             <RowDefinition Height="*" />
             <!--Footer-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource SystemBaseMediumColorBrush}" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <WrapPanel VerticalAlignment="Center">
+                <ToggleButton ToolTip="拖动">
+                    <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                </ToggleButton>
+                <ToggleButton ToolTip="改变尺寸">
+                    <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
+                </ToggleButton>
+                <ToggleButton ToolTip="线段">
+                    <iconPacks:PackIconMaterialDesign Kind="Remove" />
+                </ToggleButton>
+                <ToggleButton ToolTip="画刷">
+                    <iconPacks:PackIconMaterialDesign Kind="Brush" />
+                </ToggleButton>
+                <ToggleButton ToolTip="矩形">
+                    <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
+                </ToggleButton>
+                <ToggleButton ToolTip="圆形">
+                    <iconPacks:PackIconMaterialDesign Kind="PanoramaFishEye" />
+                </ToggleButton>
+                <ToggleButton ToolTip="椭圆">
+                    <iconPacks:PackIconMaterialDesign Kind="ExposureZero" RotationAngle="90" />
+                </ToggleButton>
+                <ToggleButton ToolTip="多边形">
+                    <iconPacks:PackIconMaterialDesign Kind="Map" />
+                </ToggleButton>
+                <ToggleButton ToolTip="折线段">
+                    <iconPacks:PackIconMaterialDesign Kind="Timeline" />
+                </ToggleButton>
+            </WrapPanel>
+        </Grid>
         <!--Body-->
-        <busyIndicator:BusyMask Grid.Row="0" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
+        <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -86,7 +133,7 @@
             </Grid>
         </busyIndicator:BusyMask>
         <!--控制区-->
-        <Grid Grid.Row="1" Style="{StaticResource Form.Styles.Submit.Grid}">
+        <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
             <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">
                 <Button Content="确定" cm:Message.Attach="Submit()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
                 <Button Content="取消" cm:Message.Attach="TryCloseAsync('false')" Style="{StaticResource Button.Styles.Fluent.Default}" />
