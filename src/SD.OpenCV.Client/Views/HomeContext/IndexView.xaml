@@ -182,7 +182,7 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding OriginalImage}" />
+                    <Image Source="{Binding OriginalImage}" cm:Message.Attach="[Event MouseMove] = [Action OnImageMouseMove($source, $eventArgs)]" />
                 </GroupBox>
                 <!--效果图像-->
                 <GroupBox Grid.Column="1" Margin="2,4,4,4" Background="{Binding BackgroundColor}">
@@ -201,14 +201,35 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding EffectiveImage}" />
+                    <Image Source="{Binding EffectiveImage}" cm:Message.Attach="[Event MouseMove] = [Action OnImageMouseMove($source, $eventArgs)]" />
                 </GroupBox>
                 <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
         <!--Footer-->
         <Border Grid.Row="2" Style="{StaticResource Panel.Styles.Function.Border}" BorderThickness="0,1,0,0">
-
+            <Grid>
+                <WrapPanel Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="Image format: " FontSize="12" />
+                    <TextBlock Text="{Binding FileExtension}" FontSize="12" />
+                    <TextBlock Text=" | " FontSize="12" />
+                    <TextBlock Text="Pixel format: " FontSize="12" />
+                    <TextBlock Text="{Binding OriginalImage.Format}" FontSize="12" />
+                    <TextBlock Text=" | " FontSize="12" />
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding OriginalImage.Width}" FontSize="12" />
+                    <TextBlock Text=" | " FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding OriginalImage.Height}" FontSize="12" />
+                </WrapPanel>
+                <WrapPanel Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="X: " FontSize="12" />
+                    <TextBlock Text="{Binding MousePosition.X}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Y: " FontSize="12" />
+                    <TextBlock Text="{Binding MousePosition.Y}" FontSize="12" />
+                </WrapPanel>
+            </Grid>
         </Border>
     </Grid>
 </mah:MetroWindow>

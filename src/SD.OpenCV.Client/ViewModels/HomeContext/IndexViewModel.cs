@@ -38,6 +38,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
+using Image = System.Windows.Controls.Image;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
@@ -74,6 +75,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         public string FilePath { get; set; }
         #endregion
 
+        #region 文件格式 —— string FileExtension
+        /// <summary>
+        /// 文件格式
+        /// </summary>
+        [DependencyProperty]
+        public string FileExtension { get; set; }
+        #endregion
+
         #region 原始图像 —— BitmapSource OriginalImage
         /// <summary>
         /// 原始图像
@@ -96,6 +105,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         [DependencyProperty]
         public Brush BackgroundColor { get; set; }
+        #endregion
+
+        #region 鼠标位置 —— Point MousePosition
+        /// <summary>
+        /// 鼠标位置
+        /// </summary>
+        [DependencyProperty]
+        public System.Windows.Point MousePosition { get; set; }
         #endregion
 
         #endregion
@@ -231,6 +248,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 this.Busy();
 
                 this.FilePath = openFileDialog.FileName;
+                this.FileExtension = Path.GetExtension(this.FilePath).Replace(".", string.Empty).ToUpper();
                 await this.ReloadImage();
 
                 this.Idle();
@@ -262,6 +280,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == MessageBoxResult.Yes || result == MessageBoxResult.No)
             {
                 this.FilePath = null;
+                this.FileExtension = null;
                 this.OriginalImage = null;
                 this.EffectiveImage = null;
             }
@@ -2919,6 +2938,21 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.SaveImage();
             }
+        }
+        #endregion
+
+        #region 鼠标移动事件 —— void OnImageMouseMove(Image image, MouseEventArgs eventArgs)
+        /// <summary>
+        /// 鼠标移动事件
+        /// </summary>
+        public void OnImageMouseMove(Image image, MouseEventArgs eventArgs)
+        {
+            System.Windows.Point mousePosition = eventArgs.GetPosition(image);
+            double scaleX = image.ActualWidth / image.Source.Width;
+            double scaleY = image.ActualHeight / image.Source.Height;
+            int x = (int)Math.Ceiling(mousePosition.X / scaleX);
+            int y = (int)Math.Ceiling(mousePosition.Y / scaleY);
+            this.MousePosition = new System.Windows.Point(x, y);
         }
         #endregion
 
