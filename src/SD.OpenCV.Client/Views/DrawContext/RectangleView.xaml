@@ -86,8 +86,6 @@
                         </ListBox>
                     </GroupBox>
                 </Grid>
-
-
                 <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
         </busyIndicator:BusyMask>
