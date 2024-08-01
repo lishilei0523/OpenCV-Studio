@@ -143,7 +143,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public void Load(BitmapSource bitmapSource)
         {
             this.Image = bitmapSource.ToMat();
-            this.BitmapSource = this.Image.ToBitmapSource();
+            this.BitmapSource = bitmapSource;
         }
         #endregion
 
