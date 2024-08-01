@@ -35,7 +35,7 @@
                         <sd:ScalableCanvas.BackgroundImage>
                             <Image Source="{Binding BitmapSource}" />
                         </sd:ScalableCanvas.BackgroundImage>
-                        <sd:GridLinesVisual2D Visibility="{Binding GridLinesVisibility}" Rows="2000" Cols="1200" StepSize="100" />
+                        <sd:GridLinesVisual2D Visibility="{Binding GridLinesVisibility}" Rows="1200" Cols="2000" StepSize="100" />
                     </sd:ScalableCanvas>
                 </GroupBox>
                 <!--参数&结果-->
