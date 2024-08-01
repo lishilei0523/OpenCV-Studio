@@ -1,7 +1,7 @@
 ﻿namespace SD.OpenCV.Client
 {
     /// <summary>
-    /// 应用程序
+    /// WPF应用程序
     /// </summary>
     public partial class App
     {

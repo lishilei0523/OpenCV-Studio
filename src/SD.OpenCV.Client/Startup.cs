@@ -48,7 +48,7 @@ namespace SD.OpenCV.Client
         /// </summary>
         protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs eventArgs)
         {
-            Exception exception = Startup.GetInnerException(eventArgs.Exception);
+            Exception exception = GetInnerException(eventArgs.Exception);
             eventArgs.Handled = true;
 
             //释放遮罩
@@ -126,7 +126,7 @@ namespace SD.OpenCV.Client
         {
             if (exception.InnerException != null)
             {
-                return Startup.GetInnerException(exception.InnerException);
+                return GetInnerException(exception.InnerException);
             }
 
             return exception;

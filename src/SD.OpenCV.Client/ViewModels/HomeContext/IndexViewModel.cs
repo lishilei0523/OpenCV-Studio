@@ -691,6 +691,31 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
+        //掩膜
+
+        #region 适用矩形掩膜 —— async void ApplyRectangleMask()
+        /// <summary>
+        /// 适用矩形掩膜
+        /// </summary>
+        public async void ApplyRectangleMask()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
+        #region 适用轮廓掩膜 —— async void ApplyContourMask()
+        /// <summary>
+        /// 适用轮廓掩膜
+        /// </summary>
+        public async void ApplyContourMask()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
+
         //形态学
 
         #region 腐蚀 —— async void MorphErode()
@@ -1693,6 +1718,28 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 矩形分割 —— async void RectangleSegment()
+        /// <summary>
+        /// 矩形分割
+        /// </summary>
+        public async void RectangleSegment()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
+        #region 轮廓分割 —— async void ContourSegment()
+        /// <summary>
+        /// 轮廓分割
+        /// </summary>
+        public async void ContourSegment()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
 
         //图像矫正
 
@@ -1740,6 +1787,17 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+        #region 矫正位姿 —— async void RectifyPose()
+        /// <summary>
+        /// 矫正位姿
+        /// </summary>
+        public async void RectifyPose()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
         }
         #endregion
 
@@ -2146,6 +2204,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         public async void AffineTransform()
         {
             //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
         }
         #endregion
 
@@ -2156,6 +2215,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         public async void PerspectiveTransform()
         {
             //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
         }
         #endregion
 
