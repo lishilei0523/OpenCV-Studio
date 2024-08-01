@@ -1,13 +1,12 @@
 ﻿using Caliburn.Micro;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -71,6 +70,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public int? Thickness { get; set; }
         #endregion
 
+        #region 显示网格线 —— bool ShowGridLines
+        /// <summary>
+        /// 显示网格线
+        /// </summary>
+        [DependencyProperty]
+        public bool ShowGridLines { get; set; }
+        #endregion
+
+        #region 网格线可见性 —— Visibility GridLinesVisibility
+        /// <summary>
+        /// 网格线可见性
+        /// </summary>
+        [DependencyProperty]
+        public Visibility GridLinesVisibility { get; set; }
+        #endregion
+
         #region 图像 —— Mat Image
         /// <summary>
         /// 图像
@@ -86,11 +101,28 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public BitmapSource BitmapSource { get; set; }
         #endregion
 
-        #region 矩形集 —— IList<Rectangle> Rectangles
+        #region 已选矩形数据 —— RectangleL SelectedRectangleL
+        /// <summary>
+        /// 已选矩形数据
+        /// </summary>
+        [DependencyProperty]
+        public RectangleL SelectedRectangleL { get; set; }
+        #endregion
+
+        #region 矩形集 —— ObservableCollection<Rectangle> Rectangles
         /// <summary>
         /// 矩形集
         /// </summary>
-        public IList<Rectangle> Rectangles { get; set; }
+        [DependencyProperty]
+        public ObservableCollection<Rectangle> Rectangles { get; set; }
+        #endregion
+
+        #region 矩形数据集 —— ObservableCollection<RectangleL> RectangleLs
+        /// <summary>
+        /// 矩形数据集
+        /// </summary>
+        [DependencyProperty]
+        public ObservableCollection<RectangleL> RectangleLs { get; set; }
         #endregion
 
         #endregion
@@ -106,7 +138,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             //默认值
             this.Color = Colors.Red;
             this.Thickness = 2;
-            this.Rectangles = new List<Rectangle>();
+            this.ShowGridLines = true;
+            this.GridLinesVisibility = Visibility.Visible;
+            this.Rectangles = new ObservableCollection<Rectangle>();
+            this.RectangleLs = new ObservableCollection<RectangleL>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -123,29 +158,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 预览图像 —— async void PreviewImage()
+        #region 切换显示网格线 —— void SwitchGridLines()
         /// <summary>
-        /// 预览图像
+        /// 切换显示网格线
         /// </summary>
-        public async void PreviewImage()
+        public void SwitchGridLines()
         {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
+            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
         }
         #endregion
 
@@ -286,10 +305,36 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             if (this._rectangle != null)
             {
                 this.Rectangles.Add(this._rectangle);
+
+                ScalableCanvas canvas = (ScalableCanvas)this._rectangle.Parent;
+                int x = (int)Math.Ceiling(canvas.GetRectifiedLeft(this._rectangle));
+                int y = (int)Math.Ceiling(canvas.GetRectifiedTop(this._rectangle));
+                int width = (int)Math.Ceiling(this._rectangle.Width);
+                int height = (int)Math.Ceiling(this._rectangle.Height);
+                this.RectangleLs.Add(new RectangleL(x, y, width, height));
             }
 
             this._vertex = null;
             this._rectangle = null;
+        }
+        #endregion
+
+        #region 选中矩形事件 —— void OnSelectRectangle()
+        /// <summary>
+        /// 选中矩形事件
+        /// </summary>
+        public void OnSelectRectangle()
+        {
+            if (this.SelectedRectangleL != null)
+            {
+                int x = this.SelectedRectangleL.X;
+                int y = this.SelectedRectangleL.Y;
+                int width = this.SelectedRectangleL.Width;
+                int height = this.SelectedRectangleL.Height;
+                string rectangle = $"{{X:{x}, Y:{y}, Width:{width}, Height:{height}}}";
+                Clipboard.SetText(rectangle);
+                base.ToastSuccess("已复制剪贴板！");
+            }
         }
         #endregion
 

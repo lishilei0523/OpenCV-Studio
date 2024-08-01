@@ -39,6 +39,7 @@
                         <sd:GridLinesVisual2D Visibility="{Binding GridLinesVisibility}" Rows="2000" Cols="1200" StepSize="100" />
                     </sd:ScalableCanvas>
                 </GroupBox>
+                <!--参数&结果-->
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="210"/>
@@ -61,10 +62,10 @@
                             </sd:FormItem>
                         </StackPanel>
                     </GroupBox>
-                    <!--绘制设置-->
+                    <!--线段列表-->
                     <GroupBox Grid.Row="1" Header="线段列表" Margin="2,2,4,4">
                         <ListBox ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}"
-                                 cm:Message.Attach="[Event SelectionChanged] = [Action OnLinesChanged()]">
+                                 cm:Message.Attach="[Event SelectionChanged] = [Action OnSelectLine()]">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <WrapPanel>

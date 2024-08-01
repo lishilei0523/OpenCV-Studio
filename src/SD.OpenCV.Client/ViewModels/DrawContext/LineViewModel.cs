@@ -277,11 +277,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 选中线段改变事件 —— void OnLinesChanged()
+        #region 选中线段事件 —— void OnSelectLine()
         /// <summary>
-        /// 选中线段改变事件
+        /// 选中线段事件
         /// </summary>
-        public void OnLinesChanged()
+        public void OnSelectLine()
         {
             if (this.SelectedLine != null)
             {
