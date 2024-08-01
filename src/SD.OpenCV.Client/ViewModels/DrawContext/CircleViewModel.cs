@@ -5,10 +5,8 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Visual2Ds;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +68,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public int? Thickness { get; set; }
         #endregion
 
+        #region 显示网格线 —— bool ShowGridLines
+        /// <summary>
+        /// 显示网格线
+        /// </summary>
+        [DependencyProperty]
+        public bool ShowGridLines { get; set; }
+        #endregion
+
+        #region 网格线可见性 —— Visibility GridLinesVisibility
+        /// <summary>
+        /// 网格线可见性
+        /// </summary>
+        [DependencyProperty]
+        public Visibility GridLinesVisibility { get; set; }
+        #endregion
+
         #region 图像 —— Mat Image
         /// <summary>
         /// 图像
@@ -85,11 +99,20 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public BitmapSource BitmapSource { get; set; }
         #endregion
 
-        #region 圆形集 —— IList<CircleVisual2D> Circles
+        #region 已选圆形 —— CircleVisual2D SelectedCircle
+        /// <summary>
+        /// 已选圆形
+        /// </summary>
+        [DependencyProperty]
+        public CircleVisual2D SelectedCircle { get; set; }
+        #endregion
+
+        #region 圆形集 —— ObservableCollection<CircleVisual2D> Circles
         /// <summary>
         /// 圆形集
         /// </summary>
-        public IList<CircleVisual2D> Circles { get; set; }
+        [DependencyProperty]
+        public ObservableCollection<CircleVisual2D> Circles { get; set; }
         #endregion
 
         #endregion
@@ -105,7 +128,9 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             //默认值
             this.Color = Colors.Red;
             this.Thickness = 2;
-            this.Circles = new List<CircleVisual2D>();
+            this.ShowGridLines = true;
+            this.GridLinesVisibility = Visibility.Visible;
+            this.Circles = new ObservableCollection<CircleVisual2D>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -122,29 +147,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 预览图像 —— async void PreviewImage()
+        #region 切换显示网格线 —— void SwitchGridLines()
         /// <summary>
-        /// 预览图像
+        /// 切换显示网格线
         /// </summary>
-        public async void PreviewImage()
+        public void SwitchGridLines()
         {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
+            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
         }
         #endregion
 
@@ -265,6 +274,24 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             this._center = null;
             this._circle = null;
+        }
+        #endregion
+
+        #region 选中圆形事件 —— void OnSelectCircle()
+        /// <summary>
+        /// 选中圆形事件
+        /// </summary>
+        public void OnSelectCircle()
+        {
+            if (this.SelectedCircle != null)
+            {
+                int x = (int)Math.Ceiling(this.SelectedCircle.Center.X);
+                int y = (int)Math.Ceiling(this.SelectedCircle.Center.Y);
+                int radius = (int)Math.Ceiling(this.SelectedCircle.Radius);
+                string circle = $"{{X:{x}, Y:{y}, Radius:{radius}}}";
+                Clipboard.SetText(circle);
+                base.ToastSuccess("已复制剪贴板！");
+            }
         }
         #endregion
 
