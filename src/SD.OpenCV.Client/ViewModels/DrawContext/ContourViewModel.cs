@@ -6,10 +6,9 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,6 +71,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public int? Thickness { get; set; }
         #endregion
 
+        #region 显示网格线 —— bool ShowGridLines
+        /// <summary>
+        /// 显示网格线
+        /// </summary>
+        [DependencyProperty]
+        public bool ShowGridLines { get; set; }
+        #endregion
+
+        #region 网格线可见性 —— Visibility GridLinesVisibility
+        /// <summary>
+        /// 网格线可见性
+        /// </summary>
+        [DependencyProperty]
+        public Visibility GridLinesVisibility { get; set; }
+        #endregion
+
         #region 图像 —— Mat Image
         /// <summary>
         /// 图像
@@ -87,11 +102,20 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public BitmapSource BitmapSource { get; set; }
         #endregion
 
-        #region 多边形集 —— IList<Polygon> Polygons
+        #region 已选多边形 —— Polygon SelectedPolygon
+        /// <summary>
+        /// 已选多边形
+        /// </summary>
+        [DependencyProperty]
+        public Polygon SelectedPolygon { get; set; }
+        #endregion
+
+        #region 多边形集 —— ObservableCollection<Polygon> Polygons
         /// <summary>
         /// 多边形集
         /// </summary>
-        public IList<Polygon> Polygons { get; set; }
+        [DependencyProperty]
+        public ObservableCollection<Polygon> Polygons { get; set; }
         #endregion
 
         #endregion
@@ -107,9 +131,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             //默认值
             this.Color = Colors.Red;
             this.Thickness = 2;
+            this.ShowGridLines = true;
+            this.GridLinesVisibility = Visibility.Visible;
             this._points = new List<Point>();
             this._shades = new List<CircleVisual2D>();
-            this.Polygons = new List<Polygon>();
+            this.Polygons = new ObservableCollection<Polygon>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -126,29 +152,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 预览图像 —— async void PreviewImage()
+        #region 切换显示网格线 —— void SwitchGridLines()
         /// <summary>
-        /// 预览图像
+        /// 切换显示网格线
         /// </summary>
-        public async void PreviewImage()
+        public void SwitchGridLines()
         {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
+            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
         }
         #endregion
 
@@ -257,6 +267,21 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._shades.Clear();
 
             eventArgs.Handled = true;
+        }
+        #endregion
+
+        #region 选中多边形事件 —— void OnSelectPolygon()
+        /// <summary>
+        /// 选中多边形事件
+        /// </summary>
+        public void OnSelectPolygon()
+        {
+            if (this.SelectedPolygon != null)
+            {
+                string polygon = this.SelectedPolygon.Points.ToString();
+                Clipboard.SetText(polygon);
+                base.ToastSuccess("已复制剪贴板！");
+            }
         }
         #endregion
 
