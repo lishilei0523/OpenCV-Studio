@@ -709,6 +709,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 绘制图形 —— async void DrawShapes()
+        /// <summary>
+        /// 绘制图形
+        /// </summary>
+        public async void DrawShapes()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            DrawContext.ShapeViewModel viewModel = ResolveMediator.Resolve<DrawContext.ShapeViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
 
         //掩膜
 

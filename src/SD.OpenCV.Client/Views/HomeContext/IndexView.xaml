@@ -56,6 +56,7 @@
                     <MenuItem Header="绘制矩形(_R)" cm:Message.Attach="DrawRectangle()" />
                     <MenuItem Header="绘制圆形(_C)" cm:Message.Attach="DrawCircle()" />
                     <MenuItem Header="绘制轮廓(_P)" cm:Message.Attach="DrawContour()" />
+                    <MenuItem Header="绘制图形(_S)" cm:Message.Attach="DrawShapes()" />
                 </MenuItem>
                 <MenuItem Header="掩膜(_A)">
                     <MenuItem Header="矩形掩膜(_R)" cm:Message.Attach="ApplyRectangleMask()" />

@@ -18,9 +18,9 @@ using Point = System.Windows.Point;
 namespace SD.OpenCV.Client.ViewModels.DrawContext
 {
     /// <summary>
-    /// 绘制圆形视图模型
+    /// 绘制图形视图模型
     /// </summary>
-    public class CircleViewModel : ScreenBase
+    public class ShapeViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -42,7 +42,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public CircleViewModel(IWindowManager windowManager)
+        public ShapeViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -215,7 +215,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             #region # 验证
 
-            if (!this._center.HasValue)
+            if (!canvas.RectifiedStartPosition.HasValue)
             {
                 return;
             }
@@ -242,9 +242,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     canvas.Children.Add(this._circle);
                 }
 
-                Point center = this._center.Value;
                 Point position = eventArgs.GetPosition(canvas);
-                Point rectifiedCenter = canvas.MatrixTransform.Inverse!.Transform(center);
+                Point rectifiedCenter = canvas.RectifiedStartPosition.Value;
                 Point rectifiedPosition = canvas.MatrixTransform.Inverse!.Transform(position);
                 Vector vector = Point.Subtract(rectifiedPosition, rectifiedCenter);
                 this._circle.Center = rectifiedCenter;
