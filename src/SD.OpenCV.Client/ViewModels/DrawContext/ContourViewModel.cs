@@ -196,11 +196,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 鼠标左键按下事件 —— void OnMouseLeftDown(ScalableCanvas canvas...
+        #region 鼠标左键按下事件 —— void OnMouseLeftDown(CanvasEx canvas...
         /// <summary>
         /// 鼠标左键按下事件
         /// </summary>
-        public void OnMouseLeftDown(ScalableCanvas canvas, MouseButtonEventArgs eventArgs)
+        public void OnMouseLeftDown(CanvasEx canvas, MouseButtonEventArgs eventArgs)
         {
             //设置光标
             Mouse.OverrideCursor = Cursors.Cross;
@@ -232,11 +232,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 鼠标右键按下事件 —— void OnMouseRightDown(ScalableCanvas canvas...
+        #region 鼠标右键按下事件 —— void OnMouseRightDown(CanvasEx canvas...
         /// <summary>
         /// 鼠标右键按下事件
         /// </summary>
-        public void OnMouseRightDown(ScalableCanvas canvas, MouseButtonEventArgs eventArgs)
+        public void OnMouseRightDown(CanvasEx canvas, MouseButtonEventArgs eventArgs)
         {
             //设置光标
             Mouse.OverrideCursor = Cursors.Arrow;

@@ -75,15 +75,15 @@
                 </Grid.ColumnDefinitions>
                 <!--图像预览-->
                 <GroupBox Grid.Column="0" Header="图像预览" Margin="4,4,2,4" Background="LightGray">
-                    <sd:ScalableCanvas cm:Message.Attach="
+                    <sd:CanvasEx cm:Message.Attach="
                                        [Event MouseLeftButtonDown] = [Action OnMouseLeftDown($source, $eventArgs)];
                                        [Event MouseMove] = [Action OnMouseMove($source, $eventArgs)];
                                        [Event MouseUp] = [Action OnMouseUp()]">
-                        <sd:ScalableCanvas.BackgroundImage>
+                        <sd:CanvasEx.BackgroundImage>
                             <Image Source="{Binding BitmapSource}" />
-                        </sd:ScalableCanvas.BackgroundImage>
+                        </sd:CanvasEx.BackgroundImage>
                         <sd:GridLinesVisual2D Visibility="{Binding GridLinesVisibility}" Rows="1200" Cols="2000" StepSize="100" />
-                    </sd:ScalableCanvas>
+                    </sd:CanvasEx>
                 </GroupBox>
                 <!--参数&结果-->
                 <Grid Grid.Column="1">

@@ -188,7 +188,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             foreach (Rectangle rectangle in this.Rectangles)
             {
-                ScalableCanvas canvas = (ScalableCanvas)rectangle.Parent;
+                CanvasEx canvas = (CanvasEx)rectangle.Parent;
                 int x = (int)Math.Ceiling(canvas.GetRectifiedLeft(rectangle));
                 int y = (int)Math.Ceiling(canvas.GetRectifiedTop(rectangle));
                 int width = (int)Math.Ceiling(rectangle.Width);
@@ -207,11 +207,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 鼠标左键按下事件 —— void OnMouseLeftDown(ScalableCanvas canvas...
+        #region 鼠标左键按下事件 —— void OnMouseLeftDown(CanvasEx canvas...
         /// <summary>
         /// 鼠标左键按下事件
         /// </summary>
-        public void OnMouseLeftDown(ScalableCanvas canvas, MouseButtonEventArgs eventArgs)
+        public void OnMouseLeftDown(CanvasEx canvas, MouseButtonEventArgs eventArgs)
         {
             //设置光标
             Mouse.OverrideCursor = Cursors.Cross;
@@ -222,11 +222,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 鼠标移动事件 —— void OnMouseMove(ScalableCanvas canvas...
+        #region 鼠标移动事件 —— void OnMouseMove(CanvasEx canvas...
         /// <summary>
         /// 鼠标移动事件
         /// </summary>
-        public void OnMouseMove(ScalableCanvas canvas, MouseEventArgs eventArgs)
+        public void OnMouseMove(CanvasEx canvas, MouseEventArgs eventArgs)
         {
             #region # 验证
 
@@ -306,7 +306,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this.Rectangles.Add(this._rectangle);
 
-                ScalableCanvas canvas = (ScalableCanvas)this._rectangle.Parent;
+                CanvasEx canvas = (CanvasEx)this._rectangle.Parent;
                 int x = (int)Math.Ceiling(canvas.GetRectifiedLeft(this._rectangle));
                 int y = (int)Math.Ceiling(canvas.GetRectifiedTop(this._rectangle));
                 int width = (int)Math.Ceiling(this._rectangle.Width);
