@@ -1318,19 +1318,16 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         private void DrawPolygon(CanvasEx canvas)
         {
-            //构建点集
-            PointCollection points = new PointCollection(this._polyPoints);
-            IList<System.Drawing.Point> pointIs = new List<System.Drawing.Point>();
-            foreach (Point point in points)
-            {
-                int x = (int)Math.Ceiling(point.X);
-                int y = (int)Math.Ceiling(point.Y);
-                System.Drawing.Point pointI = new System.Drawing.Point(x, y);
-                pointIs.Add(pointI);
-            }
-
             //点集排序
+            PointCollection points = new PointCollection(this._polyPoints);
             points = points.Sequentialize();
+
+            //构建点集
+            IEnumerable<System.Drawing.Point> pointIs =
+                from point in points
+                let x = (int)Math.Ceiling(point.X)
+                let y = (int)Math.Ceiling(point.Y)
+                select new System.Drawing.Point(x, y);
 
             PolygonL polygonL = new PolygonL(pointIs);
             Polygon polygon = new Polygon
@@ -1366,14 +1363,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             //构建点集
             PointCollection points = new PointCollection(this._polyPoints);
-            IList<System.Drawing.Point> pointIs = new List<System.Drawing.Point>();
-            foreach (Point point in points)
-            {
-                int x = (int)Math.Ceiling(point.X);
-                int y = (int)Math.Ceiling(point.Y);
-                System.Drawing.Point pointI = new System.Drawing.Point(x, y);
-                pointIs.Add(pointI);
-            }
+            IEnumerable<System.Drawing.Point> pointIs =
+                from point in points
+                let x = (int)Math.Ceiling(point.X)
+                let y = (int)Math.Ceiling(point.Y)
+                select new System.Drawing.Point(x, y);
 
             PolylineL polylineL = new PolylineL(pointIs);
             Polyline polyline = new Polyline
