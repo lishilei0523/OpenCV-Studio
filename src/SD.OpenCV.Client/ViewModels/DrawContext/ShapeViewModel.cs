@@ -61,12 +61,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         private EllipseVisual2D _ellipse;
 
         /// <summary>
-        /// 多边形点集
-        /// </summary>
-        private IList<Point> _polyPoints;
-
-        /// <summary>
-        /// 多边形锚点集
+        /// 锚点集
         /// </summary>
         private IList<PointVisual2D> _polyAnchors;
 
@@ -95,12 +90,20 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region 颜色 —— Color? Color
+        #region 填充颜色 —— Color? FillColor
         /// <summary>
-        /// 颜色
+        /// 填充颜色
         /// </summary>
         [DependencyProperty]
-        public Color? Color { get; set; }
+        public Color? FillColor { get; set; }
+        #endregion
+
+        #region 边框颜色 —— Color? BorderColor
+        /// <summary>
+        /// 边框颜色
+        /// </summary>
+        [DependencyProperty]
+        public Color? BorderColor { get; set; }
         #endregion
 
         #region 粗细 —— int? Thickness
@@ -164,6 +167,14 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         [DependencyProperty]
         public bool ResizeChecked { get; set; }
+        #endregion
+
+        #region 选中点 —— bool PointChecked
+        /// <summary>
+        /// 选中点
+        /// </summary>
+        [DependencyProperty]
+        public bool PointChecked { get; set; }
         #endregion
 
         #region 选中线段 —— bool LineChecked
@@ -259,9 +270,9 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this._polyPoints = new List<Point>();
             this._polyAnchors = new List<PointVisual2D>();
-            this.Color = Colors.Red;
+            this.FillColor = Colors.Transparent;
+            this.BorderColor = Colors.Red;
             this.Thickness = 2;
             this.ShowGridLines = true;
             this.GridLinesVisibility = Visibility.Visible;
@@ -350,24 +361,33 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = (int)Math.Ceiling(shape.StrokeThickness);
-                SolidColorBrush brush = (SolidColorBrush)shape.Stroke;
-                Scalar color = new Scalar(brush.Color.B, brush.Color.G, brush.Color.R);
+                SolidColorBrush fillBrush = (SolidColorBrush)shape.Fill;
+                SolidColorBrush borderBrush = (SolidColorBrush)shape.Stroke;
+                Scalar fillColor = new Scalar(fillBrush.Color.B, fillBrush.Color.G, fillBrush.Color.R, fillBrush.Color.A);
+                Scalar borderColor = new Scalar(borderBrush.Color.B, borderBrush.Color.G, borderBrush.Color.R);
 
+                if (shape is PointVisual2D point)
+                {
+                    PointL pointL = (PointL)point.Tag;
+                    int radius = (int)Math.Ceiling(point.Thickness);
+                    this.Image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness);    //空心圆
+                    this.Image.Circle(pointL.X, pointL.Y, radius - thickness, fillColor, -1); //实心圆
+                }
                 if (shape is Line line)
                 {
                     LineL lineL = (LineL)line.Tag;
-                    this.Image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, color, thickness);
+                    this.Image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, borderColor, thickness);
                 }
                 if (shape is Rectangle rectangle)
                 {
                     RectangleL rectangleL = (RectangleL)rectangle.Tag;
                     Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
-                    this.Image.Rectangle(rect, color, thickness);
+                    this.Image.Rectangle(rect, borderColor, thickness);
                 }
                 if (shape is CircleVisual2D circle)
                 {
                     CircleL circleL = (CircleL)circle.Tag;
-                    this.Image.Circle(circleL.X, circleL.Y, circleL.Radius, color, thickness);
+                    this.Image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness);
                 }
                 if (shape is EllipseVisual2D ellipse)
                 {
@@ -375,7 +395,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
                     Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
                     RotatedRect rect = new RotatedRect(center, size, 0);
-                    this.Image.Ellipse(rect, color, thickness);
+                    this.Image.Ellipse(rect, borderColor, thickness);
                 }
                 if (shape is Polygon polygon)
                 {
@@ -384,10 +404,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     OpenCvSharp.Point[] contour = new OpenCvSharp.Point[polygonL.Points.Count];
                     for (int index = 0; index < polygonL.Points.Count; index++)
                     {
-                        System.Drawing.Point point = polygonL.Points.ElementAt(index);
-                        contour[index] = new OpenCvSharp.Point(point.X, point.Y);
+                        PointL pointL = polygonL.Points.ElementAt(index);
+                        contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    this.Image.DrawContours(new[] { contour }, -1, color, thickness);
+                    this.Image.DrawContours(new[] { contour }, -1, borderColor, thickness);
                 }
                 if (shape is Polyline polyline)
                 {
@@ -396,10 +416,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     OpenCvSharp.Point[] contour = new OpenCvSharp.Point[polylineL.Points.Count];
                     for (int index = 0; index < polylineL.Points.Count; index++)
                     {
-                        System.Drawing.Point point = polylineL.Points.ElementAt(index);
-                        contour[index] = new OpenCvSharp.Point(point.X, point.Y);
+                        PointL pointL = polylineL.Points.ElementAt(index);
+                        contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    this.Image.Polylines(new[] { contour }, false, color, thickness);
+                    this.Image.Polylines(new[] { contour }, false, borderColor, thickness);
                 }
             }
             this.BitmapSource = this.Image.ToBitmapSource();
@@ -425,6 +445,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -448,6 +469,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
                 this.ScaleChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -471,6 +493,31 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
                 this.ScaleChecked = false;
                 this.DragChecked = false;
+                this.PointChecked = false;
+                this.LineChecked = false;
+                this.BrushChecked = false;
+                this.RectangleChecked = false;
+                this.CircleChecked = false;
+                this.EllipseChecked = false;
+                this.PolygonChecked = false;
+                this.PolylineChecked = false;
+            }
+        }
+        #endregion
+
+        #region 点点击事件 —— void OnPointClick()
+        /// <summary>
+        /// 点点击事件
+        /// </summary>
+        public void OnPointClick()
+        {
+            if (this.PointChecked)
+            {
+                this.CanvasMode = CanvasMode.Draw;
+
+                this.ScaleChecked = false;
+                this.DragChecked = false;
+                this.ResizeChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -495,6 +542,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
                 this.CircleChecked = false;
@@ -518,6 +566,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.RectangleChecked = false;
                 this.CircleChecked = false;
@@ -541,6 +590,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.CircleChecked = false;
@@ -564,6 +614,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -587,6 +638,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -610,6 +662,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -633,6 +686,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
+                this.PointChecked = false;
                 this.LineChecked = false;
                 this.BrushChecked = false;
                 this.RectangleChecked = false;
@@ -652,6 +706,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
             double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
 
+            if (canvas.SelectedVisual is PointVisual2D point)
+            {
+                this.RebuildPoint(point, leftMargin, topMargin);
+            }
             if (canvas.SelectedVisual is Line line)
             {
                 this.RebuildLine(line, leftMargin, topMargin);
@@ -806,6 +864,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void OnDraw(CanvasEx canvas)
         {
+            if (this.PointChecked)
+            {
+                this.DrawPoint(canvas);
+            }
             if (this.PolygonChecked || this.PolylineChecked)
             {
                 if (canvas.SelectedVisual is PointVisual2D element && this._polyAnchors.Any() && element == this._polyAnchors[0])
@@ -880,7 +942,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 int y1 = (int)Math.Ceiling(this._line.Y1);
                 int x2 = (int)Math.Ceiling(this._line.X2);
                 int y2 = (int)Math.Ceiling(this._line.Y2);
-                LineL lineL = new LineL(new System.Drawing.Point(x1, y1), new System.Drawing.Point(x2, y2));
+                LineL lineL = new LineL(new PointL(x1, y1), new PointL(x2, y2));
 
                 this._line.Tag = lineL;
                 lineL.Tag = this._line;
@@ -890,12 +952,12 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             if (this._brush != null)
             {
                 //构建点集
-                IList<System.Drawing.Point> pointIs = new List<System.Drawing.Point>();
+                IList<PointL> pointIs = new List<PointL>();
                 foreach (Point point in this._brush.Points)
                 {
                     int x = (int)Math.Ceiling(point.X);
                     int y = (int)Math.Ceiling(point.Y);
-                    System.Drawing.Point pointI = new System.Drawing.Point(x, y);
+                    PointL pointI = new PointL(x, y);
                     pointIs.Add(pointI);
                 }
 
@@ -971,6 +1033,31 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
         //Private
 
+        #region 重建点 —— void RebuildPoint(PointVisual2D point, double leftMargin, double topMargin)
+        /// <summary>
+        /// 重建点
+        /// </summary>
+        /// <param name="point">点</param>
+        /// <param name="leftMargin">左边距</param>
+        /// <param name="topMargin">上边距</param>
+        private void RebuildPoint(PointVisual2D point, double leftMargin, double topMargin)
+        {
+            PointL pointL = (PointL)point.Tag;
+            int index = this.ShapeLs.IndexOf(pointL);
+            if (index != -1)
+            {
+                this.ShapeLs.Remove(pointL);
+
+                int x = (int)Math.Ceiling(point.X + leftMargin);
+                int y = (int)Math.Ceiling(point.Y + topMargin);
+                PointL newPointL = new PointL(x, y);
+
+                point.Tag = newPointL;
+                this.ShapeLs.Insert(index, newPointL);
+            }
+        }
+        #endregion
+
         #region 重建线段 —— void RebuildLine(Line line, double leftMargin, double topMargin)
         /// <summary>
         /// 重建线段
@@ -990,7 +1077,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 int y1 = (int)Math.Ceiling(line.Y1 + topMargin);
                 int x2 = (int)Math.Ceiling(line.X2 + leftMargin);
                 int y2 = (int)Math.Ceiling(line.Y2 + topMargin);
-                LineL newLineL = new LineL(new System.Drawing.Point(x1, y1), new System.Drawing.Point(x2, y2));
+                LineL newLineL = new LineL(new PointL(x1, y1), new PointL(x2, y2));
 
                 line.Tag = newLineL;
                 this.ShapeLs.Insert(index, newLineL);
@@ -1093,12 +1180,12 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this.ShapeLs.Remove(polygonL);
 
-                IList<System.Drawing.Point> pointIs = new List<System.Drawing.Point>();
+                IList<PointL> pointIs = new List<PointL>();
                 foreach (Point point in polygon.Points)
                 {
                     int x = (int)Math.Ceiling(point.X + leftMargin);
                     int y = (int)Math.Ceiling(point.Y + topMargin);
-                    System.Drawing.Point pointI = new System.Drawing.Point(x, y);
+                    PointL pointI = new PointL(x, y);
                     pointIs.Add(pointI);
                 }
                 PolygonL newPolygonL = new PolygonL(pointIs);
@@ -1124,12 +1211,12 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this.ShapeLs.Remove(polylineL);
 
-                IList<System.Drawing.Point> pointIs = new List<System.Drawing.Point>();
+                IList<PointL> pointIs = new List<PointL>();
                 foreach (Point point in polyline.Points)
                 {
                     int x = (int)Math.Ceiling(point.X + leftMargin);
                     int y = (int)Math.Ceiling(point.Y + topMargin);
-                    System.Drawing.Point pointI = new System.Drawing.Point(x, y);
+                    PointL pointI = new PointL(x, y);
                     pointIs.Add(pointI);
                 }
                 PolylineL newPolylineL = new PolylineL(pointIs);
@@ -1137,6 +1224,35 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 polyline.Tag = newPolylineL;
                 this.ShapeLs.Insert(index, newPolylineL);
             }
+        }
+        #endregion
+
+        #region 绘制点 —— void DrawPoint(CanvasEx canvas)
+        /// <summary>
+        /// 绘制点
+        /// </summary>
+        private void DrawPoint(CanvasEx canvas)
+        {
+            Point rectifiedVertex = canvas.RectifiedStartPosition!.Value;
+            int x = (int)Math.Ceiling(rectifiedVertex.X);
+            int y = (int)Math.Ceiling(rectifiedVertex.Y);
+
+            PointL pointL = new PointL(x, y);
+            PointVisual2D point = new PointVisual2D
+            {
+                X = rectifiedVertex.X,
+                Y = rectifiedVertex.Y,
+                Fill = new SolidColorBrush(Colors.Black),
+                Stroke = new SolidColorBrush(this.BorderColor!.Value),
+                StrokeThickness = this.Thickness!.Value,
+                RenderTransform = canvas.MatrixTransform,
+                Tag = pointL
+            };
+            canvas.Children.Add(point);
+
+            pointL.Tag = point;
+            this.ShapeLs.Add(pointL);
+            this.Shapes.Add(point);
         }
         #endregion
 
@@ -1150,8 +1266,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._line = new Line
                 {
-                    Fill = Brushes.Transparent,
-                    Stroke = new SolidColorBrush(this.Color!.Value),
+                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
                 canvas.Children.Add(this._line);
@@ -1177,8 +1293,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._brush = new Polyline
                 {
-                    Fill = Brushes.Transparent,
-                    Stroke = new SolidColorBrush(this.Color!.Value),
+                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
                 canvas.Children.Add(this._brush);
@@ -1200,8 +1316,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._rectangle = new Rectangle
                 {
-                    Fill = Brushes.Transparent,
-                    Stroke = new SolidColorBrush(this.Color!.Value),
+                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
                 canvas.Children.Add(this._rectangle);
@@ -1247,7 +1363,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._circle = new CircleVisual2D
                 {
-                    Stroke = new SolidColorBrush(this.Color!.Value),
+                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
                 canvas.Children.Add(this._circle);
@@ -1273,7 +1390,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._ellipse = new EllipseVisual2D()
                 {
-                    Stroke = new SolidColorBrush(this.Color!.Value),
+                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
                 canvas.Children.Add(this._ellipse);
@@ -1296,18 +1414,19 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         private void DrawPolyAnchor(CanvasEx canvas)
         {
             Point rectifiedPoint = canvas.RectifiedStartPosition!.Value;
-            Brush colorBrush = this._polyAnchors.Any()
-                ? new SolidColorBrush(this.Color!.Value)
+            Brush fillBrush = new SolidColorBrush(Colors.Black);
+            Brush borderBrush = this._polyAnchors.Any()
+                ? new SolidColorBrush(this.BorderColor!.Value)
                 : new SolidColorBrush(Colors.Yellow);
             PointVisual2D anchor = new PointVisual2D
             {
                 X = rectifiedPoint.X,
                 Y = rectifiedPoint.Y,
-                Stroke = colorBrush,
+                Fill = fillBrush,
+                Stroke = borderBrush,
                 RenderTransform = canvas.MatrixTransform
             };
             canvas.Children.Add(anchor);
-            this._polyPoints.Add(rectifiedPoint);
             this._polyAnchors.Add(anchor);
         }
         #endregion
@@ -1319,21 +1438,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         private void DrawPolygon(CanvasEx canvas)
         {
             //点集排序
-            PointCollection points = new PointCollection(this._polyPoints);
+            IEnumerable<Point> point2ds = this._polyAnchors.Select(point => new Point(point.X, point.Y));
+            PointCollection points = new PointCollection(point2ds);
             points = points.Sequentialize();
 
             //构建点集
-            IEnumerable<System.Drawing.Point> pointIs =
+            IEnumerable<PointL> pointIs =
                 from point in points
                 let x = (int)Math.Ceiling(point.X)
                 let y = (int)Math.Ceiling(point.Y)
-                select new System.Drawing.Point(x, y);
+                select new PointL(x, y);
 
             PolygonL polygonL = new PolygonL(pointIs);
             Polygon polygon = new Polygon
             {
-                Fill = Brushes.Transparent,
-                Stroke = new SolidColorBrush(this.Color!.Value),
+                Fill = new SolidColorBrush(this.FillColor!.Value),
+                Stroke = new SolidColorBrush(this.BorderColor!.Value),
                 StrokeThickness = this.Thickness!.Value,
                 Points = points,
                 RenderTransform = canvas.MatrixTransform,
@@ -1350,7 +1470,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 canvas.Children.Remove(anchor);
             }
-            this._polyPoints.Clear();
             this._polyAnchors.Clear();
         }
         #endregion
@@ -1362,18 +1481,19 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         private void DrawPolyline(CanvasEx canvas)
         {
             //构建点集
-            PointCollection points = new PointCollection(this._polyPoints);
-            IEnumerable<System.Drawing.Point> pointIs =
+            IEnumerable<Point> point2ds = this._polyAnchors.Select(point => new Point(point.X, point.Y));
+            PointCollection points = new PointCollection(point2ds);
+            IEnumerable<PointL> pointIs =
                 from point in points
                 let x = (int)Math.Ceiling(point.X)
                 let y = (int)Math.Ceiling(point.Y)
-                select new System.Drawing.Point(x, y);
+                select new PointL(x, y);
 
             PolylineL polylineL = new PolylineL(pointIs);
             Polyline polyline = new Polyline
             {
-                Fill = Brushes.Transparent,
-                Stroke = new SolidColorBrush(this.Color!.Value),
+                Fill = new SolidColorBrush(this.FillColor!.Value),
+                Stroke = new SolidColorBrush(this.BorderColor!.Value),
                 StrokeThickness = this.Thickness!.Value,
                 Points = points,
                 RenderTransform = canvas.MatrixTransform,
@@ -1390,7 +1510,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 canvas.Children.Remove(anchor);
             }
-            this._polyPoints.Clear();
             this._polyAnchors.Clear();
         }
         #endregion

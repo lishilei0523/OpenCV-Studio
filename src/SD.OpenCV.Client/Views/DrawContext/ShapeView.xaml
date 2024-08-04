@@ -49,6 +49,10 @@
                               cm:Message.Attach="OnResizeClick()">
                     <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
                 </ToggleButton>
+                <ToggleButton ToolTip="点" IsChecked="{Binding PointChecked}" 
+                              cm:Message.Attach="OnPointClick()">
+                    <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
+                </ToggleButton>
                 <ToggleButton ToolTip="线段" IsChecked="{Binding LineChecked}" 
                               cm:Message.Attach="OnLineClick()">
                     <iconPacks:PackIconMaterialDesign Kind="Remove" />
@@ -110,14 +114,17 @@
                 <!--参数&结果-->
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="210"/>
+                        <RowDefinition Height="255"/>
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <!--绘制设置-->
                     <GroupBox Grid.Row="0" Header="绘制参数" Margin="2,4,4,2">
                         <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
-                            <sd:FormItem Label="颜色：">
-                                <mah:ColorPicker SelectedColor="{Binding Color}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
+                            <sd:FormItem Label="填充：">
+                                <mah:ColorPicker SelectedColor="{Binding FillColor}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
+                            </sd:FormItem>
+                            <sd:FormItem Label="边框：">
+                                <mah:ColorPicker SelectedColor="{Binding BorderColor}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
                             </sd:FormItem>
                             <sd:FormItem Label="粗细：">
                                 <TextBox Text="{Binding Thickness, UpdateSourceTrigger=PropertyChanged}" 
