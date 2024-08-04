@@ -239,6 +239,49 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # GrabCut分割 —— static Mat GrabCutSegment(this Mat matrix, Rect rectangle...
+        /// <summary>
+        /// GrabCut分割
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="rectangle">矩形</param>
+        /// <param name="mask">掩膜</param>
+        /// <param name="iterationsCount">迭代次数</param>
+        /// <returns>结果图像</returns>
+        public static unsafe Mat GrabCutSegment(this Mat matrix, Rect rectangle, out Mat mask, int iterationsCount = 5)
+        {
+            using Mat background = new Mat();
+            using Mat foreground = new Mat();
+            Mat innerMask = new Mat();
+            Cv2.GrabCut(matrix, innerMask, rectangle, background, foreground, 5, GrabCutModes.InitWithRect);
+
+            //将分割出的前景绘制回来
+            innerMask.ForEachAsByte((valuePtr, positionPtr) =>
+            {
+                int rowIndex = positionPtr[0];
+                int colIndex = positionPtr[1];
+                byte value = *valuePtr;
+
+                //将明显是前景和可能是前景的区域都保留
+                if (value == 1 || value == 3)
+                {
+                    innerMask.At<byte>(rowIndex, colIndex) = byte.MaxValue;
+                }
+                //将明显是背景和可能是背景的区域都删除
+                else
+                {
+                    innerMask.At<byte>(rowIndex, colIndex) = 0;
+                }
+            });
+
+            mask = innerMask;
+            Mat result = new Mat();
+            Cv2.BitwiseAnd(matrix, matrix, result, mask);
+
+            return result;
+        }
+        #endregion
+
         #region # 滑动窗口 —— static void SlideWindow(this Mat matrix, int windowWidth, int windowHeight...
         /// <summary>
         /// 滑动窗口

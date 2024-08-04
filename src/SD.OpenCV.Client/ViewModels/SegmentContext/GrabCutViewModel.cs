@@ -6,6 +6,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.Constants;
 using SD.Infrastructure.WPF.CustomControls;
+using SD.OpenCV.Primitives.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -212,35 +213,10 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             this.Busy();
 
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
-            using Mat background = new Mat();
-            using Mat foreground = new Mat();
-            using Mat mask = new Mat();
-            await Task.Run(() => Cv2.GrabCut(this.Image, mask, rect, background, foreground, 5, GrabCutModes.InitWithRect));
-
-            //将分割出的前景绘制回来
-            for (int rowIndex = 0; rowIndex < mask.Rows; rowIndex++)
-            {
-                for (int colIndex = 0; colIndex < mask.Cols; colIndex++)
-                {
-                    byte value = mask.At<byte>(rowIndex, colIndex);
-
-                    //将明显是前景和可能是前景的区域都保留
-                    if (value == 1 || value == 3)
-                    {
-                        mask.At<byte>(rowIndex, colIndex) = byte.MaxValue;
-                    }
-                    //将明显是背景和可能是背景的区域都删除
-                    else
-                    {
-                        mask.At<byte>(rowIndex, colIndex) = 0;
-                    }
-                }
-            }
-
-            using Mat result = new Mat();
-            Cv2.BitwiseAnd(this.Image, this.Image, result, mask);
-            this.Image.Rectangle(rect, Scalar.Red, 2);
+            Mat mask = null;
+            using Mat result = await Task.Run(() => this.Image.GrabCutSegment(rect, out mask));
             this.BitmapSource = result.ToBitmapSource();
+            mask?.Dispose();
 
             this.Idle();
 
