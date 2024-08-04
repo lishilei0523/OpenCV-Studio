@@ -626,8 +626,27 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void MakeMask()
         {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MaskViewModel viewModel = ResolveMediator.Resolve<MaskViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
         }
         #endregion
 

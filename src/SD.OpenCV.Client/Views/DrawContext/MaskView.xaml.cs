@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.DrawContext
 {
     /// <summary>
-    /// 绘制形状视图
+    /// 制作掩膜视图
     /// </summary>
-    public partial class ShapeView
+    public partial class MaskView
     {
-        public ShapeView()
+        public MaskView()
         {
             this.InitializeComponent();
         }

@@ -29,9 +29,9 @@ using Rectangle = System.Windows.Shapes.Rectangle;
 namespace SD.OpenCV.Client.ViewModels.DrawContext
 {
     /// <summary>
-    /// 绘制形状视图模型
+    /// 制作掩膜视图模型
     /// </summary>
-    public class ShapeViewModel : ScreenBase
+    public class MaskViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -73,7 +73,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ShapeViewModel(IWindowManager windowManager)
+        public MaskViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
