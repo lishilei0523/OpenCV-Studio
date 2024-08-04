@@ -1653,11 +1653,52 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 形状分割 —— async void ShapeSegment()
+        #region 矩形分割 —— async void RectangleSegment()
         /// <summary>
-        /// 形状分割
+        /// 矩形分割
         /// </summary>
-        public async void ShapeSegment()
+        public async void RectangleSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 圆形分割 —— async void CircleSegment()
+        /// <summary>
+        /// 圆形分割
+        /// </summary>
+        public async void CircleSegment()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
+        #region 轮廓分割 —— async void ContourSegment()
+        /// <summary>
+        /// 轮廓分割
+        /// </summary>
+        public async void ContourSegment()
         {
             //TODO 实现
             MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
@@ -2258,7 +2299,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            HoughContext.CircleViewModel viewModel = ResolveMediator.Resolve<HoughContext.CircleViewModel>();
+            CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {

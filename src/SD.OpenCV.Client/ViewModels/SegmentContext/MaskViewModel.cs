@@ -19,11 +19,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Color = System.Windows.Media.Color;
-using Colors = System.Windows.Media.Colors;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
-using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace SD.OpenCV.Client.ViewModels.SegmentContext
 {
