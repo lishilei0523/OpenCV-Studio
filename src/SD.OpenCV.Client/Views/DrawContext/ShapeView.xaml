@@ -22,54 +22,50 @@
             <!--Footer-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Grid  Grid.Row="0">
-            <Grid.Resources>
-                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource SystemBaseMediumColorBrush}" />
-                            <Setter Property="Foreground" Value="White" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Resources>
+        <Grid Grid.Row="0">
             <WrapPanel Margin="4,0,0,0" VerticalAlignment="Center">
                 <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnScaleClick()">
                     <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
                 </ToggleButton>
                 <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnDragClick()">
                     <iconPacks:PackIconMaterialDesign Kind="Navigation" />
                 </ToggleButton>
                 <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnResizeClick()">
                     <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
                 </ToggleButton>
                 <ToggleButton ToolTip="点" IsChecked="{Binding PointChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnPointClick()">
                     <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
                 </ToggleButton>
                 <ToggleButton ToolTip="线段" IsChecked="{Binding LineChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnLineClick()">
                     <iconPacks:PackIconMaterialDesign Kind="Remove" />
                 </ToggleButton>
                 <ToggleButton ToolTip="画刷" IsChecked="{Binding BrushChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnBrushClick()">
                     <iconPacks:PackIconMaterialDesign Kind="Brush" />
                 </ToggleButton>
                 <ToggleButton ToolTip="矩形" IsChecked="{Binding RectangleChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnRectangleClick()">
                     <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
                 </ToggleButton>
                 <ToggleButton ToolTip="圆形" IsChecked="{Binding CircleChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnCircleClick()">
                     <iconPacks:PackIconMaterialDesign Kind="PanoramaFishEye" />
                 </ToggleButton>
                 <ToggleButton ToolTip="椭圆形" IsChecked="{Binding EllipseChecked}"
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnEllipseClick()">
                     <iconPacks:PackIconMaterialDesign Kind="PanoramaFishEye">
                         <iconPacks:PackIconMaterialDesign.RenderTransform>
@@ -78,10 +74,12 @@
                     </iconPacks:PackIconMaterialDesign>
                 </ToggleButton>
                 <ToggleButton ToolTip="多边形" IsChecked="{Binding PolygonChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnPolygonClick()">
                     <iconPacks:PackIconMaterialDesign Kind="StarBorder" />
                 </ToggleButton>
                 <ToggleButton ToolTip="折线段" IsChecked="{Binding PolylineChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnPolylineClick()">
                     <iconPacks:PackIconMaterialDesign Kind="Timeline" />
                 </ToggleButton>

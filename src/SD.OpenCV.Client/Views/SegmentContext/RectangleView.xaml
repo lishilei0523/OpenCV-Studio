@@ -32,42 +32,52 @@
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Grid.Resources>
-                <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource SystemBaseMediumColorBrush}" />
-                            <Setter Property="Foreground" Value="White" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Resources>
-            <WrapPanel Margin="4,0,0,0" VerticalAlignment="Center">
-                <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
-                              cm:Message.Attach="OnScaleClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
-                </ToggleButton>
-                <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
-                              cm:Message.Attach="OnDragClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="Navigation" />
-                </ToggleButton>
-                <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
-                              cm:Message.Attach="OnResizeClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
-                </ToggleButton>
-                <ToggleButton ToolTip="矩形" IsChecked="{Binding RectangleChecked}" 
-                              cm:Message.Attach="OnRectangleClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
-                </ToggleButton>
-            </WrapPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
+                    <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}"
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                                  cm:Message.Attach="OnScaleClick()">
+                        <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
+                    </ToggleButton>
+                    <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                                  cm:Message.Attach="OnDragClick()">
+                        <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                    </ToggleButton>
+                    <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                                  cm:Message.Attach="OnResizeClick()">
+                        <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
+                    </ToggleButton>
+                    <ToggleButton ToolTip="矩形" IsChecked="{Binding RectangleChecked}" 
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                                  cm:Message.Attach="OnRectangleClick()">
+                        <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
+                    </ToggleButton>
+                </WrapPanel>
+                <WrapPanel Grid.Column="1" Margin="0,0,4,0" VerticalAlignment="Center">
+                    <TextBlock Text="X: " />
+                    <TextBlock Text="{Binding RectangleL.X}" />
+                    <TextBlock Text=" | " />
+                    <TextBlock Text="Y: " />
+                    <TextBlock Text="{Binding RectangleL.Y}" />
+                    <TextBlock Text=" | " />
+                    <TextBlock Text="Width: " />
+                    <TextBlock Text="{Binding RectangleL.Width}" />
+                    <TextBlock Text=" | " />
+                    <TextBlock Text="Height: " />
+                    <TextBlock Text="{Binding RectangleL.Height}" />
+                </WrapPanel>
+            </Grid>
         </Grid>
         <!--Body-->
         <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <!--图像画布-->
-            <GroupBox Header="{Binding RectangleL.Text}" Margin="4,4,2,4" Background="LightGray">
+            <GroupBox Header="图像画布" Margin="4,4,4,4" Background="LightGray">
                 <sd:CanvasEx Mode="{Binding CanvasMode}" cm:Message.Attach="
                              [Event ElementDrag] = [Action OnDragElement($source)];
                              [Event ElementResize] = [Action OnResizeElement($source)];
