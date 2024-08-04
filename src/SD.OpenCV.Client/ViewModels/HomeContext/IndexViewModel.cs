@@ -18,6 +18,7 @@ using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
+using SD.OpenCV.Client.ViewModels.HoughContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -589,129 +590,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //绘制
 
-        #region 绘制线段 —— async void DrawLine()
+        #region 绘制形状 —— async void DrawShapes()
         /// <summary>
-        /// 绘制线段
-        /// </summary>
-        public async void DrawLine()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            DrawContext.LineViewModel viewModel = ResolveMediator.Resolve<DrawContext.LineViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 绘制矩形 —— async void DrawRectangle()
-        /// <summary>
-        /// 绘制矩形
-        /// </summary>
-        public async void DrawRectangle()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 绘制圆形 —— async void DrawCircle()
-        /// <summary>
-        /// 绘制圆形
-        /// </summary>
-        public async void DrawCircle()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            DrawContext.CircleViewModel viewModel = ResolveMediator.Resolve<DrawContext.CircleViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 绘制轮廓 —— async void DrawContour()
-        /// <summary>
-        /// 绘制轮廓
-        /// </summary>
-        public async void DrawContour()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            DrawContext.ContourViewModel viewModel = ResolveMediator.Resolve<DrawContext.ContourViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 绘制图形 —— async void DrawShapes()
-        /// <summary>
-        /// 绘制图形
+        /// 绘制形状
         /// </summary>
         public async void DrawShapes()
         {
@@ -727,7 +608,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            DrawContext.ShapeViewModel viewModel = ResolveMediator.Resolve<DrawContext.ShapeViewModel>();
+            ShapeViewModel viewModel = ResolveMediator.Resolve<ShapeViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
@@ -739,25 +620,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-
-        //掩膜
-
-        #region 适用矩形掩膜 —— async void ApplyRectangleMask()
+        #region 制作掩膜 —— async void MakeMask()
         /// <summary>
-        /// 适用矩形掩膜
+        /// 制作掩膜
         /// </summary>
-        public async void ApplyRectangleMask()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
-        }
-        #endregion
-
-        #region 适用轮廓掩膜 —— async void ApplyContourMask()
-        /// <summary>
-        /// 适用轮廓掩膜
-        /// </summary>
-        public async void ApplyContourMask()
+        public async void MakeMask()
         {
             //TODO 实现
             MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
@@ -1767,22 +1634,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 矩形分割 —— async void RectangleSegment()
+        #region 形状分割 —— async void ShapeSegment()
         /// <summary>
-        /// 矩形分割
+        /// 形状分割
         /// </summary>
-        public async void RectangleSegment()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
-        }
-        #endregion
-
-        #region 轮廓分割 —— async void ContourSegment()
-        /// <summary>
-        /// 轮廓分割
-        /// </summary>
-        public async void ContourSegment()
+        public async void ShapeSegment()
         {
             //TODO 实现
             MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
@@ -2317,7 +2173,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            HoughContext.LineViewModel viewModel = ResolveMediator.Resolve<HoughContext.LineViewModel>();
+            LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
