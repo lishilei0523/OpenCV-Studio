@@ -1683,28 +1683,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 圆形分割 —— async void CircleSegment()
-        /// <summary>
-        /// 圆形分割
-        /// </summary>
-        public async void CircleSegment()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
-        }
-        #endregion
-
-        #region 轮廓分割 —— async void ContourSegment()
-        /// <summary>
-        /// 轮廓分割
-        /// </summary>
-        public async void ContourSegment()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
-        }
-        #endregion
-
         #region 掩膜分割 —— async void MaskSegment()
         /// <summary>
         /// 掩膜分割
@@ -1724,6 +1702,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region GrabCut分割 —— async void GrabCutSegment()
+        /// <summary>
+        /// GrabCut分割
+        /// </summary>
+        public async void GrabCutSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GrabCutViewModel viewModel = ResolveMediator.Resolve<GrabCutViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)

@@ -95,9 +95,8 @@
                     <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
                     <MenuItem Header="颜色分割(_H)" cm:Message.Attach="ColorSegment()" />
                     <MenuItem Header="矩形分割(_R)" cm:Message.Attach="RectangleSegment()" />
-                    <MenuItem Header="圆形分割(_C)" cm:Message.Attach="CircleSegment()" />
-                    <MenuItem Header="轮廓分割(_P)" cm:Message.Attach="ContourSegment()" />
                     <MenuItem Header="掩膜分割(_M)" cm:Message.Attach="MaskSegment()" />
+                    <MenuItem Header="GrabCut分割(_G)" cm:Message.Attach="GrabCutSegment()" />
                 </MenuItem>
                 <MenuItem Header="图像矫正(_R)">
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
