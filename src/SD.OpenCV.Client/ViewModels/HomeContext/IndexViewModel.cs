@@ -620,11 +620,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 制作掩膜 —— async void MakeMask()
+        #region 绘制掩膜 —— async void DrawMask()
         /// <summary>
-        /// 制作掩膜
+        /// 绘制掩膜
         /// </summary>
-        public async void MakeMask()
+        public async void DrawMask()
         {
             #region # 验证
 
@@ -1658,6 +1658,17 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// 形状分割
         /// </summary>
         public async void ShapeSegment()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+        }
+        #endregion
+
+        #region 掩膜分割 —— async void MaskSegment()
+        /// <summary>
+        /// 掩膜分割
+        /// </summary>
+        public async void MaskSegment()
         {
             //TODO 实现
             MessageBox.Show("未实现", "错误", MessageBoxButton.OK);

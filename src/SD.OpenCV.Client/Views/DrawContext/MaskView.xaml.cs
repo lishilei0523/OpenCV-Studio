@@ -1,7 +1,7 @@
 ﻿namespace SD.OpenCV.Client.Views.DrawContext
 {
     /// <summary>
-    /// 制作掩膜视图
+    /// 绘制掩膜视图
     /// </summary>
     public partial class MaskView
     {

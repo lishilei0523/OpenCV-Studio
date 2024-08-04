@@ -53,7 +53,7 @@
                 </MenuItem>
                 <MenuItem Header="绘制(_P)">
                     <MenuItem Header="绘制形状(_S)" cm:Message.Attach="DrawShapes()" />
-                    <MenuItem Header="制作掩膜(_M)" cm:Message.Attach="MakeMask()" />
+                    <MenuItem Header="绘制掩膜(_M)" cm:Message.Attach="DrawMask()" />
                 </MenuItem>
                 <MenuItem Header="形态学(_M)">
                     <MenuItem Header="腐蚀(_E)" cm:Message.Attach="MorphErode()" />
@@ -95,6 +95,7 @@
                     <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
                     <MenuItem Header="颜色分割(_C)" cm:Message.Attach="ColorSegment()" />
                     <MenuItem Header="形状分割(_S)" cm:Message.Attach="ShapeSegment()" />
+                    <MenuItem Header="掩膜分割(_M)" cm:Message.Attach="MaskSegment()" />
                 </MenuItem>
                 <MenuItem Header="图像矫正(_R)">
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
