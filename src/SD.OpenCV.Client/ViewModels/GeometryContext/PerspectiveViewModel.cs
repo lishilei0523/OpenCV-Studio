@@ -268,6 +268,18 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         }
         #endregion
 
+        #region 透视绘制 —— async void PerspectiveDraw()
+        /// <summary>
+        /// 透视绘制
+        /// </summary>
+        public async void PerspectiveDraw()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+        #endregion
+
 
         //Events
 
