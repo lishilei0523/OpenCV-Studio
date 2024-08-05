@@ -4,8 +4,8 @@ using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.Constants;
 using SD.Infrastructure.WPF.CustomControls;
+using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using System;
@@ -1240,7 +1240,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 Y = rectifiedVertex.Y,
                 Fill = new SolidColorBrush(Colors.Black),
                 Stroke = new SolidColorBrush(this.BorderColor!.Value),
-                StrokeThickness = this.Thickness!.Value,
                 RenderTransform = canvas.MatrixTransform,
                 Tag = pointL
             };
