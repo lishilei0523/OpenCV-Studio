@@ -2217,8 +2217,12 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void PerspectiveTransform()
         {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+            this.Busy();
+
+            PerspectiveViewModel viewModel = ResolveMediator.Resolve<PerspectiveViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
