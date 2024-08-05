@@ -111,6 +111,14 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         public bool TargetPointChecked { get; set; }
         #endregion
 
+        #region 透视变换矩阵 —— Mat PerspectiveMatrix
+        /// <summary>
+        /// 透视变换矩阵
+        /// </summary>
+        [DependencyProperty]
+        public Mat PerspectiveMatrix { get; set; }
+        #endregion
+
         #region 参考点集 —— ObservableCollection<PointVisual2D> SourcePoints
         /// <summary>
         /// 参考点集
@@ -246,11 +254,11 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
 
             IEnumerable<Point2f> sourcePoints = this.SourcePointLs.Select(point => new Point2f(point.X, point.Y));
             IEnumerable<Point2f> targetPoints = this.TargetPointLs.Select(point => new Point2f(point.X, point.Y));
-            using Mat perspectiveMatrix = await Task.Run(() => Cv2.GetPerspectiveTransform(targetPoints, sourcePoints));
+            this.PerspectiveMatrix = await Task.Run(() => Cv2.GetPerspectiveTransform(targetPoints, sourcePoints));
 
             using Mat targetImage = this.TargetImage.ToMat();
             using Mat resultImage = new Mat();
-            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, perspectiveMatrix, targetImage.Size()));
+            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, targetImage.Size()));
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(resultImage.ToBitmapSource());
@@ -392,6 +400,20 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
             {
                 this.DrawTargetPoint(canvas);
             }
+        }
+        #endregion
+
+        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
+        /// <summary>
+        /// 页面失活事件
+        /// </summary>
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (close)
+            {
+                this.PerspectiveMatrix?.Dispose();
+            }
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 
