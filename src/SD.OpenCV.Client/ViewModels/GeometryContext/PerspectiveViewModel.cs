@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Point = System.Windows.Point;
+using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.GeometryContext
 {
@@ -258,7 +259,8 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
 
             using Mat targetImage = this.TargetImage.ToMat();
             using Mat resultImage = new Mat();
-            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, targetImage.Size()));
+            Size size = new Size(this.SourceImage.Width, this.SourceImage.Height);
+            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, size));
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(resultImage.ToBitmapSource());
