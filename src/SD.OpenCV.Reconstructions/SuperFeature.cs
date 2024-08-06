@@ -107,8 +107,7 @@ namespace SD.OpenCV.Reconstructions
             }
             else
             {
-                grayImage = new Mat();
-                Cv2.CvtColor(image, grayImage, ColorConversionCodes.BGR2GRAY);
+                grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
                 needDispose = true;
             }
             if (mask != null)

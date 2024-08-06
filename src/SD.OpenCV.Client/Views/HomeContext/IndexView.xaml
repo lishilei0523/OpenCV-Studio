@@ -41,6 +41,7 @@
                 </MenuItem>
                 <MenuItem Header="颜色空间(_V)">
                     <MenuItem Header="灰度空间(_G)" cm:Message.Attach="ConvertGray()" />
+                    <MenuItem Header="BGR色彩空间(_B)" cm:Message.Attach="ConvertBGR()" />
                     <MenuItem Header="HSV色彩空间(_H)" cm:Message.Attach="ConvertHSV()" />
                     <MenuItem Header="HLS色彩空间(_S)" cm:Message.Attach="ConvertHLS()" />
                     <MenuItem Header="Lab色彩空间(_A)" cm:Message.Attach="ConvertLab()" />

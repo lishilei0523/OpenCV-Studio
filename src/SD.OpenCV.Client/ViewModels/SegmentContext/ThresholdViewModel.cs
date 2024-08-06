@@ -111,10 +111,8 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            using Mat colorImage = bitmapSource.ToMat();
-            this.Image = new Mat();
-            Cv2.CvtColor(colorImage, this.Image, ColorConversionCodes.BGR2GRAY);
-            this.BitmapSource = this.Image.ToBitmapSource();
+            this.Image = bitmapSource.ToMat();
+            this.BitmapSource = bitmapSource;
         }
         #endregion
 
