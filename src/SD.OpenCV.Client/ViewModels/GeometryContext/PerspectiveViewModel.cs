@@ -238,9 +238,19 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
                 MessageBox.Show("参考点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.SourcePointLs.Count < 4)
+            {
+                MessageBox.Show("参考点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             if (!this.TargetPointLs.Any())
             {
                 MessageBox.Show("目标点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.TargetPointLs.Count < 4)
+            {
+                MessageBox.Show("目标点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.SourcePointLs.Count != this.TargetPointLs.Count)
