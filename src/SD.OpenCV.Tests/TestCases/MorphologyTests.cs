@@ -122,9 +122,9 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
-        #region # 测试击中与否运算 —— void TestHitMiss()
+        #region # 测试击否运算 —— void TestHitMiss()
         /// <summary>
-        /// 测试击中与否运算
+        /// 测试击否运算
         /// </summary>
         [TestMethod]
         public void TestHitMiss()
@@ -132,8 +132,8 @@ namespace SD.OpenCV.Tests.TestCases
             using Mat matrix = Cv2.ImRead("Content/Images/Lena.jpg", ImreadModes.Grayscale);
             using Mat result = matrix.MorphHitMiss();
 
-            Cv2.ImShow("OpenCV击中与否运算-原图", matrix);
-            Cv2.ImShow("OpenCV击中与否运算-效果图", result);
+            Cv2.ImShow("OpenCV击否运算-原图", matrix);
+            Cv2.ImShow("OpenCV击否运算-效果图", result);
             Cv2.WaitKey();
         }
         #endregion

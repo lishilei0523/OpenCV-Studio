@@ -151,12 +151,9 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
 
             this.Busy();
 
-            using Mat image = this.BitmapSource.ToMat();
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
-            using Mat mask = image.GenerateMask(rect);
-
-            using Mat result = new Mat();
-            await Task.Run(() => Cv2.Inpaint(image, mask, result, 5, InpaintMethod.Telea));
+            using Mat image = this.BitmapSource.ToMat();
+            using Mat result = await Task.Run(() => image.Inpaint(rect));
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();

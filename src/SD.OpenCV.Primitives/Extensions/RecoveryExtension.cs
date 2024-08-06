@@ -36,14 +36,14 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 修复图像 —— static Mat Inpainte(this Mat matrix, Rect rectangle)
+        #region # 修复图像 —— static Mat Inpaint(this Mat matrix, Rect rectangle)
         /// <summary>
         /// 修复图像
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="rectangle">修复区域</param>
         /// <returns>修复后图像矩阵</returns>
-        public static Mat Inpainte(this Mat matrix, Rect rectangle)
+        public static Mat Inpaint(this Mat matrix, Rect rectangle)
         {
             //定义掩膜
             using Mat mask = matrix.GenerateMask(rectangle);
@@ -56,14 +56,14 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 修复图像 —— static Mat Inpainte(this Mat matrix, IEnumerable<Point> contourPoints)
+        #region # 修复图像 —— static Mat Inpaint(this Mat matrix, IEnumerable<Point> contourPoints)
         /// <summary>
         /// 修复图像
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="contourPoints">轮廓坐标点集</param>
         /// <returns>修复后图像矩阵</returns>
-        public static Mat Inpainte(this Mat matrix, IEnumerable<Point> contourPoints)
+        public static Mat Inpaint(this Mat matrix, IEnumerable<Point> contourPoints)
         {
             //定义掩膜
             using Mat mask = matrix.GenerateMask(contourPoints);

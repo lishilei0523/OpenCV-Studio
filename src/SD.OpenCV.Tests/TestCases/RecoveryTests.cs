@@ -39,7 +39,7 @@ namespace SD.OpenCV.Tests.TestCases
         {
             using Mat matrix = Cv2.ImRead("Content/Images/Lena.jpg");
             Rect rectangle = new Rect(0, 0, 120, 160);
-            using Mat result = matrix.Inpainte(rectangle);
+            using Mat result = matrix.Inpaint(rectangle);
 
             Cv2.ImShow("OpenCV修复图像-原图", matrix);
             Cv2.ImShow("OpenCV修复图像-效果图", result);
