@@ -1562,43 +1562,13 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //图像分割
+        //直方图
 
-        #region 阈值分割 —— async void ThresholdSegment()
+        #region 查看灰度直方图 —— async void LookHistogram()
         /// <summary>
-        /// 阈值分割
+        /// 查看灰度直方图
         /// </summary>
-        public async void ThresholdSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ThresholdViewModel viewModel = ResolveMediator.Resolve<ThresholdViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
-        /// <summary>
-        /// Otsu阈值分割
-        /// </summary>
-        public async void OtsuThresholdSegment()
+        public async void LookHistogram()
         {
             #region # 验证
 
@@ -1614,20 +1584,22 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             using Mat colorImage = this.EffectiveImage.ToMat();
             using Mat grayImage = new Mat();
-            using Mat result = new Mat();
             await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
-            await Task.Run(() => Cv2.Threshold(grayImage, result, 0, 255, ThresholdTypes.Otsu));
-            this.EffectiveImage = result.ToBitmapSource();
+            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 800));
+            BitmapSource bitmapSource = histImage.ToBitmapSource();
+            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
+            viewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }
         #endregion
 
-        #region 颜色分割 —— async void ColorSegment()
+        #region 直方图均衡化 —— async void EqualizeHist()
         /// <summary>
-        /// 颜色分割
+        /// 直方图均衡化
         /// </summary>
-        public async void ColorSegment()
+        public async void EqualizeHist()
         {
             #region # 验证
 
@@ -1641,116 +1613,24 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
-            viewModel.Load(this.EffectiveImage);
+            EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                this.EffectiveImage = viewModel.BitmapSource;
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
             }
 
             this.Idle();
         }
         #endregion
 
-        #region 矩形分割 —— async void RectangleSegment()
+        #region 直方图规定化 —— async void SpecifyHist()
         /// <summary>
-        /// 矩形分割
+        /// 直方图规定化
         /// </summary>
-        public async void RectangleSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 掩膜分割 —— async void MaskSegment()
-        /// <summary>
-        /// 掩膜分割
-        /// </summary>
-        public async void MaskSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region GrabCut分割 —— async void GrabCutSegment()
-        /// <summary>
-        /// GrabCut分割
-        /// </summary>
-        public async void GrabCutSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            GrabCutViewModel viewModel = ResolveMediator.Resolve<GrabCutViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //图像矫正
-
-        #region 矫正畸变 —— async void RectifyDistortions()
-        /// <summary>
-        /// 矫正畸变
-        /// </summary>
-        public async void RectifyDistortions()
+        public async void SpecifyHist()
         {
             #region # 验证
 
@@ -1764,43 +1644,21 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "(*.cins)|*.cins",
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
                 AddExtension = true,
                 RestoreDirectory = true
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                #region # 验证
-
-                if (string.IsNullOrWhiteSpace(openFileDialog.FileName))
-                {
-                    MessageBox.Show("未选择相机内参！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                #endregion
-
                 this.Busy();
 
-                string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
-                CameraIntrinsics cameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
-                using Mat colorImage = this.EffectiveImage.ToMat();
-                using Mat rectifiedImage = await Task.Run(() => colorImage.RectifyDistortions(cameraIntrinsics));
-                this.EffectiveImage = rectifiedImage.ToBitmapSource();
+                using Mat referenceImage = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = await Task.Run(() => image.SpecifyHist(referenceImage));
+                this.EffectiveImage = resultImage.ToBitmapSource();
 
                 this.Idle();
             }
-        }
-        #endregion
-
-        #region 矫正位姿 —— async void RectifyPose()
-        /// <summary>
-        /// 矫正位姿
-        /// </summary>
-        public async void RectifyPose()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
         }
         #endregion
 
@@ -2341,13 +2199,43 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //直方图
+        //分割
 
-        #region 查看灰度直方图 —— async void LookHistogram()
+        #region 阈值分割 —— async void ThresholdSegment()
         /// <summary>
-        /// 查看灰度直方图
+        /// 阈值分割
         /// </summary>
-        public async void LookHistogram()
+        public async void ThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ThresholdViewModel viewModel = ResolveMediator.Resolve<ThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
+        /// <summary>
+        /// Otsu阈值分割
+        /// </summary>
+        public async void OtsuThresholdSegment()
         {
             #region # 验证
 
@@ -2363,22 +2251,20 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             using Mat colorImage = this.EffectiveImage.ToMat();
             using Mat grayImage = new Mat();
+            using Mat result = new Mat();
             await Task.Run(() => Cv2.CvtColor(colorImage, grayImage, ColorConversionCodes.BGR2GRAY));
-            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 800));
-            BitmapSource bitmapSource = histImage.ToBitmapSource();
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(bitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
+            await Task.Run(() => Cv2.Threshold(grayImage, result, 0, 255, ThresholdTypes.Otsu));
+            this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();
         }
         #endregion
 
-        #region 直方图均衡化 —— async void EqualizeHist()
+        #region 颜色分割 —— async void ColorSegment()
         /// <summary>
-        /// 直方图均衡化
+        /// 颜色分割
         /// </summary>
-        public async void EqualizeHist()
+        public async void ColorSegment()
         {
             #region # 验证
 
@@ -2392,24 +2278,23 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
+            ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
         }
         #endregion
 
-        #region 直方图规定化 —— async void SpecifyHist()
+        #region 矩形分割 —— async void RectangleSegment()
         /// <summary>
-        /// 直方图规定化
+        /// 矩形分割
         /// </summary>
-        public async void SpecifyHist()
+        public async void RectangleSegment()
         {
             #region # 验证
 
@@ -2421,23 +2306,77 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             #endregion
 
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
-                AddExtension = true,
-                RestoreDirectory = true
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                this.Busy();
+            this.Busy();
 
-                using Mat referenceImage = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = await Task.Run(() => image.SpecifyHist(referenceImage));
-                this.EffectiveImage = resultImage.ToBitmapSource();
-
-                this.Idle();
+            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
             }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 掩膜分割 —— async void MaskSegment()
+        /// <summary>
+        /// 掩膜分割
+        /// </summary>
+        public async void MaskSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region GrabCut分割 —— async void GrabCutSegment()
+        /// <summary>
+        /// GrabCut分割
+        /// </summary>
+        public async void GrabCutSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GrabCutViewModel viewModel = ResolveMediator.Resolve<GrabCutViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
         }
         #endregion
 
@@ -2865,6 +2804,92 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             await this._windowManager.ShowWindowAsync(imageViewModel);
 
             this.Idle();
+        }
+        #endregion
+
+
+        //匹配
+
+        #region 模板匹配 —— async void TemplateMatch()
+        /// <summary>
+        /// 模板匹配
+        /// </summary>
+        public async void TemplateMatch()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        #endregion
+
+        #region 特征匹配 —— async void FeatureMatch()
+        /// <summary>
+        /// 特征匹配
+        /// </summary>
+        public async void FeatureMatch()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        #endregion
+
+
+        //矫正
+
+        #region 矫正畸变 —— async void RectifyDistortions()
+        /// <summary>
+        /// 矫正畸变
+        /// </summary>
+        public async void RectifyDistortions()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.cins)|*.cins",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                #region # 验证
+
+                if (string.IsNullOrWhiteSpace(openFileDialog.FileName))
+                {
+                    MessageBox.Show("未选择相机内参！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
+                this.Busy();
+
+                string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
+                CameraIntrinsics cameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
+                using Mat colorImage = this.EffectiveImage.ToMat();
+                using Mat rectifiedImage = await Task.Run(() => colorImage.RectifyDistortions(cameraIntrinsics));
+                this.EffectiveImage = rectifiedImage.ToBitmapSource();
+
+                this.Idle();
+            }
+        }
+        #endregion
+
+        #region 矫正位姿 —— async void RectifyPose()
+        /// <summary>
+        /// 矫正位姿
+        /// </summary>
+        public async void RectifyPose()
+        {
+            //TODO 实现
+            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         #endregion
 

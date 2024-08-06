@@ -90,17 +90,10 @@
                     <MenuItem Header="巴特沃斯带阻滤波(_M)" cm:Message.Attach="ButterworthBRBlur()" />
                     <MenuItem Header="巴特沃斯同态滤波(_N)" cm:Message.Attach="ButterworthHomoBlur()" />
                 </MenuItem>
-                <MenuItem Header="图像分割(_J)">
-                    <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
-                    <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
-                    <MenuItem Header="颜色分割(_H)" cm:Message.Attach="ColorSegment()" />
-                    <MenuItem Header="矩形分割(_R)" cm:Message.Attach="RectangleSegment()" />
-                    <MenuItem Header="掩膜分割(_M)" cm:Message.Attach="MaskSegment()" />
-                    <MenuItem Header="GrabCut分割(_G)" cm:Message.Attach="GrabCutSegment()" />
-                </MenuItem>
-                <MenuItem Header="图像矫正(_R)">
-                    <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
-                    <MenuItem Header="矫正位姿(_P)" cm:Message.Attach="RectifyPose()" />
+                <MenuItem Header="直方图(_D)">
+                    <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />
+                    <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
+                    <MenuItem Header="直方图规定化(_S)" cm:Message.Attach="SpecifyHist()" />
                 </MenuItem>
                 <MenuItem Header="边缘检测(_E)">
                     <MenuItem Header="Sobel边缘检测(_S)" cm:Message.Attach="ApplySobel()" />
@@ -127,10 +120,13 @@
                     <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="HoughFindLines()" />
                     <MenuItem Header="霍夫圆查找(_C)" cm:Message.Attach="HoughFindCircles()" />
                 </MenuItem>
-                <MenuItem Header="直方图(_D)">
-                    <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />
-                    <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
-                    <MenuItem Header="直方图规定化(_S)" cm:Message.Attach="SpecifyHist()" />
+                <MenuItem Header="分割(_J)">
+                    <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
+                    <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
+                    <MenuItem Header="颜色分割(_H)" cm:Message.Attach="ColorSegment()" />
+                    <MenuItem Header="矩形分割(_R)" cm:Message.Attach="RectangleSegment()" />
+                    <MenuItem Header="掩膜分割(_M)" cm:Message.Attach="MaskSegment()" />
+                    <MenuItem Header="GrabCut分割(_G)" cm:Message.Attach="GrabCutSegment()" />
                 </MenuItem>
                 <MenuItem Header="关键点(_K)">
                     <MenuItem Header="Harris关键点(_H)" cm:Message.Attach="DetectHarris()" />
@@ -146,6 +142,14 @@
                     <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
                     <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
                     <MenuItem Header="Super特征(_P)" cm:Message.Attach="ComputeSuper()" />
+                </MenuItem>
+                <MenuItem Header="匹配(_A)">
+                    <MenuItem Header="模板匹配(_T)" cm:Message.Attach="TemplateMatch()" />
+                    <MenuItem Header="特征匹配(_F)" cm:Message.Attach="FeatureMatch()" />
+                </MenuItem>
+                <MenuItem Header="矫正(_R)">
+                    <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
+                    <MenuItem Header="矫正位姿(_P)" cm:Message.Attach="RectifyPose()" />
                 </MenuItem>
                 <MenuItem Header="标定(_C)">
                     <MenuItem Header="单目标定(_I)" cm:Message.Attach="MonoCalibrate()" />
