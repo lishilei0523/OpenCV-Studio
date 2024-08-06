@@ -9,6 +9,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
                  Title="OpenCV Studio" 
+                 Icon="/favicon.ico"
                  Width="1440" Height="900" FontSize="14"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}"
