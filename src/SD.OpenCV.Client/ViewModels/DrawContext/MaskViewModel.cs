@@ -24,6 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
+using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.DrawContext
 {
@@ -109,13 +110,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         [DependencyProperty]
         public Visibility GridLinesVisibility { get; set; }
-        #endregion
-
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
         #endregion
 
         #region 图像源 —— BitmapSource BitmapSource
@@ -238,7 +232,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
             this.BitmapSource = bitmapSource;
         }
         #endregion
@@ -306,7 +299,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             this.Busy();
 
-            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+            Size maskSize = new Size(this.BitmapSource.Width, this.BitmapSource.Height);
+            using Mat mask = Mat.Zeros(maskSize, MatType.CV_8UC1);
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = -1;
@@ -1029,20 +1023,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.SelectedShapeL = null;
                 this.SelectedShapeL = shapeL;
             }
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

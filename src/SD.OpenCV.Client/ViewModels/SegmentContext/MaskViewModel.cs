@@ -111,13 +111,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public Visibility GridLinesVisibility { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
@@ -238,7 +231,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
             this.BitmapSource = bitmapSource;
         }
         #endregion
@@ -306,7 +298,8 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             this.Busy();
 
-            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+            using Mat image = this.BitmapSource.ToMat();
+            using Mat mask = Mat.Zeros(image.Size(), MatType.CV_8UC1);
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = -1;
@@ -345,7 +338,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             //提取有效区域
             using Mat result = new Mat();
-            this.Image.CopyTo(result, mask);
+            image.CopyTo(result, mask);
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();
@@ -1033,20 +1026,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 this.SelectedShapeL = null;
                 this.SelectedShapeL = shapeL;
             }
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

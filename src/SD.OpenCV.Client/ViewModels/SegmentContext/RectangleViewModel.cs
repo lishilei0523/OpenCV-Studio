@@ -67,13 +67,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public Visibility GridLinesVisibility { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
@@ -157,7 +150,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
             this.BitmapSource = bitmapSource;
         }
         #endregion
@@ -195,10 +187,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             //适用掩膜
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
-            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+            using Mat image = this.BitmapSource.ToMat();
+            using Mat mask = Mat.Zeros(image.Size(), MatType.CV_8UC1);
             mask.Rectangle(rect, Scalar.White, -1);
             using Mat canvas = new Mat();
-            this.Image.CopyTo(canvas, mask);
+            image.CopyTo(canvas, mask);
 
             //提取有效区域
             using Mat result = canvas[rect];
@@ -432,20 +425,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 Canvas.SetTop(this.Rectangle, rectifiedPosition.Y * canvas.ScaledRatio);
             }
             this.Rectangle.RenderTransform = canvas.MatrixTransform;
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

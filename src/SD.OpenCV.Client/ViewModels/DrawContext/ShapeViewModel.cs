@@ -121,13 +121,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         public Visibility GridLinesVisibility { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
@@ -280,7 +273,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
             this.BitmapSource = bitmapSource;
         }
         #endregion
@@ -348,6 +340,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             this.Busy();
 
+            using Mat image = this.BitmapSource.ToMat();
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = (int)Math.Ceiling(shape.StrokeThickness);
@@ -360,24 +353,24 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Scalar fillColor = new Scalar(fillBrush.Color.B, fillBrush.Color.G, fillBrush.Color.R, fillBrush.Color.A);
                     PointL pointL = (PointL)point.Tag;
                     int radius = (int)Math.Ceiling(point.Thickness);
-                    this.Image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness);    //空心圆
-                    this.Image.Circle(pointL.X, pointL.Y, radius - thickness, fillColor, -1); //实心圆
+                    image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness);    //空心圆
+                    image.Circle(pointL.X, pointL.Y, radius - thickness, fillColor, -1); //实心圆
                 }
                 if (shape is Line line)
                 {
                     LineL lineL = (LineL)line.Tag;
-                    this.Image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, borderColor, thickness);
+                    image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, borderColor, thickness);
                 }
                 if (shape is Rectangle rectangle)
                 {
                     RectangleL rectangleL = (RectangleL)rectangle.Tag;
                     Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
-                    this.Image.Rectangle(rect, borderColor, thickness);
+                    image.Rectangle(rect, borderColor, thickness);
                 }
                 if (shape is CircleVisual2D circle)
                 {
                     CircleL circleL = (CircleL)circle.Tag;
-                    this.Image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness);
+                    image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness);
                 }
                 if (shape is EllipseVisual2D ellipse)
                 {
@@ -385,7 +378,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
                     Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
                     RotatedRect rect = new RotatedRect(center, size, 0);
-                    this.Image.Ellipse(rect, borderColor, thickness);
+                    image.Ellipse(rect, borderColor, thickness);
                 }
                 if (shape is Polygon polygon)
                 {
@@ -397,7 +390,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                         PointL pointL = polygonL.Points.ElementAt(index);
                         contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    this.Image.DrawContours(new[] { contour }, -1, borderColor, thickness);
+                    image.DrawContours(new[] { contour }, -1, borderColor, thickness);
                 }
                 if (shape is Polyline polyline)
                 {
@@ -409,10 +402,10 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                         PointL pointL = polylineL.Points.ElementAt(index);
                         contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    this.Image.Polylines(new[] { contour }, false, borderColor, thickness);
+                    image.Polylines(new[] { contour }, false, borderColor, thickness);
                 }
             }
-            this.BitmapSource = this.Image.ToBitmapSource();
+            this.BitmapSource = image.ToBitmapSource();
 
             this.Idle();
 
@@ -1542,20 +1535,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 this.SelectedShapeL = null;
                 this.SelectedShapeL = shapeL;
             }
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 
