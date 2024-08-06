@@ -52,59 +52,12 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region 边框颜色 —— Color? BorderColor
-        /// <summary>
-        /// 边框颜色
-        /// </summary>
-        [DependencyProperty]
-        public Color? BorderColor { get; set; }
-        #endregion
-
-        #region 粗细 —— int? Thickness
-        /// <summary>
-        /// 粗细
-        /// </summary>
-        [DependencyProperty]
-        public int? Thickness { get; set; }
-        #endregion
-
-        #region 显示网格线 —— bool ShowGridLines
-        /// <summary>
-        /// 显示网格线
-        /// </summary>
-        [DependencyProperty]
-        public bool ShowGridLines { get; set; }
-        #endregion
-
-        #region 网格线可见性 —— Visibility GridLinesVisibility
-        /// <summary>
-        /// 网格线可见性
-        /// </summary>
-        [DependencyProperty]
-        public Visibility GridLinesVisibility { get; set; }
-        #endregion
-
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
         /// </summary>
         [DependencyProperty]
         public BitmapSource BitmapSource { get; set; }
-        #endregion
-
-        #region 选中缩放 —— bool ScaleChecked
-        /// <summary>
-        /// 选中缩放
-        /// </summary>
-        [DependencyProperty]
-        public bool ScaleChecked { get; set; }
         #endregion
 
         #region 选中拖拽 —— bool DragChecked
@@ -160,11 +113,8 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.BorderColor = Colors.Red;
-            this.Thickness = 2;
-            this.ShowGridLines = true;
-            this.GridLinesVisibility = Visibility.Visible;
-            this.ScaleChecked = true;
+            this.RectangleChecked = true;
+            this.OnRectangleClick();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -176,23 +126,12 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
             this.BitmapSource = bitmapSource;
         }
         #endregion
 
 
         //Actions
-
-        #region 切换显示网格线 —— void SwitchGridLines()
-        /// <summary>
-        /// 切换显示网格线
-        /// </summary>
-        public void SwitchGridLines()
-        {
-            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
-        }
-        #endregion
 
         #region 提交 —— async void Submit()
         /// <summary>
@@ -212,9 +151,10 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             this.Busy();
 
+            using Mat image = this.BitmapSource.ToMat();
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
             Mat mask = null;
-            using Mat result = await Task.Run(() => this.Image.GrabCutSegment(rect, out mask));
+            using Mat result = await Task.Run(() => image.GrabCutSegment(rect, out mask));
             this.BitmapSource = result.ToBitmapSource();
             mask?.Dispose();
 
@@ -227,23 +167,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
         //Events
 
-        #region 缩放点击事件 —— void OnScaleClick()
-        /// <summary>
-        /// 缩放点击事件
-        /// </summary>
-        public void OnScaleClick()
-        {
-            if (this.ScaleChecked)
-            {
-                this.CanvasMode = CanvasMode.Scale;
-
-                this.DragChecked = false;
-                this.ResizeChecked = false;
-                this.RectangleChecked = false;
-            }
-        }
-        #endregion
-
         #region 拖拽点击事件 —— void OnDragClick()
         /// <summary>
         /// 拖拽点击事件
@@ -254,7 +177,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Drag;
 
-                this.ScaleChecked = false;
                 this.ResizeChecked = false;
                 this.RectangleChecked = false;
             }
@@ -271,7 +193,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Resize;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.RectangleChecked = false;
             }
@@ -288,7 +209,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Draw;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
             }
@@ -361,26 +281,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
-        #region 绘制完成事件 —— void OnDrawn(CanvasEx canvas)
-        /// <summary>
-        /// 绘制完成事件
-        /// </summary>
-        public void OnDrawn(CanvasEx canvas)
-        {
-            if (this.Rectangle != null)
-            {
-                int x = (int)Math.Ceiling(canvas.GetRectifiedLeft(this.Rectangle));
-                int y = (int)Math.Ceiling(canvas.GetRectifiedTop(this.Rectangle));
-                int width = (int)Math.Ceiling(this.Rectangle.Width);
-                int height = (int)Math.Ceiling(this.Rectangle.Height);
-                this.RectangleL = new RectangleL(x, y, width, height);
-
-                this.Rectangle.Tag = this.RectangleL;
-                this.RectangleL.Tag = this.Rectangle;
-            }
-        }
-        #endregion
-
 
         //Private
 
@@ -398,7 +298,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             int width = (int)Math.Ceiling(rectangle.Width);
             int height = (int)Math.Ceiling(rectangle.Height);
             this.RectangleL = new RectangleL(x, y, width, height);
-            rectangle.Tag = this.RectangleL;
         }
         #endregion
 
@@ -413,8 +312,8 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 this.Rectangle = new Rectangle
                 {
                     Fill = new SolidColorBrush(Colors.Transparent),
-                    Stroke = new SolidColorBrush(this.BorderColor!.Value),
-                    StrokeThickness = this.Thickness!.Value
+                    Stroke = new SolidColorBrush(Colors.Red),
+                    StrokeThickness = 2
                 };
                 canvas.Children.Add(this.Rectangle);
             }
@@ -446,20 +345,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 Canvas.SetTop(this.Rectangle, rectifiedPosition.Y * canvas.ScaledRatio);
             }
             this.Rectangle.RenderTransform = canvas.MatrixTransform;
-        }
-        #endregion
 
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
+            //重建矩形
+            double leftMargin = canvas.GetRectifiedLeft(this.Rectangle);
+            double topMargin = canvas.GetRectifiedTop(this.Rectangle);
+            this.RebuildRectangle(this.Rectangle, leftMargin, topMargin);
         }
         #endregion
 

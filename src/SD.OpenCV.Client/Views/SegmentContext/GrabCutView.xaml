@@ -14,14 +14,6 @@
                  WindowStartupLocation="CenterOwner"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
 
-    <mah:MetroWindow.RightWindowCommands>
-        <mah:WindowCommands>
-            <mah:ToggleSwitch IsOn="{Binding ShowGridLines}" OnContent="显示网格" OffContent="隐藏网格" 
-                              Style="{StaticResource ToggleSwitch.Styles.Fluent}"
-                              cm:Message.Attach="[Event Toggled] = [Action SwitchGridLines()]" />
-        </mah:WindowCommands>
-    </mah:MetroWindow.RightWindowCommands>
-
     <Grid>
         <Grid.RowDefinitions>
             <!--Header-->
@@ -38,11 +30,6 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
-                    <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}"
-                                  Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                                  cm:Message.Attach="OnScaleClick()">
-                        <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
-                    </ToggleButton>
                     <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
                                   Style="{StaticResource ToggleButton.Styles.ToolBar}"
                                   cm:Message.Attach="OnDragClick()">
@@ -81,15 +68,10 @@
                 <sd:CanvasEx Mode="{Binding CanvasMode}" cm:Message.Attach="
                              [Event ElementDrag] = [Action OnDragElement($source)];
                              [Event ElementResize] = [Action OnResizeElement($source)];
-                             [Event Drawing] = [Action OnDrawing($source)];
-                             [Event Drawn] = [Action OnDrawn($source)];">
+                             [Event Drawing] = [Action OnDrawing($source)];">
                     <sd:CanvasEx.BackgroundImage>
                         <Image Source="{Binding BitmapSource}" />
                     </sd:CanvasEx.BackgroundImage>
-                    <sd:GridLinesVisual2D Rows="1200" Cols="2000" StepSize="100"
-                                          Visibility="{Binding GridLinesVisibility}"  
-                                          sd:CanvasEx.Draggable="False" 
-                                          sd:CanvasEx.Resizable="False" />
                 </sd:CanvasEx>
             </GroupBox>
         </busyIndicator:BusyMask>
