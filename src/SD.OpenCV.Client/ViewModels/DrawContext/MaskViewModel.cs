@@ -8,6 +8,7 @@ using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
+using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
@@ -708,10 +711,21 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             if (this.SelectedShapeL != null)
             {
-                //TODO Adorner实现
-                //Shape shape = (Shape)this.SelectedShapeL.Tag;
-                //SolidColorBrush brush = (SolidColorBrush)shape.Stroke;
-                //shape.Stroke = new SolidColorBrush(brush.Color.Invert());
+                Shape shape = (Shape)this.SelectedShapeL.Tag;
+                if (shape.Stroke is SolidColorBrush brush)
+                {
+                    BrushAnimation brushAnimation = new BrushAnimation
+                    {
+                        From = new SolidColorBrush(brush.Color.Invert()),
+                        To = shape.Stroke,
+                        Duration = new Duration(TimeSpan.FromSeconds(2))
+                    };
+                    Storyboard storyboard = new Storyboard();
+                    Storyboard.SetTarget(brushAnimation, shape);
+                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
+                    storyboard.Children.Add(brushAnimation);
+                    storyboard.Begin();
+                }
             }
         }
         #endregion
@@ -874,6 +888,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 Canvas.SetTop(this._rectangle, rectifiedPosition.Y * canvas.ScaledRatio);
             }
             this._rectangle.RenderTransform = canvas.MatrixTransform;
+            this._rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -901,6 +916,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._circle.Center = rectifiedCenter;
             this._circle.Radius = vector.Length;
             this._circle.RenderTransform = canvas.MatrixTransform;
+            this._circle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -928,6 +944,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._ellipse.RadiusX = Math.Abs(rectifiedPosition.X - rectifiedCenter.X);
             this._ellipse.RadiusY = Math.Abs(rectifiedPosition.Y - rectifiedCenter.Y);
             this._ellipse.RenderTransform = canvas.MatrixTransform;
+            this._ellipse.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -995,6 +1012,23 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 canvas.Children.Remove(anchor);
             }
             this._polyAnchors.Clear();
+            polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+        }
+        #endregion
+
+        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(object sender...
+        /// <summary>
+        /// 形状鼠标左击事件
+        /// </summary>
+        private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
+        {
+            if (this.CanvasMode != CanvasMode.Draw)
+            {
+                Shape shape = (Shape)sender;
+                ShapeL shapeL = (ShapeL)shape.Tag;
+                this.SelectedShapeL = null;
+                this.SelectedShapeL = shapeL;
+            }
         }
         #endregion
 

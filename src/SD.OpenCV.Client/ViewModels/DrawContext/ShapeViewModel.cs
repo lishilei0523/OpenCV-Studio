@@ -8,6 +8,7 @@ using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
+using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
@@ -84,14 +87,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         [DependencyProperty]
         public CanvasMode CanvasMode { get; set; }
-        #endregion
-
-        #region 填充颜色 —— Color? FillColor
-        /// <summary>
-        /// 填充颜色
-        /// </summary>
-        [DependencyProperty]
-        public Color? FillColor { get; set; }
         #endregion
 
         #region 边框颜色 —— Color? BorderColor
@@ -267,7 +262,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             //默认值
             this._polyAnchors = new List<PointVisual2D>();
-            this.FillColor = Colors.Transparent;
             this.BorderColor = Colors.Red;
             this.Thickness = 2;
             this.ShowGridLines = true;
@@ -357,13 +351,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = (int)Math.Ceiling(shape.StrokeThickness);
-                SolidColorBrush fillBrush = (SolidColorBrush)shape.Fill;
                 SolidColorBrush borderBrush = (SolidColorBrush)shape.Stroke;
-                Scalar fillColor = new Scalar(fillBrush.Color.B, fillBrush.Color.G, fillBrush.Color.R, fillBrush.Color.A);
                 Scalar borderColor = new Scalar(borderBrush.Color.B, borderBrush.Color.G, borderBrush.Color.R);
 
                 if (shape is PointVisual2D point)
                 {
+                    SolidColorBrush fillBrush = (SolidColorBrush)point.Fill;
+                    Scalar fillColor = new Scalar(fillBrush.Color.B, fillBrush.Color.G, fillBrush.Color.R, fillBrush.Color.A);
                     PointL pointL = (PointL)point.Tag;
                     int radius = (int)Math.Ceiling(point.Thickness);
                     this.Image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness);    //空心圆
@@ -1018,10 +1012,21 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         {
             if (this.SelectedShapeL != null)
             {
-                //TODO Adorner实现
-                //Shape shape = (Shape)this.SelectedShapeL.Tag;
-                //SolidColorBrush brush = (SolidColorBrush)shape.Stroke;
-                //shape.Stroke = new SolidColorBrush(brush.Color.Invert());
+                Shape shape = (Shape)this.SelectedShapeL.Tag;
+                if (shape.Stroke is SolidColorBrush brush)
+                {
+                    BrushAnimation brushAnimation = new BrushAnimation
+                    {
+                        From = new SolidColorBrush(brush.Color.Invert()),
+                        To = shape.Stroke,
+                        Duration = new Duration(TimeSpan.FromSeconds(2))
+                    };
+                    Storyboard storyboard = new Storyboard();
+                    Storyboard.SetTarget(brushAnimation, shape);
+                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
+                    storyboard.Children.Add(brushAnimation);
+                    storyboard.Begin();
+                }
             }
         }
         #endregion
@@ -1049,6 +1054,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 PointL newPointL = new PointL(x, y);
 
                 point.Tag = newPointL;
+                newPointL.Tag = point;
                 this.ShapeLs.Insert(index, newPointL);
             }
         }
@@ -1076,6 +1082,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 LineL newLineL = new LineL(new PointL(x1, y1), new PointL(x2, y2));
 
                 line.Tag = newLineL;
+                newLineL.Tag = line;
                 this.ShapeLs.Insert(index, newLineL);
             }
         }
@@ -1103,6 +1110,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 RectangleL newRectangleL = new RectangleL(x, y, width, height);
 
                 rectangle.Tag = newRectangleL;
+                newRectangleL.Tag = rectangle;
                 this.ShapeLs.Insert(index, newRectangleL);
             }
         }
@@ -1129,6 +1137,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 CircleL newCircleL = new CircleL(x, y, radius);
 
                 circle.Tag = newCircleL;
+                newCircleL.Tag = circle;
                 this.ShapeLs.Insert(index, newCircleL);
             }
         }
@@ -1156,6 +1165,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 EllipseL newEllipseL = new EllipseL(x, y, radiusX, radiusY);
 
                 ellipse.Tag = newEllipseL;
+                newEllipseL.Tag = ellipse;
                 this.ShapeLs.Insert(index, newEllipseL);
             }
         }
@@ -1187,6 +1197,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 PolygonL newPolygonL = new PolygonL(pointIs);
 
                 polygon.Tag = newPolygonL;
+                newPolygonL.Tag = polygon;
                 this.ShapeLs.Insert(index, newPolygonL);
             }
         }
@@ -1218,6 +1229,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 PolylineL newPolylineL = new PolylineL(pointIs);
 
                 polyline.Tag = newPolylineL;
+                newPolylineL.Tag = polyline;
                 this.ShapeLs.Insert(index, newPolylineL);
             }
         }
@@ -1248,6 +1260,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             pointL.Tag = point;
             this.ShapeLs.Add(pointL);
             this.Shapes.Add(point);
+            point.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1261,7 +1274,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._line = new Line
                 {
-                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Fill = new SolidColorBrush(Colors.Transparent),
                     Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
@@ -1275,6 +1288,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._line.X2 = rectifiedPosition.X;
             this._line.Y2 = rectifiedPosition.Y;
             this._line.RenderTransform = canvas.MatrixTransform;
+            this._line.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1288,7 +1302,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._brush = new Polyline
                 {
-                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Fill = new SolidColorBrush(Colors.Transparent),
                     Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
@@ -1298,6 +1312,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             Point rectifiedPosition = canvas.RectifiedMousePosition!.Value;
             this._brush.Points.Add(rectifiedPosition);
             this._brush.RenderTransform = canvas.MatrixTransform;
+            this._brush.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1311,7 +1326,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._rectangle = new Rectangle
                 {
-                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Fill = new SolidColorBrush(Colors.Transparent),
                     Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
@@ -1345,6 +1360,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 Canvas.SetTop(this._rectangle, rectifiedPosition.Y * canvas.ScaledRatio);
             }
             this._rectangle.RenderTransform = canvas.MatrixTransform;
+            this._rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1358,7 +1374,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._circle = new CircleVisual2D
                 {
-                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Fill = new SolidColorBrush(Colors.Transparent),
                     Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
@@ -1372,6 +1388,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._circle.Center = rectifiedCenter;
             this._circle.Radius = vector.Length;
             this._circle.RenderTransform = canvas.MatrixTransform;
+            this._circle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1385,7 +1402,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             {
                 this._ellipse = new EllipseVisual2D()
                 {
-                    Fill = new SolidColorBrush(this.FillColor!.Value),
+                    Fill = new SolidColorBrush(Colors.Transparent),
                     Stroke = new SolidColorBrush(this.BorderColor!.Value),
                     StrokeThickness = this.Thickness!.Value
                 };
@@ -1399,6 +1416,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this._ellipse.RadiusX = Math.Abs(rectifiedPosition.X - rectifiedCenter.X);
             this._ellipse.RadiusY = Math.Abs(rectifiedPosition.Y - rectifiedCenter.Y);
             this._ellipse.RenderTransform = canvas.MatrixTransform;
+            this._ellipse.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1447,7 +1465,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             PolygonL polygonL = new PolygonL(pointIs);
             Polygon polygon = new Polygon
             {
-                Fill = new SolidColorBrush(this.FillColor!.Value),
+                Fill = new SolidColorBrush(Colors.Transparent),
                 Stroke = new SolidColorBrush(this.BorderColor!.Value),
                 StrokeThickness = this.Thickness!.Value,
                 Points = points,
@@ -1466,6 +1484,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 canvas.Children.Remove(anchor);
             }
             this._polyAnchors.Clear();
+            polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
         }
         #endregion
 
@@ -1487,7 +1506,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             PolylineL polylineL = new PolylineL(pointIs);
             Polyline polyline = new Polyline
             {
-                Fill = new SolidColorBrush(this.FillColor!.Value),
+                Fill = new SolidColorBrush(Colors.Transparent),
                 Stroke = new SolidColorBrush(this.BorderColor!.Value),
                 StrokeThickness = this.Thickness!.Value,
                 Points = points,
@@ -1506,6 +1525,23 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                 canvas.Children.Remove(anchor);
             }
             this._polyAnchors.Clear();
+            polyline.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+        }
+        #endregion
+
+        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(object sender...
+        /// <summary>
+        /// 形状鼠标左击事件
+        /// </summary>
+        private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
+        {
+            if (this.CanvasMode != CanvasMode.Draw)
+            {
+                Shape shape = (Shape)sender;
+                ShapeL shapeL = (ShapeL)shape.Tag;
+                this.SelectedShapeL = null;
+                this.SelectedShapeL = shapeL;
+            }
         }
         #endregion
 
