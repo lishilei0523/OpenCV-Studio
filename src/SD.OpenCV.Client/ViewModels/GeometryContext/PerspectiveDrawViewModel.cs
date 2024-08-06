@@ -5,6 +5,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
+using SD.Infrastructure.WPF.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -30,17 +31,11 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         private readonly IWindowManager _windowManager;
 
         /// <summary>
-        /// 事件聚合器
-        /// </summary>
-        private readonly IEventAggregator _eventAggregator;
-
-        /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public PerspectiveDrawViewModel(IWindowManager windowManager, IEventAggregator eventAggregator)
+        public PerspectiveDrawViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
-            this._eventAggregator = eventAggregator;
         }
 
         #endregion
@@ -301,7 +296,7 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
                 Point polyPoint = new Point(point.X, point.Y);
                 polyPoints.Add(polyPoint);
             }
-            this.Polygon.Points = polyPoints;
+            this.Polygon.Points = polyPoints.Sequentialize();
         }
         #endregion
 
