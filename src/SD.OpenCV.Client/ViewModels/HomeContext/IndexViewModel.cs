@@ -2206,8 +2206,12 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void AffineTransform()
         {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK);
+            this.Busy();
+
+            AffineViewModel viewModel = ResolveMediator.Resolve<AffineViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 

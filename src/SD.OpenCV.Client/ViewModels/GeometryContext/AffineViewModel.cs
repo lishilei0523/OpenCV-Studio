@@ -25,9 +25,9 @@ using Size = OpenCvSharp.Size;
 namespace SD.OpenCV.Client.ViewModels.GeometryContext
 {
     /// <summary>
-    /// 透视变换视图模型
+    /// 仿射变换视图模型
     /// </summary>
-    public class PerspectiveViewModel : ScreenBase
+    public class AffineViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -39,7 +39,7 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public PerspectiveViewModel(IWindowManager windowManager)
+        public AffineViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -112,11 +112,11 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         public bool TargetPointChecked { get; set; }
         #endregion
 
-        #region 透视变换矩阵 —— Mat PerspectiveMatrix
+        #region 仿射变换矩阵 —— Mat AffineMatrix
         /// <summary>
-        /// 透视变换矩阵
+        /// 仿射变换矩阵
         /// </summary>
-        public Mat PerspectiveMatrix { get; set; }
+        public Mat AffineMatrix { get; set; }
         #endregion
 
         #region 参考点集 —— ObservableCollection<PointVisual2D> SourcePoints
@@ -228,11 +228,11 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         }
         #endregion
 
-        #region 透视变换 —— async void PerspectiveTransform()
+        #region 仿射变换 —— async void AffineTransform()
         /// <summary>
-        /// 透视变换
+        /// 仿射变换
         /// </summary>
-        public async void PerspectiveTransform()
+        public async void AffineTransform()
         {
             #region # 验证
 
@@ -241,9 +241,9 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
                 MessageBox.Show("参考点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.SourcePointLs.Count < 4)
+            if (this.SourcePointLs.Count < 3)
             {
-                MessageBox.Show("参考点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("参考点数量不可小于3！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (!this.TargetPointLs.Any())
@@ -251,9 +251,9 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
                 MessageBox.Show("目标点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.TargetPointLs.Count < 4)
+            if (this.TargetPointLs.Count < 3)
             {
-                MessageBox.Show("目标点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("目标点数量不可小于3！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.SourcePointLs.Count != this.TargetPointLs.Count)
@@ -268,30 +268,18 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
 
             IEnumerable<Point2f> sourcePoints = this.SourcePointLs.Select(point => new Point2f(point.X, point.Y));
             IEnumerable<Point2f> targetPoints = this.TargetPointLs.Select(point => new Point2f(point.X, point.Y));
-            this.PerspectiveMatrix = await Task.Run(() => Cv2.GetPerspectiveTransform(targetPoints, sourcePoints));
+            this.AffineMatrix = await Task.Run(() => Cv2.GetAffineTransform(targetPoints, sourcePoints));
 
             using Mat targetImage = this.TargetImage.ToMat();
             using Mat resultImage = new Mat();
             Size size = new Size(this.SourceImage.Width, this.SourceImage.Height);
-            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, size));
+            await Task.Run(() => Cv2.WarpAffine(targetImage, resultImage, this.AffineMatrix, size));
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(resultImage.ToBitmapSource());
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
-        }
-        #endregion
-
-        #region 透视绘制 —— async void PerspectiveDraw()
-        /// <summary>
-        /// 透视绘制
-        /// </summary>
-        public async void PerspectiveDraw()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
         }
         #endregion
 
@@ -438,7 +426,7 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         {
             if (close)
             {
-                this.PerspectiveMatrix?.Dispose();
+                this.AffineMatrix?.Dispose();
             }
             return base.OnDeactivateAsync(close, cancellationToken);
         }
