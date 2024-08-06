@@ -21,6 +21,7 @@ using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.HoughContext;
 using SD.OpenCV.Client.ViewModels.MatchContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
+using SD.OpenCV.Client.ViewModels.RectifyContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.Primitives.Calibrations;
@@ -3053,6 +3054,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
 
         //矫正
+
+        #region 矫正污点 —— async void RectifyStains()
+        /// <summary>
+        /// 矫正污点
+        /// </summary>
+        public async void RectifyStains()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            InpaintViewModel viewModel = ResolveMediator.Resolve<InpaintViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
 
         #region 矫正畸变 —— async void RectifyDistortions()
         /// <summary>

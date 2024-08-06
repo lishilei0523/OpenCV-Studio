@@ -150,6 +150,7 @@
                     <MenuItem Header="特征匹配(_F)" cm:Message.Attach="FeatureMatch()" />
                 </MenuItem>
                 <MenuItem Header="矫正(_R)">
+                    <MenuItem Header="矫正污点(_S)" cm:Message.Attach="RectifyStains()" />
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
                     <MenuItem Header="矫正位姿(_P)" cm:Message.Attach="RectifyPose()" />
                 </MenuItem>
