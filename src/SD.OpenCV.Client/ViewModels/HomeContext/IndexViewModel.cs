@@ -951,6 +951,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
+            {
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
@@ -961,17 +966,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-
-                #region # 验证
-
-                if (image.Type() != MatType.CV_8UC1)
-                {
-                    MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                #endregion
-
                 using Mat resultImage = image.MorphHitMiss(viewModel.KernelSize!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
