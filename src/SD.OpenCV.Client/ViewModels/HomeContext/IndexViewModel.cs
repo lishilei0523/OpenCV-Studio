@@ -1754,6 +1754,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
+            {
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
