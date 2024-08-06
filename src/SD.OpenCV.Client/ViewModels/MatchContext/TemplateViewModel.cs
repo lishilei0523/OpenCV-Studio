@@ -278,8 +278,15 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             this.MinScoreValue = minValue;
             this.MaxScoreValue = maxValue;
             this.TargetRectangle.Visibility = Visibility.Visible;
-            this.TargetRectangle.Location = new Point(maxLocation.X, maxLocation.Y);
             this.TargetRectangle.Size = new Size(this.SourceRectangleL.Width, this.SourceRectangleL.Height);
+            if (this.MatchMode == TemplateMatchModes.SqDiff || this.MatchMode == TemplateMatchModes.SqDiffNormed)
+            {
+                this.TargetRectangle.Location = new Point(minLocation.X, minLocation.Y);
+            }
+            else
+            {
+                this.TargetRectangle.Location = new Point(maxLocation.X, maxLocation.Y);
+            }
 
             this.Idle();
         }
