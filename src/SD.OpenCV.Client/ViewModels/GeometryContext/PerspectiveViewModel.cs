@@ -289,9 +289,24 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         /// </summary>
         public async void PerspectiveDraw()
         {
-            //TODO 实现
-            MessageBox.Show("未实现！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
+            #region # 验证
+
+            if (this.PerspectiveMatrix == null)
+            {
+                MessageBox.Show("透视矩阵未生成！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            PerspectiveDrawViewModel viewModel = ResolveMediator.Resolve<PerspectiveDrawViewModel>();
+            Mat perspectiveMatrix = this.PerspectiveMatrix.Clone();
+            viewModel.Load(this.SourceImage, this.TargetImage, perspectiveMatrix);
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
@@ -430,20 +445,6 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         }
         #endregion
 
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.PerspectiveMatrix?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
-        }
-        #endregion
-
 
         //Private
 
@@ -550,6 +551,20 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
             pointL.Tag = point;
             this.TargetPointLs.Add(pointL);
             this.TargetPoints.Add(point);
+        }
+        #endregion
+
+        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
+        /// <summary>
+        /// 页面失活事件
+        /// </summary>
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (close)
+            {
+                this.PerspectiveMatrix?.Dispose();
+            }
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

@@ -1,28 +1,26 @@
 ﻿using Caliburn.Micro;
 using OpenCvSharp;
-using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
-using Rect = OpenCvSharp.Rect;
 
-namespace SD.OpenCV.Client.ViewModels.SegmentContext
+namespace SD.OpenCV.Client.ViewModels.GeometryContext
 {
     /// <summary>
-    /// 矩形分割视图模型
+    /// 透视绘制视图模型
     /// </summary>
-    public class RectangleViewModel : ScreenBase
+    public class PerspectiveDrawViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -32,11 +30,17 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         private readonly IWindowManager _windowManager;
 
         /// <summary>
+        /// 事件聚合器
+        /// </summary>
+        private readonly IEventAggregator _eventAggregator;
+
+        /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public RectangleViewModel(IWindowManager windowManager)
+        public PerspectiveDrawViewModel(IWindowManager windowManager, IEventAggregator eventAggregator)
         {
             this._windowManager = windowManager;
+            this._eventAggregator = eventAggregator;
         }
 
         #endregion
@@ -51,43 +55,20 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region 显示网格线 —— bool ShowGridLines
+        #region 参考图像 —— BitmapSource SourceImage
         /// <summary>
-        /// 显示网格线
+        /// 参考图像
         /// </summary>
         [DependencyProperty]
-        public bool ShowGridLines { get; set; }
+        public BitmapSource SourceImage { get; set; }
         #endregion
 
-        #region 网格线可见性 —— Visibility GridLinesVisibility
+        #region 目标图像 —— BitmapSource TargetImage
         /// <summary>
-        /// 网格线可见性
+        /// 目标图像
         /// </summary>
         [DependencyProperty]
-        public Visibility GridLinesVisibility { get; set; }
-        #endregion
-
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
-        #region 选中缩放 —— bool ScaleChecked
-        /// <summary>
-        /// 选中缩放
-        /// </summary>
-        [DependencyProperty]
-        public bool ScaleChecked { get; set; }
+        public BitmapSource TargetImage { get; set; }
         #endregion
 
         #region 选中拖拽 —— bool DragChecked
@@ -114,6 +95,13 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public bool RectangleChecked { get; set; }
         #endregion
 
+        #region 透视变换矩阵 —— Mat PerspectiveMatrix
+        /// <summary>
+        /// 透视变换矩阵
+        /// </summary>
+        public Mat PerspectiveMatrix { get; set; }
+        #endregion
+
         #region 矩形 —— Rectangle Rectangle
         /// <summary>
         /// 矩形
@@ -122,12 +110,12 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public Rectangle Rectangle { get; set; }
         #endregion
 
-        #region 矩形数据 —— RectangleL RectangleL
+        #region 多边形 —— Polygon Polygon
         /// <summary>
-        /// 矩形数据
+        /// 多边形
         /// </summary>
         [DependencyProperty]
-        public RectangleL RectangleL { get; set; }
+        public Polygon Polygon { get; set; }
         #endregion
 
         #endregion
@@ -143,92 +131,31 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.ShowGridLines = true;
-            this.GridLinesVisibility = Visibility.Visible;
-            this.ScaleChecked = true;
+            this.RectangleChecked = true;
+            this.OnRectangleClick();
+            this.Polygon = new Polygon();
 
             return base.OnInitializeAsync(cancellationToken);
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
+        #region 加载 —— void Load(BitmapSource sourceImage...
         /// <summary>
         /// 加载
         /// </summary>
-        public void Load(BitmapSource bitmapSource)
+        /// <param name="sourceImage">参考图像</param>
+        /// <param name="targetImage">目标图像</param>
+        /// <param name="perspectiveMatrix">透视矩阵</param>
+        public void Load(BitmapSource sourceImage, BitmapSource targetImage, Mat perspectiveMatrix)
         {
-            this.Image = bitmapSource.ToMat();
-            this.BitmapSource = bitmapSource;
-        }
-        #endregion
-
-
-        //Actions
-
-        #region 切换显示网格线 —— void SwitchGridLines()
-        /// <summary>
-        /// 切换显示网格线
-        /// </summary>
-        public void SwitchGridLines()
-        {
-            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
-        }
-        #endregion
-
-        #region 提交 —— async void Submit()
-        /// <summary>
-        /// 提交
-        /// </summary>
-        public async void Submit()
-        {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            //适用掩膜
-            Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
-            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
-            mask.Rectangle(rect, Scalar.White, -1);
-            using Mat canvas = new Mat();
-            this.Image.CopyTo(canvas, mask);
-
-            //提取有效区域
-            using Mat result = canvas[rect];
-            this.BitmapSource = result.ToBitmapSource();
-
-            this.Idle();
-
-            await base.TryCloseAsync(true);
+            this.SourceImage = sourceImage;
+            this.TargetImage = targetImage;
+            this.PerspectiveMatrix = perspectiveMatrix;
         }
         #endregion
 
 
         //Events
-
-        #region 缩放点击事件 —— void OnScaleClick()
-        /// <summary>
-        /// 缩放点击事件
-        /// </summary>
-        public void OnScaleClick()
-        {
-            if (this.ScaleChecked)
-            {
-                this.CanvasMode = CanvasMode.Scale;
-
-                this.DragChecked = false;
-                this.ResizeChecked = false;
-                this.RectangleChecked = false;
-            }
-        }
-        #endregion
 
         #region 拖拽点击事件 —— void OnDragClick()
         /// <summary>
@@ -240,7 +167,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Drag;
 
-                this.ScaleChecked = false;
                 this.ResizeChecked = false;
                 this.RectangleChecked = false;
             }
@@ -257,7 +183,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Resize;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.RectangleChecked = false;
             }
@@ -274,7 +199,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Draw;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
             }
@@ -333,7 +257,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         {
             #region # 验证
 
-            if (this.BitmapSource == null)
+            if (this.SourceImage == null)
             {
                 return;
             }
@@ -343,26 +267,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             if (this.RectangleChecked)
             {
                 this.DrawRectangle(canvas);
-            }
-        }
-        #endregion
-
-        #region 绘制完成事件 —— void OnDrawn(CanvasEx canvas)
-        /// <summary>
-        /// 绘制完成事件
-        /// </summary>
-        public void OnDrawn(CanvasEx canvas)
-        {
-            if (this.Rectangle != null)
-            {
-                int x = (int)Math.Ceiling(canvas.GetRectifiedLeft(this.Rectangle));
-                int y = (int)Math.Ceiling(canvas.GetRectifiedTop(this.Rectangle));
-                int width = (int)Math.Ceiling(this.Rectangle.Width);
-                int height = (int)Math.Ceiling(this.Rectangle.Height);
-                this.RectangleL = new RectangleL(x, y, width, height);
-
-                this.Rectangle.Tag = this.RectangleL;
-                this.RectangleL.Tag = this.Rectangle;
             }
         }
         #endregion
@@ -383,8 +287,21 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             int y = (int)Math.Ceiling(topMargin);
             int width = (int)Math.Ceiling(rectangle.Width);
             int height = (int)Math.Ceiling(rectangle.Height);
-            this.RectangleL = new RectangleL(x, y, width, height);
-            rectangle.Tag = this.RectangleL;
+            RectangleL rectangleL = new RectangleL(x, y, width, height);
+
+            Point2f pointA = new Point2f(rectangleL.TopLeft.X, rectangleL.TopLeft.Y);
+            Point2f pointB = new Point2f(rectangleL.BottomLeft.X, rectangleL.BottomLeft.Y);
+            Point2f pointC = new Point2f(rectangleL.BottomRight.X, rectangleL.BottomRight.Y);
+            Point2f pointD = new Point2f(rectangleL.TopRight.X, rectangleL.TopRight.Y);
+            IList<Point2f> sourceCoutour = new[] { pointA, pointB, pointC, pointD };
+            IList<Point2f> targetCoutour = Cv2.PerspectiveTransform(sourceCoutour, this.PerspectiveMatrix.Inv());
+            PointCollection polyPoints = new PointCollection();
+            foreach (Point2f point in targetCoutour)
+            {
+                Point polyPoint = new Point(point.X, point.Y);
+                polyPoints.Add(polyPoint);
+            }
+            this.Polygon.Points = polyPoints;
         }
         #endregion
 
@@ -432,6 +349,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 Canvas.SetTop(this.Rectangle, rectifiedPosition.Y * canvas.ScaledRatio);
             }
             this.Rectangle.RenderTransform = canvas.MatrixTransform;
+
+            //绘制目标
+            double leftMargin = canvas.GetRectifiedLeft(this.Rectangle);
+            double topMargin = canvas.GetRectifiedTop(this.Rectangle);
+            this.RebuildRectangle(this.Rectangle, leftMargin, topMargin);
         }
         #endregion
 
@@ -443,7 +365,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         {
             if (close)
             {
-                this.Image?.Dispose();
+                this.PerspectiveMatrix?.Dispose();
             }
             return base.OnDeactivateAsync(close, cancellationToken);
         }
