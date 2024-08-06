@@ -125,8 +125,9 @@
                                 <mah:ColorPicker SelectedColor="{Binding BorderColor}" Style="{StaticResource ColorPicker.Styles.Fluent}" />
                             </sd:FormItem>
                             <sd:FormItem Label="粗细：">
-                                <TextBox Text="{Binding Thickness, UpdateSourceTrigger=PropertyChanged}" 
-                                         Style="{StaticResource TextBoxRevealStyle}" />
+                                <mah:NumericUpDown Minimum="1" Maximum="100"
+                                                   Value="{Binding Thickness, UpdateSourceTrigger=PropertyChanged}"
+                                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
                             </sd:FormItem>
                             <sd:FormItem Label="网格线：">
                                 <mah:ToggleSwitch IsOn="{Binding ShowGridLines}" OnContent="显示" OffContent="隐藏" 
