@@ -271,7 +271,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             double maxValue = 0;
             OpenCvSharp.Point minLocation = new OpenCvSharp.Point();
             OpenCvSharp.Point maxLocation = new OpenCvSharp.Point();
-            await Task.Run(() => Cv2.MatchTemplate(targetImage, template, result, TemplateMatchModes.CCoeffNormed));
+            await Task.Run(() => Cv2.MatchTemplate(targetImage, template, result, this.MatchMode));
             await Task.Run(() => Cv2.MinMaxLoc(result, out minValue, out maxValue, out minLocation, out maxLocation));
 
             //执行结果
