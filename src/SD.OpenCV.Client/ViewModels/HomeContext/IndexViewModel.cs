@@ -19,6 +19,7 @@ using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
 using SD.OpenCV.Client.ViewModels.HoughContext;
+using SD.OpenCV.Client.ViewModels.MatchContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
@@ -3030,8 +3031,12 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void TemplateMatch()
         {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            this.Busy();
+
+            TemplateViewModel viewModel = ResolveMediator.Resolve<TemplateViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
