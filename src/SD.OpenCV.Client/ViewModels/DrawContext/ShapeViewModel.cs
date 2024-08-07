@@ -353,24 +353,24 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Scalar fillColor = new Scalar(fillBrush.Color.B, fillBrush.Color.G, fillBrush.Color.R, fillBrush.Color.A);
                     PointL pointL = (PointL)point.Tag;
                     int radius = (int)Math.Ceiling(point.Thickness);
-                    image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness);    //空心圆
-                    image.Circle(pointL.X, pointL.Y, radius - thickness, fillColor, -1); //实心圆
+                    await Task.Run(() => image.Circle(pointL.X, pointL.Y, radius, borderColor, thickness));    //空心圆
+                    await Task.Run(() => image.Circle(pointL.X, pointL.Y, radius - thickness, fillColor, -1)); //实心圆
                 }
                 if (shape is Line line)
                 {
                     LineL lineL = (LineL)line.Tag;
-                    image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, borderColor, thickness);
+                    await Task.Run(() => image.Line(lineL.A.X, lineL.A.Y, lineL.B.X, lineL.B.Y, borderColor, thickness));
                 }
                 if (shape is Rectangle rectangle)
                 {
                     RectangleL rectangleL = (RectangleL)rectangle.Tag;
                     Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
-                    image.Rectangle(rect, borderColor, thickness);
+                    await Task.Run(() => image.Rectangle(rect, borderColor, thickness));
                 }
                 if (shape is CircleVisual2D circle)
                 {
                     CircleL circleL = (CircleL)circle.Tag;
-                    image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness);
+                    await Task.Run(() => image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness));
                 }
                 if (shape is EllipseVisual2D ellipse)
                 {
@@ -378,31 +378,29 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
                     Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
                     RotatedRect rect = new RotatedRect(center, size, 0);
-                    image.Ellipse(rect, borderColor, thickness);
+                    await Task.Run(() => image.Ellipse(rect, borderColor, thickness));
                 }
                 if (shape is Polygon polygon)
                 {
                     PolygonL polygonL = (PolygonL)polygon.Tag;
-
                     OpenCvSharp.Point[] contour = new OpenCvSharp.Point[polygonL.Points.Count];
                     for (int index = 0; index < polygonL.Points.Count; index++)
                     {
                         PointL pointL = polygonL.Points.ElementAt(index);
                         contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    image.DrawContours(new[] { contour }, -1, borderColor, thickness);
+                    await Task.Run(() => image.DrawContours(new[] { contour }, -1, borderColor, thickness));
                 }
                 if (shape is Polyline polyline)
                 {
                     PolylineL polylineL = (PolylineL)polyline.Tag;
-
                     OpenCvSharp.Point[] contour = new OpenCvSharp.Point[polylineL.Points.Count];
                     for (int index = 0; index < polylineL.Points.Count; index++)
                     {
                         PointL pointL = polylineL.Points.ElementAt(index);
                         contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    image.Polylines(new[] { contour }, false, borderColor, thickness);
+                    await Task.Run(() => image.Polylines(new[] { contour }, false, borderColor, thickness));
                 }
             }
             this.BitmapSource = image.ToBitmapSource();

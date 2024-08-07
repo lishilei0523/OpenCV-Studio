@@ -105,6 +105,7 @@
                     <MenuItem Header="Scharr边缘检测(_A)" cm:Message.Attach="ApplyScharr()" />
                     <MenuItem Header="Robert边缘检测(_R)" cm:Message.Attach="ApplyRobert()" />
                     <MenuItem Header="Laplacian边缘检测(_L)" cm:Message.Attach="ApplyLaplacian()" />
+                    <MenuItem Header="轮廓检测(_P)" cm:Message.Attach="DetectContours()" />
                 </MenuItem>
                 <MenuItem Header="霍夫变换(_S)">
                     <MenuItem Header="霍夫线查找(_L)" cm:Message.Attach="HoughFindLines()" />
