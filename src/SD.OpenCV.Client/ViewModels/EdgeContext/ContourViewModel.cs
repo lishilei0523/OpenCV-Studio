@@ -329,6 +329,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
             this.Busy();
 
             using Mat image = this.BitmapSource.ToMat();
+            using Mat colorImage = image.Type() == MatType.CV_8UC1 ? image.CvtColor(ColorConversionCodes.GRAY2BGR) : image;
             foreach (Shape shape in this.Shapes)
             {
                 int thickness = (int)Math.Ceiling(shape.StrokeThickness);
@@ -343,10 +344,10 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
                         PointL pointL = polygonL.Points.ElementAt(index);
                         contour[index] = new OpenCvSharp.Point(pointL.X, pointL.Y);
                     }
-                    await Task.Run(() => image.DrawContours(new[] { contour }, -1, borderColor, thickness));
+                    await Task.Run(() => colorImage.DrawContours(new[] { contour }, -1, borderColor, thickness));
                 }
             }
-            this.BitmapSource = image.ToBitmapSource();
+            this.BitmapSource = colorImage.ToBitmapSource();
 
             this.Idle();
 

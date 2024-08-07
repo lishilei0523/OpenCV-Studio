@@ -111,7 +111,16 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.Image = bitmapSource.ToMat();
+            Mat image = bitmapSource.ToMat();
+            if (image.Type() == MatType.CV_8UC3)
+            {
+                this.Image = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                image.Dispose();
+            }
+            else
+            {
+                this.Image = image;
+            }
             this.BitmapSource = bitmapSource;
         }
         #endregion
