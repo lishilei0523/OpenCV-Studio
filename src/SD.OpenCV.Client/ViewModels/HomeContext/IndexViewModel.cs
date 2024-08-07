@@ -371,7 +371,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             }
             if (this.EffectiveImage.Format != PixelFormats.Bgr24)
             {
-                MessageBox.Show("图像必须为三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -890,11 +890,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -905,7 +900,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphHitMiss(viewModel.KernelSize!.Value);
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                using Mat resultImage = grayImage.MorphHitMiss(viewModel.KernelSize!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 
@@ -1787,18 +1783,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat histImage = await Task.Run(() => image.GenerateHistogramImage(1280, 800));
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 800));
             BitmapSource bitmapSource = histImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(bitmapSource);
@@ -1821,11 +1813,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -1836,7 +1823,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                using Mat resultImage = grayImage.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
                 this.EffectiveImage = resultImage.ToBitmapSource();
             }
 
@@ -1989,18 +1977,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat result = await Task.Run(() => image.ApplyRobert());
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat result = await Task.Run(() => grayImage.ApplyRobert());
             this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();
@@ -2084,11 +2068,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2099,7 +2078,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                LineSegmentPoint[] lines = Cv2.HoughLinesP(image, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                LineSegmentPoint[] lines = Cv2.HoughLinesP(grayImage, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
                 foreach (LineSegmentPoint line in lines)
                 {
                     Cv2.Line(image, line.P1, line.P2, Scalar.Red, 2);
@@ -2124,11 +2104,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2139,7 +2114,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                CircleSegment[] circles = Cv2.HoughCircles(image, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                CircleSegment[] circles = Cv2.HoughCircles(grayImage, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
                 foreach (CircleSegment circle in circles)
                 {
                     Point center = circle.Center.ToPoint();
@@ -2314,18 +2290,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat result = image.DistanceTrans();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat result = await Task.Run(() => grayImage.DistanceTrans());
             this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();
@@ -2348,11 +2320,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2363,7 +2330,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                Point[] points = await Task.Run(() => image.DetectHarris(viewModel.BlockSize!.Value, viewModel.KernelSize!.Value, viewModel.K!.Value));
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                Point[] points = await Task.Run(() => grayImage.DetectHarris(viewModel.BlockSize!.Value, viewModel.KernelSize!.Value, viewModel.K!.Value));
 
                 //绘制关键点
                 foreach (Point point in points)
@@ -2391,11 +2359,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2406,7 +2369,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                Point2f[] points = await Task.Run(() => Cv2.GoodFeaturesToTrack(image, viewModel.MaxCorners!.Value, viewModel.QualityLevel!.Value, viewModel.MinDistance!.Value, null!, viewModel.BlockSize!.Value, false, 0));
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                Point2f[] points = await Task.Run(() => Cv2.GoodFeaturesToTrack(grayImage, viewModel.MaxCorners!.Value, viewModel.QualityLevel!.Value, viewModel.MinDistance!.Value, null!, viewModel.BlockSize!.Value, false, 0));
 
                 //绘制关键点
                 foreach (Point point in points)
@@ -2434,21 +2398,17 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
             using SIFT sift = SIFT.Create();
             using Mat descriptors = new Mat();
             KeyPoint[] keyPoints = { };
-            await Task.Run(() => sift.DetectAndCompute(image, null, out keyPoints, descriptors));
+            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
 
             //绘制关键点
             await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
@@ -2471,11 +2431,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2486,10 +2441,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
                 using SURF surf = SURF.Create(viewModel.HessianThreshold!.Value);
                 using Mat descriptors = new Mat();
                 KeyPoint[] keyPoints = { };
-                await Task.Run(() => surf.DetectAndCompute(image, null, out keyPoints, descriptors));
+                await Task.Run(() => surf.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
 
                 //绘制关键点
                 await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
@@ -2513,11 +2469,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2528,8 +2479,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
                 using FastFeatureDetector fast = FastFeatureDetector.Create(viewModel.Threshold!.Value, viewModel.NonmaxSuppression);
-                KeyPoint[] keyPoints = await Task.Run(() => fast.Detect(image));
+                KeyPoint[] keyPoints = await Task.Run(() => fast.Detect(grayImage));
 
                 //绘制关键点
                 await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
@@ -2553,11 +2505,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2568,10 +2515,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
                 using ORB orb = ORB.Create(viewModel.Threshold!.Value);
                 using Mat descriptors = new Mat();
                 KeyPoint[] keyPoints = { };
-                await Task.Run(() => orb.DetectAndCompute(image, null, out keyPoints, descriptors));
+                await Task.Run(() => orb.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
 
                 //绘制关键点
                 await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
@@ -2633,20 +2581,16 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
             using SIFT sift = SIFT.Create();
             using Mat descriptors = new Mat();
-            await Task.Run(() => sift.DetectAndCompute(image, null, out _, descriptors));
+            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out _, descriptors));
 
             //绘制直方图
             using Plot plot = new Plot();
@@ -2675,11 +2619,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2690,9 +2629,10 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
                 using SURF surf = SURF.Create(viewModel.HessianThreshold!.Value);
                 using Mat descriptors = new Mat();
-                await Task.Run(() => surf.DetectAndCompute(image, null, out _, descriptors));
+                await Task.Run(() => surf.DetectAndCompute(grayImage, null, out _, descriptors));
 
                 //绘制直方图
                 using Plot plot = new Plot();
@@ -2722,11 +2662,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
@@ -2737,9 +2672,10 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
                 using ORB orb = ORB.Create(viewModel.Threshold!.Value);
                 using Mat descriptors = new Mat();
-                await Task.Run(() => orb.DetectAndCompute(image, null, out _, descriptors));
+                await Task.Run(() => orb.DetectAndCompute(grayImage, null, out _, descriptors));
 
                 //绘制直方图
                 using Plot plot = new Plot();
@@ -2909,19 +2845,15 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
             using Mat result = new Mat();
-            await Task.Run(() => Cv2.Threshold(image, result, 0, 255, ThresholdTypes.Otsu));
+            await Task.Run(() => Cv2.Threshold(grayImage, result, 0, 255, ThresholdTypes.Otsu));
             this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();
@@ -2943,7 +2875,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             }
             if (this.EffectiveImage.Format != PixelFormats.Bgr24)
             {
-                MessageBox.Show("图像必须为三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
