@@ -285,7 +285,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             this.MatchedKeypointsCount = this.MatchResult.MatchedCount;
 
             //绘制目标矩形
-            Rect boundingRect = Cv2.BoundingRect(this.MatchResult.GetMatchedTargetPoints());
+            Rect boundingRect = await Task.Run(() => Cv2.BoundingRect(this.MatchResult.GetMatchedTargetPoints()));
             this.TargetRectangle.Visibility = Visibility.Visible;
             this.TargetRectangle.Location = new Point(boundingRect.X, boundingRect.Y);
             this.TargetRectangle.Size = new Size(boundingRect.Width, boundingRect.Height);
