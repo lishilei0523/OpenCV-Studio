@@ -658,69 +658,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //绘制
-
-        #region 绘制形状 —— async void DrawShapes()
-        /// <summary>
-        /// 绘制形状
-        /// </summary>
-        public async void DrawShapes()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ShapeViewModel viewModel = ResolveMediator.Resolve<ShapeViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 绘制掩膜 —— async void DrawMask()
-        /// <summary>
-        /// 绘制掩膜
-        /// </summary>
-        public async void DrawMask()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            DrawContext.MaskViewModel viewModel = ResolveMediator.Resolve<DrawContext.MaskViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-
         //形态学
 
         #region 腐蚀 —— async void MorphErode()
@@ -1707,6 +1644,134 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
+        //灰度变换
+
+        #region 灰度变换 —— async void LinearTransform()
+        /// <summary>
+        /// 灰度变换
+        /// </summary>
+        public async void LinearTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LinearViewModel viewModel = ResolveMediator.Resolve<LinearViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.LinearTransform(viewModel.Alpha!.Value, viewModel.Beta!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 伽马变换 —— async void GammaTransform()
+        /// <summary>
+        /// 伽马变换
+        /// </summary>
+        public async void GammaTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GammaViewModel viewModel = ResolveMediator.Resolve<GammaViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.GammaTransform(viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 对数变换 —— async void LogarithmicTransform()
+        /// <summary>
+        /// 对数变换
+        /// </summary>
+        public async void LogarithmicTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            LogarithmicViewModel viewModel = ResolveMediator.Resolve<LogarithmicViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat resultImage = image.LogarithmicTransform(viewModel.Gamma!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 阴影变换 —— async void ShadingTransform()
+        /// <summary>
+        /// 阴影变换
+        /// </summary>
+        public async void ShadingTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ShadingViewModel viewModel = ResolveMediator.Resolve<ShadingViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
+                using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
+                this.EffectiveImage = resultImage.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
         //直方图
 
         #region 查看灰度直方图 —— async void LookHistogram()
@@ -1974,13 +2039,13 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //灰度变换
+        //霍夫变换
 
-        #region 灰度变换 —— async void LinearTransform()
+        #region 霍夫线查找 —— async void HoughFindLines()
         /// <summary>
-        /// 灰度变换
+        /// 霍夫线查找
         /// </summary>
-        public async void LinearTransform()
+        public async void HoughFindLines()
         {
             #region # 验证
 
@@ -1989,29 +2054,38 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
+            {
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
             this.Busy();
 
-            LinearViewModel viewModel = ResolveMediator.Resolve<LinearViewModel>();
+            LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.LinearTransform(viewModel.Alpha!.Value, viewModel.Beta!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                LineSegmentPoint[] lines = Cv2.HoughLinesP(image, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
+                foreach (LineSegmentPoint line in lines)
+                {
+                    Cv2.Line(image, line.P1, line.P2, Scalar.Red, 2);
+                }
+                this.EffectiveImage = image.ToBitmapSource();
             }
 
             this.Idle();
         }
         #endregion
 
-        #region 伽马变换 —— async void GammaTransform()
+        #region 霍夫圆查找 —— async void HoughFindCircles()
         /// <summary>
-        /// 伽马变换
+        /// 霍夫圆查找
         /// </summary>
-        public async void GammaTransform()
+        public async void HoughFindCircles()
         {
             #region # 验证
 
@@ -2020,35 +2094,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            #endregion
-
-            this.Busy();
-
-            GammaViewModel viewModel = ResolveMediator.Resolve<GammaViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GammaTransform(viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 对数变换 —— async void LogarithmicTransform()
-        /// <summary>
-        /// 对数变换
-        /// </summary>
-        public async void LogarithmicTransform()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -2056,45 +2104,24 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            LogarithmicViewModel viewModel = ResolveMediator.Resolve<LogarithmicViewModel>();
+            CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
                 using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.LogarithmicTransform(viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
-            }
+                CircleSegment[] circles = Cv2.HoughCircles(image, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
+                foreach (CircleSegment circle in circles)
+                {
+                    Point center = circle.Center.ToPoint();
+                    int radius = (int)Math.Ceiling(circle.Radius);
 
-            this.Idle();
-        }
-        #endregion
+                    //绘制圆
+                    Cv2.Circle(image, center, radius, Scalar.Red, 2);
 
-        #region 阴影变换 —— async void ShadingTransform()
-        /// <summary>
-        /// 阴影变换
-        /// </summary>
-        public async void ShadingTransform()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ShadingViewModel viewModel = ResolveMediator.Resolve<ShadingViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                using Mat image = this.EffectiveImage.ToMat();
-                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
-                using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                    //绘制圆心
+                    Cv2.Circle(image, center, 2, Scalar.Red, 2);
+                }
+                this.EffectiveImage = image.ToBitmapSource();
             }
 
             this.Idle();
@@ -2270,291 +2297,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat image = this.EffectiveImage.ToMat();
             using Mat result = image.DistanceTrans();
             this.EffectiveImage = result.ToBitmapSource();
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //霍夫变换
-
-        #region 霍夫线查找 —— async void HoughFindLines()
-        /// <summary>
-        /// 霍夫线查找
-        /// </summary>
-        public async void HoughFindLines()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                using Mat image = this.EffectiveImage.ToMat();
-                LineSegmentPoint[] lines = Cv2.HoughLinesP(image, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
-                foreach (LineSegmentPoint line in lines)
-                {
-                    Cv2.Line(image, line.P1, line.P2, Scalar.Red, 2);
-                }
-                this.EffectiveImage = image.ToBitmapSource();
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 霍夫圆查找 —— async void HoughFindCircles()
-        /// <summary>
-        /// 霍夫圆查找
-        /// </summary>
-        public async void HoughFindCircles()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                using Mat image = this.EffectiveImage.ToMat();
-                CircleSegment[] circles = Cv2.HoughCircles(image, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
-                foreach (CircleSegment circle in circles)
-                {
-                    Point center = circle.Center.ToPoint();
-                    int radius = (int)Math.Ceiling(circle.Radius);
-
-                    //绘制圆
-                    Cv2.Circle(image, center, radius, Scalar.Red, 2);
-
-                    //绘制圆心
-                    Cv2.Circle(image, center, 2, Scalar.Red, 2);
-                }
-                this.EffectiveImage = image.ToBitmapSource();
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //分割
-
-        #region 阈值分割 —— async void ThresholdSegment()
-        /// <summary>
-        /// 阈值分割
-        /// </summary>
-        public async void ThresholdSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ThresholdViewModel viewModel = ResolveMediator.Resolve<ThresholdViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
-        /// <summary>
-        /// Otsu阈值分割
-        /// </summary>
-        public async void OtsuThresholdSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.EffectiveImage.Format != PixelFormats.Gray8)
-            {
-                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            using Mat image = this.EffectiveImage.ToMat();
-            using Mat result = new Mat();
-            await Task.Run(() => Cv2.Threshold(image, result, 0, 255, ThresholdTypes.Otsu));
-            this.EffectiveImage = result.ToBitmapSource();
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 颜色分割 —— async void ColorSegment()
-        /// <summary>
-        /// 颜色分割
-        /// </summary>
-        public async void ColorSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
-            {
-                MessageBox.Show("图像必须为三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 矩形分割 —— async void RectangleSegment()
-        /// <summary>
-        /// 矩形分割
-        /// </summary>
-        public async void RectangleSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 掩膜分割 —— async void MaskSegment()
-        /// <summary>
-        /// 掩膜分割
-        /// </summary>
-        public async void MaskSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region GrabCut分割 —— async void GrabCutSegment()
-        /// <summary>
-        /// GrabCut分割
-        /// </summary>
-        public async void GrabCutSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            GrabCutViewModel viewModel = ResolveMediator.Resolve<GrabCutViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
 
             this.Idle();
         }
@@ -3024,33 +2766,258 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //匹配
+        //绘制
 
-        #region 模板匹配 —— async void TemplateMatch()
+        #region 绘制形状 —— async void DrawShapes()
         /// <summary>
-        /// 模板匹配
+        /// 绘制形状
         /// </summary>
-        public async void TemplateMatch()
+        public async void DrawShapes()
         {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
             this.Busy();
 
-            TemplateViewModel viewModel = ResolveMediator.Resolve<TemplateViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
+            ShapeViewModel viewModel = ResolveMediator.Resolve<ShapeViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
 
             this.Idle();
         }
         #endregion
 
-        #region 特征匹配 —— async void FeatureMatch()
+        #region 绘制掩膜 —— async void DrawMask()
         /// <summary>
-        /// 特征匹配
+        /// 绘制掩膜
         /// </summary>
-        public async void FeatureMatch()
+        public async void DrawMask()
         {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
             this.Busy();
 
-            FeatureViewModel viewModel = ResolveMediator.Resolve<FeatureViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
+            DrawContext.MaskViewModel viewModel = ResolveMediator.Resolve<DrawContext.MaskViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+
+        //分割
+
+        #region 阈值分割 —— async void ThresholdSegment()
+        /// <summary>
+        /// 阈值分割
+        /// </summary>
+        public async void ThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
+            {
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ThresholdViewModel viewModel = ResolveMediator.Resolve<ThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
+        /// <summary>
+        /// Otsu阈值分割
+        /// </summary>
+        public async void OtsuThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Gray8)
+            {
+                MessageBox.Show("图像必须为单通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.Threshold(image, result, 0, 255, ThresholdTypes.Otsu));
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 颜色分割 —— async void ColorSegment()
+        /// <summary>
+        /// 颜色分割
+        /// </summary>
+        public async void ColorSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 矩形分割 —— async void RectangleSegment()
+        /// <summary>
+        /// 矩形分割
+        /// </summary>
+        public async void RectangleSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 掩膜分割 —— async void MaskSegment()
+        /// <summary>
+        /// 掩膜分割
+        /// </summary>
+        public async void MaskSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region GrabCut分割 —— async void GrabCutSegment()
+        /// <summary>
+        /// GrabCut分割
+        /// </summary>
+        public async void GrabCutSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            GrabCutViewModel viewModel = ResolveMediator.Resolve<GrabCutViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
 
             this.Idle();
         }
@@ -3133,6 +3100,39 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+
+        //匹配
+
+        #region 模板匹配 —— async void TemplateMatch()
+        /// <summary>
+        /// 模板匹配
+        /// </summary>
+        public async void TemplateMatch()
+        {
+            this.Busy();
+
+            TemplateViewModel viewModel = ResolveMediator.Resolve<TemplateViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 特征匹配 —— async void FeatureMatch()
+        /// <summary>
+        /// 特征匹配
+        /// </summary>
+        public async void FeatureMatch()
+        {
+            this.Busy();
+
+            FeatureViewModel viewModel = ResolveMediator.Resolve<FeatureViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
