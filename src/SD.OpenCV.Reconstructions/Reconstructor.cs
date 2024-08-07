@@ -41,7 +41,9 @@ namespace SD.OpenCV.Reconstructions
 
         #endregion
 
-        #region # 只读属性 - 是否已初始化 —— static bool Initialized
+        #region # 属性
+
+        #region 只读属性 - 是否已初始化 —— static bool Initialized
         /// <summary>
         /// 只读属性 - 是否已初始化
         /// </summary>
@@ -51,7 +53,11 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region # 初始化 —— static void Initialize()
+        #endregion
+
+        #region # 方法
+
+        #region 初始化 —— static void Initialize()
         /// <summary>
         /// 初始化
         /// </summary>
@@ -72,7 +78,7 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region # 初始化 —— static void Initialize(SuperFeature feature, SuperMatcher matcher)
+        #region 初始化 —— static void Initialize(SuperFeature feature, SuperMatcher matcher)
         /// <summary>
         /// 初始化
         /// </summary>
@@ -95,7 +101,7 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region # 匹配图像 —— static MatchResult Match(Mat sourceImage, Mat targetImage...
+        #region 匹配图像 —— static MatchResult Match(Mat sourceImage, Mat targetImage...
         /// <summary>
         /// 匹配图像
         /// </summary>
@@ -151,7 +157,7 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region # 重建图像 —— static Mat RecoverImage(Mat sourceImage, Mat targetImage...
+        #region 重建图像 —— static Mat RecoverImage(Mat sourceImage, Mat targetImage...
         /// <summary>
         /// 重建图像
         /// </summary>
@@ -177,17 +183,17 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using Mat homoMat = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
+            using Mat homoMatrix = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
 
-            //透射变换源图像
+            //透视变换源图像
             Mat result = new Mat();
-            Cv2.WarpPerspective(sourceImage, result, homoMat, sourceImage.Size());
+            Cv2.WarpPerspective(sourceImage, result, homoMatrix, sourceImage.Size());
 
             return result;
         }
         #endregion
 
-        #region # 重建图像 —— static Mat RecoverImage(Mat sourceImage, MatchResult matchResult)
+        #region 重建图像 —— static Mat RecoverImage(Mat sourceImage, MatchResult matchResult)
         /// <summary>
         /// 重建图像
         /// </summary>
@@ -201,17 +207,17 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using Mat homoMat = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
+            using Mat homoMatrix = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
 
             //透视变换源图像
             Mat result = new Mat();
-            Cv2.WarpPerspective(sourceImage, result, homoMat, sourceImage.Size());
+            Cv2.WarpPerspective(sourceImage, result, homoMatrix, sourceImage.Size());
 
             return result;
         }
         #endregion
 
-        #region # 重建位姿 —— static double[,] RecoverPose(Mat sourceImage, Mat targetImage...
+        #region 重建位姿 —— static double[,] RecoverPose(Mat sourceImage, Mat targetImage...
         /// <summary>
         /// 重建位姿
         /// </summary>
@@ -263,6 +269,55 @@ namespace SD.OpenCV.Reconstructions
 
             return rtArray4x4;
         }
+        #endregion
+
+        #region 重建位姿 —— static double[,] RecoverPose(Mat sourceImage, double[,] cameraMatrix...
+        /// <summary>
+        /// 重建位姿
+        /// </summary>
+        /// <param name="sourceImage">源图像</param>
+        /// <param name="cameraMatrix">相机内参矩阵</param>
+        /// <param name="matchResult">匹配结果</param>
+        /// <returns>旋转平移矩阵: 4x4二维数组</returns>
+        public static double[,] RecoverPose(Mat sourceImage, double[,] cameraMatrix, MatchResult matchResult)
+        {
+            #region # 验证
+
+            if (cameraMatrix == null)
+            {
+                throw new ArgumentNullException(nameof(cameraMatrix), "相机内参矩阵不可为空！");
+            }
+            if (!(cameraMatrix.Rank == 2 && cameraMatrix.GetLength(0) == 3 && cameraMatrix.GetLength(1) == 3))
+            {
+                throw new InvalidOperationException("相机内参矩阵必须为3x3矩阵！");
+            }
+
+            #endregion
+
+            //解析匹配结果
+            Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
+            Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
+
+            //计算本征矩阵
+            using Mat cameraMat = Mat.FromArray(cameraMatrix);
+            using Mat essentialMat = Cv2.FindEssentialMat(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat);
+
+            //计算RT矩阵
+            using Mat rMat = new Mat();
+            using Mat tMat = new Mat();
+            Cv2.RecoverPose(essentialMat, InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat, rMat, tMat);
+            double[,] rtArray4x4 =
+            {
+                {rMat.At<double>(0, 0), rMat.At<double>(0, 1), rMat.At<double>(0, 2), tMat.At<double>(0, 0)},
+                {rMat.At<double>(1, 0), rMat.At<double>(1, 1), rMat.At<double>(1, 2), tMat.At<double>(1, 0)},
+                {rMat.At<double>(2, 0), rMat.At<double>(2, 1), rMat.At<double>(2, 2), tMat.At<double>(2, 0)},
+                {0, 0, 0, 1}
+            };
+
+            return rtArray4x4;
+        }
+        #endregion 
+
         #endregion
     }
 }

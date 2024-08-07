@@ -327,6 +327,8 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
             #endregion
 
+            this.Busy();
+
             using Mat sourceImage = this.SourceImage.ToMat();
             using Mat resultImage = await Task.Run(() => Reconstructor.RecoverImage(sourceImage, this.MatchResult));
 
@@ -334,6 +336,8 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(resultImage.ToBitmapSource());
             await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 

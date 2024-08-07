@@ -87,9 +87,9 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
-        #region # 测试透射变换 —— void TestPerspectiveTrans()
+        #region # 测试透视变换 —— void TestPerspectiveTrans()
         /// <summary>
-        /// 测试透射变换
+        /// 测试透视变换
         /// </summary>
         [TestMethod]
         public void TestPerspectiveTrans()
@@ -112,8 +112,8 @@ namespace SD.OpenCV.Tests.TestCases
             };
             using Mat result = matrix.PerspectiveTrans(sourcePoints, targetPoints);
 
-            Cv2.ImShow("OpenCV透射变换-原图", matrix);
-            Cv2.ImShow("OpenCV透射变换-效果图", result);
+            Cv2.ImShow("OpenCV透视变换-原图", matrix);
+            Cv2.ImShow("OpenCV透视变换-效果图", result);
             Cv2.WaitKey();
         }
         #endregion
