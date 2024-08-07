@@ -23,12 +23,18 @@ namespace SD.OpenCV.Primitives.Models
         /// 创建匹配结果构造器
         /// </summary>
         /// <param name="matchedCount">匹配数量</param>
+        /// <param name="dMatches">匹配索引列表</param>
+        /// <param name="sourceKeyPoints">源关键点列表</param>
+        /// <param name="targetKeyPoints">目标关键点列表</param>
         /// <param name="matchedSourceKeyPoints">匹配的源关键点字典</param>
         /// <param name="matchedTargetKeyPoints">匹配的目标关键点字典</param>
-        public MatchResult(int matchedCount, IDictionary<int, KeyPoint> matchedSourceKeyPoints, IDictionary<int, KeyPoint> matchedTargetKeyPoints)
+        public MatchResult(int matchedCount, DMatch[] dMatches, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> targetKeyPoints, IDictionary<int, KeyPoint> matchedSourceKeyPoints, IDictionary<int, KeyPoint> matchedTargetKeyPoints)
             : this()
         {
             this.MatchedCount = matchedCount;
+            this.DMatches = dMatches;
+            this.SourceKeyPoints = sourceKeyPoints;
+            this.TargetKeyPoints = targetKeyPoints;
             this.MatchedSourceKeyPoints = matchedSourceKeyPoints;
             this.MatchedTargetKeyPoints = matchedTargetKeyPoints;
         }
@@ -43,6 +49,27 @@ namespace SD.OpenCV.Primitives.Models
         /// 匹配数量
         /// </summary>
         public int MatchedCount { get; private set; }
+        #endregion
+
+        #region 匹配索引列表 —— DMatch[] DMatches
+        /// <summary>
+        /// 匹配索引列表
+        /// </summary>
+        public DMatch[] DMatches { get; private set; }
+        #endregion
+
+        #region 源关键点列表 —— IList<KeyPoint> SourceKeyPoints
+        /// <summary>
+        /// 源关键点列表
+        /// </summary>
+        public IList<KeyPoint> SourceKeyPoints { get; private set; }
+        #endregion
+
+        #region 目标关键点列表 —— IList<KeyPoint> TargetKeyPoints
+        /// <summary>
+        /// 目标关键点列表
+        /// </summary>
+        public IList<KeyPoint> TargetKeyPoints { get; private set; }
         #endregion
 
         #region 匹配的源关键点字典 —— IDictionary<int, KeyPoint> MatchedSourceKeyPoints

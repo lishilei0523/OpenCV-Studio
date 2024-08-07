@@ -41,6 +41,16 @@ namespace SD.OpenCV.Reconstructions
 
         #endregion
 
+        #region # 只读属性 - 是否已初始化 —— static bool Initialized
+        /// <summary>
+        /// 只读属性 - 是否已初始化
+        /// </summary>
+        public static bool Initialized
+        {
+            get => _Initialized;
+        }
+        #endregion
+
         #region # 初始化 —— static void Initialize()
         /// <summary>
         /// 初始化
@@ -170,6 +180,30 @@ namespace SD.OpenCV.Reconstructions
             using Mat homoMat = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
 
             //透射变换源图像
+            Mat result = new Mat();
+            Cv2.WarpPerspective(sourceImage, result, homoMat, sourceImage.Size());
+
+            return result;
+        }
+        #endregion
+
+        #region # 重建图像 —— static Mat RecoverImage(Mat sourceImage, MatchResult matchResult)
+        /// <summary>
+        /// 重建图像
+        /// </summary>
+        /// <param name="sourceImage">源图像</param>
+        /// <param name="matchResult">匹配结果</param>
+        /// <returns>重建后源图像</returns>
+        public static Mat RecoverImage(Mat sourceImage, MatchResult matchResult)
+        {
+            //解析匹配结果
+            Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
+            Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
+
+            //计算单应矩阵
+            using Mat homoMat = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
+
+            //透视变换源图像
             Mat result = new Mat();
             Cv2.WarpPerspective(sourceImage, result, homoMat, sourceImage.Size());
 

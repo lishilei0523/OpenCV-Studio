@@ -11,7 +11,7 @@ namespace SD.OpenCV.Primitives.Reconstructions
     /// </summary>
     public static class SuperEngineer
     {
-        #region # 解析匹配结果 —— static MatchResult ResolveMatchResult(this IEnumerable<DMatch> matches...
+        #region # 解析匹配结果 —— static MatchResult ResolveMatchResult(this DMatch[] matches...
         /// <summary>
         /// 解析匹配结果
         /// </summary>
@@ -19,16 +19,16 @@ namespace SD.OpenCV.Primitives.Reconstructions
         /// <param name="sourceKeyPoints">源关键点集</param>
         /// <param name="targetKeyPoints">目标关键点集</param>
         /// <returns>匹配结果</returns>
-        public static MatchResult ResolveMatchResult(this IEnumerable<DMatch> matches, IEnumerable<KeyPoint> sourceKeyPoints, IEnumerable<KeyPoint> targetKeyPoints)
+        public static MatchResult ResolveMatchResult(this DMatch[] matches, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> targetKeyPoints)
         {
             #region # 验证
 
-            matches = matches?.ToArray() ?? Array.Empty<DMatch>();
-            sourceKeyPoints = sourceKeyPoints?.ToArray() ?? Array.Empty<KeyPoint>();
-            targetKeyPoints = targetKeyPoints?.ToArray() ?? Array.Empty<KeyPoint>();
+            matches ??= Array.Empty<DMatch>();
+            sourceKeyPoints ??= new List<KeyPoint>();
+            targetKeyPoints ??= new List<KeyPoint>();
             if (!matches.Any() || !sourceKeyPoints.Any() || !targetKeyPoints.Any())
             {
-                return new MatchResult(0, new Dictionary<int, KeyPoint>(), new Dictionary<int, KeyPoint>());
+                return new MatchResult(0, matches, sourceKeyPoints, targetKeyPoints, new Dictionary<int, KeyPoint>(), new Dictionary<int, KeyPoint>());
             }
 
             #endregion
@@ -41,7 +41,7 @@ namespace SD.OpenCV.Primitives.Reconstructions
                 matchedTargetKeyPoints.Add(goodMatch.TrainIdx, targetKeyPoints.ElementAt(goodMatch.TrainIdx));
             }
 
-            MatchResult matchResult = new MatchResult(matches.Count(), matchedSourceKeyPoints, matchedTargetKeyPoints);
+            MatchResult matchResult = new MatchResult(matches.Count(), matches, sourceKeyPoints, targetKeyPoints, matchedSourceKeyPoints, matchedTargetKeyPoints);
 
             return matchResult;
         }

@@ -4,8 +4,10 @@ using SD.Infrastructure.WPF.Caliburn.Extensions;
 using SD.IOC.Core.Extensions;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.HomeContext;
+using SD.OpenCV.Reconstructions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -85,6 +87,12 @@ namespace SD.OpenCV.Client
                 ContainerBuilder containerBuilder = ResolveMediator.GetContainerBuilder();
                 containerBuilder.RegisterConfigs();
                 ResolveMediator.Build();
+            }
+
+            //初始化重建器
+            if (!Reconstructor.Initialized)
+            {
+                Task.Run(Reconstructor.Initialize);
             }
         }
         #endregion

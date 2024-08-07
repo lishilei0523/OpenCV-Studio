@@ -3047,8 +3047,12 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void FeatureMatch()
         {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            this.Busy();
+
+            FeatureViewModel viewModel = ResolveMediator.Resolve<FeatureViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
@@ -3129,17 +3133,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
-        }
-        #endregion
-
-        #region 矫正位姿 —— async void RectifyPose()
-        /// <summary>
-        /// 矫正位姿
-        /// </summary>
-        public async void RectifyPose()
-        {
-            //TODO 实现
-            MessageBox.Show("未实现", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         #endregion
 

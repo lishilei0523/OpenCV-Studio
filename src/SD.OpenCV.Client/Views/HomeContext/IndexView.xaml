@@ -152,7 +152,6 @@
                 <MenuItem Header="矫正(_R)">
                     <MenuItem Header="矫正污点(_S)" cm:Message.Attach="RectifyStains()" />
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
-                    <MenuItem Header="矫正位姿(_P)" cm:Message.Attach="RectifyPose()" />
                 </MenuItem>
                 <MenuItem Header="标定(_C)">
                     <MenuItem Header="单目标定(_I)" cm:Message.Attach="MonoCalibrate()" />
