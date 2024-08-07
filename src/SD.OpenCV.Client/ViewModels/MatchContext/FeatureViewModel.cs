@@ -7,6 +7,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
+using SD.Infrastructure.WPF.Visual2Ds;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
@@ -22,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
+using Size = System.Windows.Size;
 
 namespace SD.OpenCV.Client.ViewModels.MatchContext
 {
@@ -109,8 +111,31 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         /// <summary>
         /// 匹配结果
         /// </summary>
-        [DependencyProperty]
         public MatchResult MatchResult { get; set; }
+        #endregion
+
+        #region 源关键点数量 —— int SourceKeypointsCount
+        /// <summary>
+        /// 源关键点数量
+        /// </summary>
+        [DependencyProperty]
+        public int SourceKeypointsCount { get; set; }
+        #endregion
+
+        #region 目标关键点数量 —— int TargetKeypointsCount
+        /// <summary>
+        /// 目标关键点数量
+        /// </summary>
+        [DependencyProperty]
+        public int TargetKeypointsCount { get; set; }
+        #endregion
+
+        #region 匹配关键点数量 —— int MatchedKeypointsCount
+        /// <summary>
+        /// 匹配关键点数量
+        /// </summary>
+        [DependencyProperty]
+        public int MatchedKeypointsCount { get; set; }
         #endregion
 
         #region 参考矩形 —— Rectangle SourceRectangle
@@ -129,6 +154,14 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         public RectangleL SourceRectangleL { get; set; }
         #endregion
 
+        #region 目标矩形 —— RectangleVisual2D TargetRectangle
+        /// <summary>
+        /// 目标矩形
+        /// </summary>
+        [DependencyProperty]
+        public RectangleVisual2D TargetRectangle { get; set; }
+        #endregion
+
         #endregion
 
         #region # 方法
@@ -144,6 +177,12 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             //默认值
             this.RectangleChecked = true;
             this.OnRectangleClick();
+            this.TargetRectangle = new RectangleVisual2D
+            {
+                Location = new Point(0, 0),
+                Size = new Size(0, 0),
+                Visibility = Visibility.Collapsed
+            };
             this.Threshold = 90;
 
             return base.OnInitializeAsync(cancellationToken);
@@ -241,6 +280,15 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             //推理匹配
             float threshold = this.Threshold / 100;
             this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, threshold));
+            this.SourceKeypointsCount = this.MatchResult.SourceKeyPoints.Count;
+            this.TargetKeypointsCount = this.MatchResult.TargetKeyPoints.Count;
+            this.MatchedKeypointsCount = this.MatchResult.MatchedCount;
+
+            //绘制目标矩形
+            Rect boundingRect = Cv2.BoundingRect(this.MatchResult.GetMatchedTargetPoints());
+            this.TargetRectangle.Visibility = Visibility.Visible;
+            this.TargetRectangle.Location = new Point(boundingRect.X, boundingRect.Y);
+            this.TargetRectangle.Size = new Size(boundingRect.Width, boundingRect.Height);
 
             //绘制匹配结果
             using Mat resultImage = new Mat();

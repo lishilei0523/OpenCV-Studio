@@ -93,6 +93,10 @@
                             <sd:CanvasEx.BackgroundImage>
                                 <Image Source="{Binding TargetImage}" />
                             </sd:CanvasEx.BackgroundImage>
+                            <sd:RectangleVisual2D Fill="Transparent" Stroke="Red" StrokeThickness="2"
+                                                  Visibility="{Binding TargetRectangle.Visibility}"
+                                                  Location="{Binding TargetRectangle.Location}"
+                                                  Size="{Binding TargetRectangle.Size}" />
                         </sd:CanvasEx>
                     </GroupBox>
                 </Grid>
@@ -116,13 +120,25 @@
                 </WrapPanel>
                 <WrapPanel Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="Source keypoints: " FontSize="12" />
-                    <TextBlock Text="{Binding MatchResult.SourceKeypoints.Count}" FontSize="12" />
+                    <TextBlock Text="{Binding SourceKeypointsCount}" FontSize="12" />
                     <TextBlock Text=", " FontSize="12" />
                     <TextBlock Text="Target keypoints: " FontSize="12" />
-                    <TextBlock Text="{Binding MatchResult.TargetKeypoints.Count}" FontSize="12" />
+                    <TextBlock Text="{Binding TargetKeypointsCount}" FontSize="12" />
                     <TextBlock Text=", " FontSize="12" />
                     <TextBlock Text="Matched keypoints: " FontSize="12" />
-                    <TextBlock Text="{Binding MatchResult.MatchedCount}" FontSize="12" />
+                    <TextBlock Text="{Binding MatchedKeypointsCount}" FontSize="12" />
+                    <TextBlock Text=" | " FontSize="12" />
+                    <TextBlock Text="X: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetRectangle.Location.X}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Y: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetRectangle.Location.Y}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetRectangle.Size.Width}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetRectangle.Size.Height}" FontSize="12" />
                 </WrapPanel>
             </Grid>
         </Border>
