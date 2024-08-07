@@ -278,8 +278,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             }
 
             //推理匹配
-            float threshold = this.Threshold / 100;
-            this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, threshold));
+            this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, this.Threshold / 100));
             this.SourceKeypointsCount = this.MatchResult.SourceKeyPoints.Count;
             this.TargetKeypointsCount = this.MatchResult.TargetKeyPoints.Count;
             this.MatchedKeypointsCount = this.MatchResult.MatchedCount;
