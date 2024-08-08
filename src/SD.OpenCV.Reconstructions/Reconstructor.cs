@@ -126,10 +126,6 @@ namespace SD.OpenCV.Reconstructions
             {
                 throw new ArgumentNullException(nameof(targetImage), "目标图像不可为空！");
             }
-            if (!(sourceImage.Rows == targetImage.Rows && sourceImage.Cols == targetImage.Cols))
-            {
-                throw new InvalidOperationException("源图像与目标图像尺寸不一致！");
-            }
 
             #endregion
 
