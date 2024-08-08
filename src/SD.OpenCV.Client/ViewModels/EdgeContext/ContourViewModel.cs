@@ -8,7 +8,6 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
-using SD.OpenCV.Client.Views.EdgeContext;
 using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
@@ -220,12 +219,6 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
             this.Busy();
 
             //清空轮廓
-            ContourView view = (ContourView)this.GetView();
-            CanvasEx canvasEx = view.CanvasEx;
-            foreach (Polygon polygon in canvasEx.Children.OfType<Polygon>().ToArray())
-            {
-                canvasEx.Children.Remove(polygon);
-            }
             this.ShapeLs.Clear();
             this.Shapes.Clear();
 
@@ -264,13 +257,11 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
                     Stroke = new SolidColorBrush(_PolyColors[index % 5]),
                     StrokeThickness = 2,
                     Points = polyPoints,
-                    RenderTransform = canvasEx.MatrixTransform,
                     Tag = polygonL
                 };
                 polygonL.Tag = polygon;
                 this.ShapeLs.Add(polygonL);
                 this.Shapes.Add(polygon);
-                canvasEx.Children.Add(polygon);
                 polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
             }
 

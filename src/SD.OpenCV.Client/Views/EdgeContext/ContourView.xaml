@@ -80,7 +80,8 @@
                 </Grid.ColumnDefinitions>
                 <!--图像画布-->
                 <GroupBox Grid.Column="0" Header="图像画布" Margin="4,4,2,4" Background="LightGray">
-                    <sd:CanvasEx x:Name="CanvasEx" Mode="{Binding CanvasMode}" cm:Message.Attach="
+                    <sd:CanvasEx Mode="{Binding CanvasMode}" ShapesSource="{Binding Shapes}" 
+                                 cm:Message.Attach="
                                  [Event ElementDrag] = [Action OnDragElement($source)];
                                  [Event ElementResize] = [Action OnResizeElement($source)];">
                         <sd:CanvasEx.BackgroundImage>
