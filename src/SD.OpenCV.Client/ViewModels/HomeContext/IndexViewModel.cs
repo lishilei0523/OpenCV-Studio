@@ -2069,17 +2069,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             LineViewModel viewModel = ResolveMediator.Resolve<LineViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                LineSegmentPoint[] lines = Cv2.HoughLinesP(grayImage, viewModel.Rho!.Value, viewModel.Theta!.Value, viewModel.Threshold!.Value);
-                foreach (LineSegmentPoint line in lines)
-                {
-                    Cv2.Line(image, line.P1, line.P2, Scalar.Red, 2);
-                }
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
