@@ -47,27 +47,6 @@ namespace SD.OpenCV.Primitives.Reconstructions
         }
         #endregion
 
-        #region # 匹配结果转DMatch列表 —— static ICollection<DMatch> ToDMatches(this MatchResult matchResult)
-        /// <summary>
-        /// 匹配结果转DMatch列表
-        /// </summary>
-        /// <param name="matchResult">匹配结果</param>
-        /// <returns>DMatch列表</returns>
-        public static ICollection<DMatch> ToDMatches(this MatchResult matchResult)
-        {
-            IList<DMatch> dMatches = new List<DMatch>();
-            for (int index = 0; index < matchResult.MatchedCount; index++)
-            {
-                KeyValuePair<int, KeyPoint> srcKv = matchResult.MatchedSourceKeyPoints.ElementAt(index);
-                KeyValuePair<int, KeyPoint> tgtKv = matchResult.MatchedTargetKeyPoints.ElementAt(index);
-                DMatch dMatch = new DMatch(srcKv.Key, tgtKv.Key, 0);
-                dMatches.Add(dMatch);
-            }
-
-            return dMatches;
-        }
-        #endregion
-
         #region # 获取图像特征 —— static float[] GetImageFeatures(this Mat image)
         /// <summary>
         /// 获取图像特征
