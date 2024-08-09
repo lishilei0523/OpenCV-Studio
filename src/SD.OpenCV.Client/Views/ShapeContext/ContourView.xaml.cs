@@ -1,7 +1,7 @@
-﻿namespace SD.OpenCV.Client.Views.EdgeContext
+﻿namespace SD.OpenCV.Client.Views.ShapeContext
 {
     /// <summary>
-    /// 轮廓检测视图
+    /// 轮廓查找视图
     /// </summary>
     public partial class ContourView
     {

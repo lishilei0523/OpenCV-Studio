@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.HoughContext
+namespace SD.OpenCV.Client.ViewModels.ShapeContext
 {
     /// <summary>
     /// 霍夫圆查找视图模型

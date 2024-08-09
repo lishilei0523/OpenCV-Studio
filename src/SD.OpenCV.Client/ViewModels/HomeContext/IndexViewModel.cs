@@ -18,11 +18,11 @@ using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
 using SD.OpenCV.Client.ViewModels.HistogramContext;
-using SD.OpenCV.Client.ViewModels.HoughContext;
 using SD.OpenCV.Client.ViewModels.MatchContext;
 using SD.OpenCV.Client.ViewModels.MorphContext;
 using SD.OpenCV.Client.ViewModels.RectifyContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
+using SD.OpenCV.Client.ViewModels.ShapeContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
@@ -2047,38 +2047,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 轮廓检测 —— async void DetectContours()
-        /// <summary>
-        /// 轮廓检测
-        /// </summary>
-        public async void DetectContours()
-        {
-            #region # 验证
 
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ContourViewModel viewModel = ResolveMediator.Resolve<ContourViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //霍夫变换
+        //形状查找
 
         #region 霍夫线查找 —— async void HoughFindLines()
         /// <summary>
@@ -2153,6 +2123,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                     Cv2.Circle(image, center, 2, Scalar.Red, 2);
                 }
                 this.EffectiveImage = image.ToBitmapSource();
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 轮廓查找 —— async void FindContours()
+        /// <summary>
+        /// 轮廓查找
+        /// </summary>
+        public async void FindContours()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            ContourViewModel viewModel = ResolveMediator.Resolve<ContourViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();

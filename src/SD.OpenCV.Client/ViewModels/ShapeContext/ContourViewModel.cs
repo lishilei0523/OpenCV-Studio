@@ -23,10 +23,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 
-namespace SD.OpenCV.Client.ViewModels.EdgeContext
+namespace SD.OpenCV.Client.ViewModels.ShapeContext
 {
     /// <summary>
-    /// 轮廓检测视图模型
+    /// 轮廓查找视图模型
     /// </summary>
     public class ContourViewModel : ScreenBase
     {
@@ -50,7 +50,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public ContourViewModel(IWindowManager windowManager)
         {
-            this._windowManager = windowManager;
+            _windowManager = windowManager;
         }
 
         #endregion
@@ -174,14 +174,14 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.ScaleChecked = true;
-            this.AreaThreshold = 100;
-            this.RetrievalMode = OpenCvSharp.RetrievalModes.List;
-            this.ApproxMode = ContourApproximationModes.ApproxNone;
-            this.RetrievalModes = typeof(RetrievalModes).GetEnumMembers();
-            this.ApproxModes = typeof(ContourApproximationModes).GetEnumMembers();
-            this.Shapes = new ObservableCollection<Shape>();
-            this.ShapeLs = new ObservableCollection<ShapeL>();
+            ScaleChecked = true;
+            AreaThreshold = 100;
+            RetrievalMode = OpenCvSharp.RetrievalModes.List;
+            ApproxMode = ContourApproximationModes.ApproxNone;
+            RetrievalModes = typeof(RetrievalModes).GetEnumMembers();
+            ApproxModes = typeof(ContourApproximationModes).GetEnumMembers();
+            Shapes = new ObservableCollection<Shape>();
+            ShapeLs = new ObservableCollection<ShapeL>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -193,22 +193,22 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void Load(BitmapSource bitmapSource)
         {
-            this.BitmapSource = bitmapSource;
+            BitmapSource = bitmapSource;
         }
         #endregion
 
 
         //Actions
 
-        #region 检测轮廓 —— async void DetectContours()
+        #region 查找轮廓 —— async void FindContours()
         /// <summary>
-        /// 检测轮廓
+        /// 查找轮廓
         /// </summary>
-        public async void DetectContours()
+        public async void FindContours()
         {
             #region # 验证
 
-            if (this.BitmapSource == null)
+            if (BitmapSource == null)
             {
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -216,17 +216,17 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
             #endregion
 
-            this.Busy();
+            Busy();
 
             //清空轮廓
-            this.ShapeLs.Clear();
-            this.Shapes.Clear();
+            ShapeLs.Clear();
+            Shapes.Clear();
 
             //检测轮廓
-            using Mat image = this.BitmapSource.ToMat();
+            using Mat image = BitmapSource.ToMat();
             using Mat grayImage = image.Type() == MatType.CV_8UC1 ? image : image.CvtColor(ColorConversionCodes.BGR2GRAY);
             OpenCvSharp.Point[][] contours = { };
-            await Task.Run(() => Cv2.FindContours(grayImage, out contours, out HierarchyIndex[] _, this.RetrievalMode, this.ApproxMode));
+            await Task.Run(() => Cv2.FindContours(grayImage, out contours, out HierarchyIndex[] _, RetrievalMode, ApproxMode));
 
             //绘制轮廓
             contours = contours.OrderByDescending(contour => Cv2.ContourArea(contour)).ToArray();
@@ -236,7 +236,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
                 //过滤面积
                 double area = Cv2.ContourArea(contour);
-                if (area < this.AreaThreshold)
+                if (area < AreaThreshold)
                 {
                     continue;
                 }
@@ -260,12 +260,12 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
                     Tag = polygonL
                 };
                 polygonL.Tag = polygon;
-                this.ShapeLs.Add(polygonL);
-                this.Shapes.Add(polygon);
-                polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+                ShapeLs.Add(polygonL);
+                Shapes.Add(polygon);
+                polygon.MouseLeftButtonDown += OnShapeMouseLeftDown;
             }
 
-            this.Idle();
+            Idle();
         }
         #endregion
 
@@ -275,10 +275,10 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void CopyShape()
         {
-            if (this.SelectedShapeL != null)
+            if (SelectedShapeL != null)
             {
-                Clipboard.SetText(this.SelectedShapeL.Text);
-                base.ToastSuccess("已复制剪贴板！");
+                Clipboard.SetText(SelectedShapeL.Text);
+                ToastSuccess("已复制剪贴板！");
             }
         }
         #endregion
@@ -289,13 +289,13 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void RemoveShape()
         {
-            if (this.SelectedShapeL != null)
+            if (SelectedShapeL != null)
             {
-                Shape shape = (Shape)this.SelectedShapeL.Tag;
+                Shape shape = (Shape)SelectedShapeL.Tag;
                 CanvasEx canvas = (CanvasEx)shape.Parent;
 
-                this.ShapeLs.Remove(this.SelectedShapeL);
-                this.Shapes.Remove(shape);
+                ShapeLs.Remove(SelectedShapeL);
+                Shapes.Remove(shape);
                 canvas.Children.Remove(shape);
             }
         }
@@ -309,7 +309,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         {
             #region # 验证
 
-            if (this.BitmapSource == null)
+            if (BitmapSource == null)
             {
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -317,11 +317,11 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
             #endregion
 
-            this.Busy();
+            Busy();
 
-            using Mat image = this.BitmapSource.ToMat();
+            using Mat image = BitmapSource.ToMat();
             using Mat colorImage = image.Type() == MatType.CV_8UC1 ? image.CvtColor(ColorConversionCodes.GRAY2BGR) : image;
-            foreach (Shape shape in this.Shapes)
+            foreach (Shape shape in Shapes)
             {
                 int thickness = (int)Math.Ceiling(shape.StrokeThickness);
                 SolidColorBrush borderBrush = (SolidColorBrush)shape.Stroke;
@@ -338,9 +338,9 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
                     await Task.Run(() => colorImage.DrawContours(new[] { contour }, -1, borderColor, thickness));
                 }
             }
-            this.BitmapSource = colorImage.ToBitmapSource();
+            BitmapSource = colorImage.ToBitmapSource();
 
-            this.Idle();
+            Idle();
 
             await base.TryCloseAsync(true);
         }
@@ -355,12 +355,12 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void OnScaleClick()
         {
-            if (this.ScaleChecked)
+            if (ScaleChecked)
             {
-                this.CanvasMode = CanvasMode.Scale;
+                CanvasMode = CanvasMode.Scale;
 
-                this.DragChecked = false;
-                this.ResizeChecked = false;
+                DragChecked = false;
+                ResizeChecked = false;
             }
         }
         #endregion
@@ -371,12 +371,12 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void OnDragClick()
         {
-            if (this.DragChecked)
+            if (DragChecked)
             {
-                this.CanvasMode = CanvasMode.Drag;
+                CanvasMode = CanvasMode.Drag;
 
-                this.ScaleChecked = false;
-                this.ResizeChecked = false;
+                ScaleChecked = false;
+                ResizeChecked = false;
             }
         }
         #endregion
@@ -387,12 +387,12 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void OnResizeClick()
         {
-            if (this.ResizeChecked)
+            if (ResizeChecked)
             {
-                this.CanvasMode = CanvasMode.Resize;
+                CanvasMode = CanvasMode.Resize;
 
-                this.ScaleChecked = false;
-                this.DragChecked = false;
+                ScaleChecked = false;
+                DragChecked = false;
             }
         }
         #endregion
@@ -407,7 +407,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
             double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
             if (canvas.SelectedVisual is Polygon polygon)
             {
-                this.RebuildPolygon(polygon, leftMargin, topMargin);
+                RebuildPolygon(polygon, leftMargin, topMargin);
             }
         }
         #endregion
@@ -442,7 +442,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
                     polygon.Points.Insert(index, newPoint);
                 }
 
-                this.RebuildPolygon(polygon, leftMargin, topMargin);
+                RebuildPolygon(polygon, leftMargin, topMargin);
             }
         }
         #endregion
@@ -453,9 +453,9 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         public void OnSelectShape()
         {
-            if (this.SelectedShapeL != null)
+            if (SelectedShapeL != null)
             {
-                Shape shape = (Shape)this.SelectedShapeL.Tag;
+                Shape shape = (Shape)SelectedShapeL.Tag;
                 if (shape.Stroke is SolidColorBrush brush)
                 {
                     BrushAnimation brushAnimation = new BrushAnimation
@@ -487,10 +487,10 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         private void RebuildPolygon(Polygon polygon, double leftMargin, double topMargin)
         {
             PolygonL polygonL = (PolygonL)polygon.Tag;
-            int index = this.ShapeLs.IndexOf(polygonL);
+            int index = ShapeLs.IndexOf(polygonL);
             if (index != -1)
             {
-                this.ShapeLs.Remove(polygonL);
+                ShapeLs.Remove(polygonL);
 
                 IList<PointL> pointIs = new List<PointL>();
                 foreach (Point point in polygon.Points)
@@ -504,7 +504,7 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
                 polygon.Tag = newPolygonL;
                 newPolygonL.Tag = polygon;
-                this.ShapeLs.Insert(index, newPolygonL);
+                ShapeLs.Insert(index, newPolygonL);
             }
         }
         #endregion
@@ -515,12 +515,12 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         /// </summary>
         private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
         {
-            if (this.CanvasMode != CanvasMode.Draw)
+            if (CanvasMode != CanvasMode.Draw)
             {
                 Shape shape = (Shape)sender;
                 ShapeL shapeL = (ShapeL)shape.Tag;
-                this.SelectedShapeL = null;
-                this.SelectedShapeL = shapeL;
+                SelectedShapeL = null;
+                SelectedShapeL = shapeL;
             }
         }
         #endregion

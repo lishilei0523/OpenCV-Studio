@@ -3,7 +3,7 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using System;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.HoughContext
+namespace SD.OpenCV.Client.ViewModels.ShapeContext
 {
     /// <summary>
     /// 霍夫线查找视图模型

@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.EdgeContext.ContourView"
+﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.ShapeContext.ContourView"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  mc:Ignorable="d"
-                 Title="轮廓检测" 
+                 Title="轮廓查找" 
                  Width="1440" Height="900" FontSize="14"
                  WindowStartupLocation="CenterOwner"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
@@ -68,7 +68,7 @@
                                    Value="{Binding AreaThreshold, UpdateSourceTrigger=PropertyChanged}"
                                    Width="150"
                                    Style="{StaticResource NumericUpDown.Styles.Default}" />
-                <Button Content="检测" cm:Message.Attach="DetectContours()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
+                <Button Content="查找" cm:Message.Attach="FindContours()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
             </WrapPanel>
         </Grid>
         <!--Body-->

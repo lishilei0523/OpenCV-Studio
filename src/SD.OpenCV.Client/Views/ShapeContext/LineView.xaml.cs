@@ -1,4 +1,4 @@
-﻿namespace SD.OpenCV.Client.Views.HoughContext
+﻿namespace SD.OpenCV.Client.Views.ShapeContext
 {
     /// <summary>
     /// 霍夫线查找视图
