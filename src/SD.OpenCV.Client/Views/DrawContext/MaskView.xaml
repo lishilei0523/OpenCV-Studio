@@ -13,6 +13,7 @@
                  Width="1440" Height="900" FontSize="14"
                  WindowStartupLocation="CenterOwner"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
+
     <Grid>
         <Grid.RowDefinitions>
             <!--Header-->

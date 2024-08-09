@@ -51,36 +51,12 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region 显示网格线 —— bool ShowGridLines
-        /// <summary>
-        /// 显示网格线
-        /// </summary>
-        [DependencyProperty]
-        public bool ShowGridLines { get; set; }
-        #endregion
-
-        #region 网格线可见性 —— Visibility GridLinesVisibility
-        /// <summary>
-        /// 网格线可见性
-        /// </summary>
-        [DependencyProperty]
-        public Visibility GridLinesVisibility { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
         /// </summary>
         [DependencyProperty]
         public BitmapSource BitmapSource { get; set; }
-        #endregion
-
-        #region 选中缩放 —— bool ScaleChecked
-        /// <summary>
-        /// 选中缩放
-        /// </summary>
-        [DependencyProperty]
-        public bool ScaleChecked { get; set; }
         #endregion
 
         #region 选中拖拽 —— bool DragChecked
@@ -136,9 +112,8 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.ShowGridLines = true;
-            this.GridLinesVisibility = Visibility.Visible;
-            this.ScaleChecked = true;
+            this.RectangleChecked = true;
+            this.OnRectangleClick();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -156,16 +131,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
 
         //Actions
-
-        #region 切换显示网格线 —— void SwitchGridLines()
-        /// <summary>
-        /// 切换显示网格线
-        /// </summary>
-        public void SwitchGridLines()
-        {
-            this.GridLinesVisibility = this.ShowGridLines ? Visibility.Visible : Visibility.Collapsed;
-        }
-        #endregion
 
         #region 提交 —— async void Submit()
         /// <summary>
@@ -206,23 +171,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
         //Events
 
-        #region 缩放点击事件 —— void OnScaleClick()
-        /// <summary>
-        /// 缩放点击事件
-        /// </summary>
-        public void OnScaleClick()
-        {
-            if (this.ScaleChecked)
-            {
-                this.CanvasMode = CanvasMode.Scale;
-
-                this.DragChecked = false;
-                this.ResizeChecked = false;
-                this.RectangleChecked = false;
-            }
-        }
-        #endregion
-
         #region 拖拽点击事件 —— void OnDragClick()
         /// <summary>
         /// 拖拽点击事件
@@ -233,7 +181,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Drag;
 
-                this.ScaleChecked = false;
                 this.ResizeChecked = false;
                 this.RectangleChecked = false;
             }
@@ -250,7 +197,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Resize;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.RectangleChecked = false;
             }
@@ -267,7 +213,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.CanvasMode = CanvasMode.Draw;
 
-                this.ScaleChecked = false;
                 this.DragChecked = false;
                 this.ResizeChecked = false;
             }
