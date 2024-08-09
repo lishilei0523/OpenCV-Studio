@@ -53,25 +53,25 @@
                           SelectedValue="{Binding HoughMode}"
                           mah:TextBoxHelper.ClearTextButton="False"
                           mah:TextBoxHelper.Watermark="请选择" 
-                          Width="150"
+                          Width="105"
                           Style="{StaticResource ComboBox.Styles.Default}" />
                 <TextBlock Text="分辨率：" Margin="10,0,0,0" />
-                <TextBox Text="{Binding Dp}" Width="150"
+                <TextBox Text="{Binding Dp}" Width="105"
                          mah:TextBoxHelper.Watermark="分辨率"
                          mah:TextBoxHelper.ClearTextButton="True" />
                 <TextBlock Text="圆心最小距离：" Margin="10,0,0,0" />
-                <TextBox Text="{Binding MinDistance}" Width="150"
+                <TextBox Text="{Binding MinDistance}" Width="105"
                          mah:TextBoxHelper.Watermark="圆心最小距离"
                          mah:TextBoxHelper.ClearTextButton="True" />
                 <TextBlock Text="最小半径：" Margin="10,0,0,0" />
                 <mah:NumericUpDown Minimum="0" Maximum="2000000"
                                    Value="{Binding MinRadius, UpdateSourceTrigger=PropertyChanged}"
-                                   Width="150"
+                                   Width="105"
                                    Style="{StaticResource NumericUpDown.Styles.Default}" />
                 <TextBlock Text="最大半径：" Margin="10,0,0,0" />
                 <mah:NumericUpDown Minimum="0" Maximum="2000000"
                                    Value="{Binding MaxRadius, UpdateSourceTrigger=PropertyChanged}"
-                                   Width="150"
+                                   Width="105"
                                    Style="{StaticResource NumericUpDown.Styles.Default}" />
                 <Button Content="查找" cm:Message.Attach="HoughFindCircles()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
             </WrapPanel>
