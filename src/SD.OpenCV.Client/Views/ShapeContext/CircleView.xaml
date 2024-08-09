@@ -3,51 +3,117 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
-                 xmlns:cm="http://www.caliburnproject.org"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:cm="http://caliburnmicro.com"
+                 xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
+                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  mc:Ignorable="d"
-                 Title="霍夫圆查找"
-                 Width="500" Height="400" ResizeMode="NoResize"
-                 FontSize="14"
-                 WindowStyle="ThreeDBorderWindow"
+                 Title="霍夫圆查找" 
+                 Width="1440" Height="900" FontSize="14"
                  WindowStartupLocation="CenterOwner"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
 
     <Grid>
         <Grid.RowDefinitions>
-            <!--表单区-->
-            <RowDefinition Height="300" />
-            <!--占位区-->
+            <!--Header-->
+            <RowDefinition Height="30" />
+            <!--Body-->
             <RowDefinition Height="*" />
-            <!--控制区-->
+            <!--Footer-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <!--表单区-->
-        <StackPanel Grid.Row="0" Grid.IsSharedSizeScope="True" Margin="20,30">
-            <sd:FormItem Label="查找模式：">
-                <ComboBox ItemsSource="{Binding HoughModes}" 
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
+                <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                              cm:Message.Attach="OnScaleClick()">
+                    <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
+                </ToggleButton>
+                <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                              cm:Message.Attach="OnDragClick()">
+                    <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                </ToggleButton>
+                <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
+                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
+                              cm:Message.Attach="OnResizeClick()">
+                    <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
+                </ToggleButton>
+            </WrapPanel>
+            <WrapPanel Grid.Column="1" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock Text="查找模式：" />
+                <ComboBox ItemsSource="{Binding HoughModes}"
                           DisplayMemberPath="Value"
                           SelectedValuePath="Key"
                           SelectedValue="{Binding HoughMode}"
                           mah:TextBoxHelper.ClearTextButton="False"
-                          Style="{StaticResource ComboBox.Styles.Fluent}" />
-            </sd:FormItem>
-            <sd:FormItem Label="分辨率：">
-                <TextBox Text="{Binding Dp}" Style="{StaticResource TextBoxRevealStyle}" />
-            </sd:FormItem>
-            <sd:FormItem Label="圆心最小距离：">
-                <TextBox Text="{Binding MinDistance}" Style="{StaticResource TextBoxRevealStyle}" />
-            </sd:FormItem>
-            <sd:FormItem Label="最小半径：">
-                <TextBox Text="{Binding MinRadius}" Style="{StaticResource TextBoxRevealStyle}" />
-            </sd:FormItem>
-            <sd:FormItem Label="最大半径：">
-                <TextBox Text="{Binding MaxRadius}" Style="{StaticResource TextBoxRevealStyle}" />
-            </sd:FormItem>
-        </StackPanel>
-        <!--占位区-->
-        <Grid Grid.Row="1" />
+                          mah:TextBoxHelper.Watermark="请选择" 
+                          Width="150"
+                          Style="{StaticResource ComboBox.Styles.Default}" />
+                <TextBlock Text="分辨率：" Margin="10,0,0,0" />
+                <TextBox Text="{Binding Dp}" Width="150"
+                         mah:TextBoxHelper.Watermark="分辨率"
+                         mah:TextBoxHelper.ClearTextButton="True" />
+                <TextBlock Text="圆心最小距离：" Margin="10,0,0,0" />
+                <TextBox Text="{Binding MinDistance}" Width="150"
+                         mah:TextBoxHelper.Watermark="圆心最小距离"
+                         mah:TextBoxHelper.ClearTextButton="True" />
+                <TextBlock Text="最小半径：" Margin="10,0,0,0" />
+                <mah:NumericUpDown Minimum="0" Maximum="2000000"
+                                   Value="{Binding MinRadius, UpdateSourceTrigger=PropertyChanged}"
+                                   Width="150"
+                                   Style="{StaticResource NumericUpDown.Styles.Default}" />
+                <TextBlock Text="最大半径：" Margin="10,0,0,0" />
+                <mah:NumericUpDown Minimum="0" Maximum="2000000"
+                                   Value="{Binding MaxRadius, UpdateSourceTrigger=PropertyChanged}"
+                                   Width="150"
+                                   Style="{StaticResource NumericUpDown.Styles.Default}" />
+                <Button Content="查找" cm:Message.Attach="HoughFindCircles()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
+            </WrapPanel>
+        </Grid>
+        <!--Body-->
+        <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="275" />
+                </Grid.ColumnDefinitions>
+                <!--图像画布-->
+                <GroupBox Grid.Column="0" Header="图像画布" Margin="4,4,2,4" Background="LightGray">
+                    <sd:CanvasEx Mode="{Binding CanvasMode}" ShapesSource="{Binding Shapes}" 
+                                 cm:Message.Attach="
+                                 [Event ElementDrag] = [Action OnDragElement($source)];
+                                 [Event ElementResize] = [Action OnResizeElement($source)];">
+                        <sd:CanvasEx.BackgroundImage>
+                            <Image Source="{Binding BitmapSource}" />
+                        </sd:CanvasEx.BackgroundImage>
+                    </sd:CanvasEx>
+                </GroupBox>
+                <!--圆形列表-->
+                <GroupBox Grid.Column="1" Header="圆形列表" Margin="2,4,4,4">
+                    <ListBox ItemsSource="{Binding ShapeLs}" SelectedItem="{Binding SelectedShapeL}"
+                             cm:Message.Attach="[Event SelectionChanged] = [Action OnSelectShape()]">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Text}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="复制(_C)" cm:Message.Attach="CopyShape()" />
+                                <MenuItem Header="删除(_D)" cm:Message.Attach="RemoveShape()" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </GroupBox>
+                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
+            </Grid>
+        </busyIndicator:BusyMask>
         <!--控制区-->
         <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
             <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">

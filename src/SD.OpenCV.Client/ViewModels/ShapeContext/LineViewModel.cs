@@ -212,7 +212,7 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
 
             this.Busy();
 
-            //清空轮廓
+            //清空线段
             this.ShapeLs.Clear();
             this.Shapes.Clear();
 

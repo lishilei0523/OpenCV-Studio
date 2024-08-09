@@ -2099,24 +2099,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             CircleViewModel viewModel = ResolveMediator.Resolve<CircleViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                CircleSegment[] circles = Cv2.HoughCircles(grayImage, viewModel.HoughMode!.Value, viewModel.Dp!.Value, viewModel.MinDistance!.Value, 100D, 100D, viewModel.MinRadius!.Value, viewModel.MaxRadius!.Value);
-                foreach (CircleSegment circle in circles)
-                {
-                    Point center = circle.Center.ToPoint();
-                    int radius = (int)Math.Ceiling(circle.Radius);
-
-                    //绘制圆
-                    Cv2.Circle(image, center, radius, Scalar.Red, 2);
-
-                    //绘制圆心
-                    Cv2.Circle(image, center, 2, Scalar.Red, 2);
-                }
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
