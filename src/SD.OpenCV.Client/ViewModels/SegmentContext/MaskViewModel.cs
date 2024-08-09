@@ -976,7 +976,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         private void DrawPolygon(CanvasEx canvas)
         {
             //点集排序
-            IEnumerable<Point> point2ds = this._polyAnchors.Select(point => new Point(point.X, point.Y));
+            IEnumerable<Point> point2ds =
+                from anchor in this._polyAnchors
+                let leftMargin = canvas.GetRectifiedLeft(anchor)
+                let topMargin = canvas.GetRectifiedTop(anchor)
+                select new Point(anchor.X + leftMargin, anchor.Y + topMargin);
             PointCollection points = new PointCollection(point2ds);
             points = points.Sequentialize();
 

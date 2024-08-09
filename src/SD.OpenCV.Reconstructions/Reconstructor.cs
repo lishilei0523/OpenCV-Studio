@@ -53,6 +53,26 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
+        #region 只读属性 - 特征提取器 —— static SuperFeature Feature
+        /// <summary>
+        /// 只读属性 - 特征提取器
+        /// </summary>
+        public static SuperFeature Feature
+        {
+            get => _Feature;
+        }
+        #endregion
+
+        #region 只读属性 - 特征匹配器 —— static SuperMatcher Matcher
+        /// <summary>
+        /// 只读属性 - 特征匹配器
+        /// </summary>
+        public static SuperMatcher Matcher
+        {
+            get => _Matcher;
+        }
+        #endregion
+
         #endregion
 
         #region # 方法

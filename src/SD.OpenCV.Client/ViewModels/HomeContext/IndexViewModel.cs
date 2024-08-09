@@ -431,6 +431,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
@@ -455,6 +460,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (this.EffectiveImage == null)
             {
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -483,6 +493,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
@@ -509,6 +524,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
@@ -533,6 +553,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             if (this.EffectiveImage == null)
             {
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为BGR三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -2551,10 +2576,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             const int scaledSize = 512;
             using Mat image = this.EffectiveImage.ToMat();
             using Mat scaledImage = image.ResizeAdaptively(scaledSize);
-            using SuperFeature superFeature = new SuperFeature();
             using Mat descriptors = new Mat();
             KeyPoint[] keyPoints = { };
-            await Task.Run(() => superFeature.DetectAndCompute(scaledImage, null, out keyPoints, descriptors));
+            await Task.Run(() => Reconstructor.Feature.DetectAndCompute(scaledImage, null, out keyPoints, descriptors));
             IList<KeyPoint> scaledSrcKpts = keyPoints.ScaleKeyPoints(image.Width, image.Height, scaledSize);
 
             //绘制关键点
@@ -2713,9 +2737,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             const int scaledSize = 512;
             using Mat image = this.EffectiveImage.ToMat();
             using Mat scaledImage = image.ResizeAdaptively(scaledSize);
-            using SuperFeature superFeature = new SuperFeature();
             using Mat descriptors = new Mat();
-            await Task.Run(() => superFeature.DetectAndCompute(scaledImage, null, out _, descriptors));
+            await Task.Run(() => Reconstructor.Feature.DetectAndCompute(scaledImage, null, out _, descriptors));
 
             //绘制直方图
             using Plot plot = new Plot();
@@ -3051,8 +3074,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
                 CameraIntrinsics cameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
-                using Mat colorImage = this.EffectiveImage.ToMat();
-                using Mat rectifiedImage = await Task.Run(() => colorImage.RectifyDistortions(cameraIntrinsics));
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat rectifiedImage = await Task.Run(() => image.RectifyDistortions(cameraIntrinsics));
                 this.EffectiveImage = rectifiedImage.ToBitmapSource();
 
                 this.Idle();
