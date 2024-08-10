@@ -17,37 +17,38 @@
     <Grid>
         <Grid.RowDefinitions>
             <!--Header-->
-            <RowDefinition Height="30" />
+            <RowDefinition Height="32" />
             <!--Body-->
             <RowDefinition Height="*" />
             <!--Footer-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
-                <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
+        <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
+                    <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
                               Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnScaleClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
-                </ToggleButton>
-                <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
+                        <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
+                    </ToggleButton>
+                    <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
                               Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnDragClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="Navigation" />
-                </ToggleButton>
-                <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
+                        <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                    </ToggleButton>
+                    <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
                               Style="{StaticResource ToggleButton.Styles.ToolBar}"
                               cm:Message.Attach="OnResizeClick()">
-                    <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
-                </ToggleButton>
-            </WrapPanel>
-            <WrapPanel Grid.Column="1" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <TextBlock Text="查找模式：" />
-                <ComboBox ItemsSource="{Binding HoughModes}"
+                        <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
+                    </ToggleButton>
+                </WrapPanel>
+                <WrapPanel Grid.Column="1" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="查找模式：" />
+                    <ComboBox ItemsSource="{Binding HoughModes}"
                           DisplayMemberPath="Value"
                           SelectedValuePath="Key"
                           SelectedValue="{Binding HoughMode}"
@@ -55,27 +56,28 @@
                           mah:TextBoxHelper.Watermark="请选择" 
                           Width="105"
                           Style="{StaticResource ComboBox.Styles.Default}" />
-                <TextBlock Text="分辨率：" Margin="10,0,0,0" />
-                <TextBox Text="{Binding Dp}" Width="105"
+                    <TextBlock Text="分辨率：" Margin="10,0,0,0" />
+                    <TextBox Text="{Binding Dp}" Width="105"
                          mah:TextBoxHelper.Watermark="分辨率"
                          mah:TextBoxHelper.ClearTextButton="True" />
-                <TextBlock Text="圆心最小距离：" Margin="10,0,0,0" />
-                <TextBox Text="{Binding MinDistance}" Width="105"
+                    <TextBlock Text="圆心最小距离：" Margin="10,0,0,0" />
+                    <TextBox Text="{Binding MinDistance}" Width="105"
                          mah:TextBoxHelper.Watermark="圆心最小距离"
                          mah:TextBoxHelper.ClearTextButton="True" />
-                <TextBlock Text="最小半径：" Margin="10,0,0,0" />
-                <mah:NumericUpDown Minimum="0" Maximum="2000000"
+                    <TextBlock Text="最小半径：" Margin="10,0,0,0" />
+                    <mah:NumericUpDown Minimum="0" Maximum="2000000"
                                    Value="{Binding MinRadius, UpdateSourceTrigger=PropertyChanged}"
                                    Width="105"
                                    Style="{StaticResource NumericUpDown.Styles.Default}" />
-                <TextBlock Text="最大半径：" Margin="10,0,0,0" />
-                <mah:NumericUpDown Minimum="0" Maximum="2000000"
+                    <TextBlock Text="最大半径：" Margin="10,0,0,0" />
+                    <mah:NumericUpDown Minimum="0" Maximum="2000000"
                                    Value="{Binding MaxRadius, UpdateSourceTrigger=PropertyChanged}"
                                    Width="105"
                                    Style="{StaticResource NumericUpDown.Styles.Default}" />
-                <Button Content="查找" cm:Message.Attach="HoughFindCircles()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
-            </WrapPanel>
-        </Grid>
+                    <Button Content="查找" cm:Message.Attach="HoughFindCircles()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
+                </WrapPanel>
+            </Grid>
+        </Border>
         <!--Body-->
         <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <Grid>

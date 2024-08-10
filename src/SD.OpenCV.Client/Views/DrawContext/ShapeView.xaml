@@ -23,7 +23,7 @@
             <!--Footer-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
             <WrapPanel Margin="4,0,0,0" VerticalAlignment="Center">
                 <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
                               Style="{StaticResource ToggleButton.Styles.ToolBar}"
@@ -85,7 +85,7 @@
                     <iconPacks:PackIconMaterialDesign Kind="Timeline" />
                 </ToggleButton>
             </WrapPanel>
-        </Grid>
+        </Border>
         <!--Body-->
         <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <Grid>

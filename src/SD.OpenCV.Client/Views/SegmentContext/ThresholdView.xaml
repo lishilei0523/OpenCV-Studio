@@ -16,21 +16,22 @@
     <Grid>
         <Grid.RowDefinitions>
             <!--Header-->
-            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
             <!--Body-->
             <RowDefinition Height="*" />
             <!--控制区-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <!--Header-->
-        <Grid Row="0" Margin="8,4,4,-4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <WrapPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock Text="分割类型：" />
-                <ComboBox ItemsSource="{Binding ThresholdTypes}"
+        <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
+            <Grid Margin="8,0,4,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="分割类型：" />
+                    <ComboBox ItemsSource="{Binding ThresholdTypes}"
                           DisplayMemberPath="Value"
                           SelectedValuePath="Key"
                           SelectedValue="{Binding ThresholdType}"
@@ -38,10 +39,10 @@
                           mah:TextBoxHelper.Watermark="请选择" 
                           Width="110"
                           Style="{StaticResource ComboBox.Styles.Default}" />
-            </WrapPanel>
-            <StackPanel Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalAlignment="Center" Margin="10,0,0,0">
-                <sd:FormItem Label="灰度阈值：" Margin="0">
-                    <mah:RangeSlider Minimum="0" Maximum="255"
+                </WrapPanel>
+                <StackPanel Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <sd:FormItem Label="灰度阈值：" Margin="0">
+                        <mah:RangeSlider Minimum="0" Maximum="255"
                                      LowerValue="{Binding Threshold}"
                                      UpperValue="{Binding MaxValue}"
                                      Style="{StaticResource RangeSlider.Styles.Fluent}"
@@ -49,9 +50,10 @@
                                        [Event LowerValueChanged] = [Action SlideThreshold()];
                                        [Event UpperValueChanged] = [Action SlideThreshold()];
                                        [Event RangeSelectionChanged] = [Action SlideThreshold()]" />
-                </sd:FormItem>
-            </StackPanel>
-        </Grid>
+                    </sd:FormItem>
+                </StackPanel>
+            </Grid>
+        </Border>
         <!--Body-->
         <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <!--图像预览-->
