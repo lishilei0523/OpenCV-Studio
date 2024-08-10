@@ -4,8 +4,6 @@ using OpenCvSharp.WpfExtensions;
 using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -134,32 +132,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             using Mat result = new Mat();
             await Task.Run(() => Cv2.Threshold(this.Image, result, this.Threshold, this.MaxValue, this.ThresholdType));
             this.BitmapSource = result.ToBitmapSource();
-        }
-        #endregion
-
-        #region 预览图像 —— async void PreviewImage()
-        /// <summary>
-        /// 预览图像
-        /// </summary>
-        public async void PreviewImage()
-        {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
         }
         #endregion
 

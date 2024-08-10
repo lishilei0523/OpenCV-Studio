@@ -8,7 +8,6 @@ using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Models;
 using SD.Toolkits.Mathematics.Extensions;
@@ -228,32 +227,6 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
                     return Task.CompletedTask;
                 });
             }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 预览图像 —— async void PreviewImage()
-        /// <summary>
-        /// 预览图像
-        /// </summary>
-        public async void PreviewImage()
-        {
-            #region # 验证
-
-            if (this.SelectedBitmap == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.SelectedBitmap);
-            await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
         }

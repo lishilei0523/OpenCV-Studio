@@ -3,8 +3,6 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.IOC.Core.Mediators;
-using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -144,32 +142,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             Scalar upperScalar = new Scalar(this.MaxH, this.MaxS, this.MaxV);
             using Mat resultBGR = await Task.Run(() => this.ImageHSV.ColorSegment(lowerScalar, upperScalar));
             this.BitmapSource = resultBGR.ToBitmapSource();
-        }
-        #endregion
-
-        #region 预览图像 —— async void PreviewImage()
-        /// <summary>
-        /// 预览图像
-        /// </summary>
-        public async void PreviewImage()
-        {
-            #region # 验证
-
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.BitmapSource);
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
         }
         #endregion
 

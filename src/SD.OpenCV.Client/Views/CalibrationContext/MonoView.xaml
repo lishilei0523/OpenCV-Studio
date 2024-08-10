@@ -6,7 +6,6 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:cm="http://caliburnmicro.com"
                  xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
-                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  mc:Ignorable="d"
                  Title="单目标定" 
@@ -55,22 +54,8 @@
                     </ListBox>
                 </GroupBox>
                 <!--图像预览-->
-                <GroupBox Grid.Column="1" Margin="2,4,2,4" Background="LightGray">
-                    <GroupBox.HeaderTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="图像预览" />
-                                <Button cm:Message.Attach="PreviewImage()"
-                                        Style="{StaticResource Button.Styles.Fluent.Transparent.Panel}">
-                                    <WrapPanel>
-                                        <iconPacks:PackIconMaterialDesign Kind="ZoomOutMap" />
-                                        <TextBlock Text="查看" Margin="2,0,0,0" />
-                                    </WrapPanel>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding SelectedBitmap}" />
+                <GroupBox Grid.Column="1" Header="图像预览" Margin="2,4,2,4" Background="LightGray">
+                    <sd:ImageViewer ImageSource="{Binding SelectedBitmap}" />
                 </GroupBox>
                 <!--标定结果-->
                 <Grid Grid.Column="2">

@@ -6,7 +6,6 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:cm="http://caliburnmicro.com"
                  xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
-                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  mc:Ignorable="d"
                  Title="阈值分割" 
@@ -16,64 +15,52 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <!--Header-->
+            <RowDefinition Height="40" />
             <!--Body-->
             <RowDefinition Height="*" />
-            <!--Footer-->
+            <!--控制区-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
+        <!--Header-->
+        <Grid Row="0" Margin="8,4,4,-4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <WrapPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock Text="分割类型：" />
+                <ComboBox ItemsSource="{Binding ThresholdTypes}"
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding ThresholdType}"
+                          mah:TextBoxHelper.ClearTextButton="False"
+                          mah:TextBoxHelper.Watermark="请选择" 
+                          Width="110"
+                          Style="{StaticResource ComboBox.Styles.Default}" />
+            </WrapPanel>
+            <StackPanel Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalAlignment="Center" Margin="10,0,0,0">
+                <sd:FormItem Label="灰度阈值：" Margin="0">
+                    <mah:RangeSlider Minimum="0" Maximum="255"
+                                     LowerValue="{Binding Threshold}"
+                                     UpperValue="{Binding MaxValue}"
+                                     Style="{StaticResource RangeSlider.Styles.Fluent}"
+                                     cm:Message.Attach="
+                                       [Event LowerValueChanged] = [Action SlideThreshold()];
+                                       [Event UpperValueChanged] = [Action SlideThreshold()];
+                                       [Event RangeSelectionChanged] = [Action SlideThreshold()]" />
+                </sd:FormItem>
+            </StackPanel>
+        </Grid>
         <!--Body-->
-        <busyIndicator:BusyMask Grid.Row="0" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="260" />
-                </Grid.ColumnDefinitions>
-                <!--图像预览-->
-                <GroupBox Grid.Column="0" Margin="4,4,2,4" Background="LightGray">
-                    <GroupBox.HeaderTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="图像预览" />
-                                <Button cm:Message.Attach="PreviewImage()"
-                                        Style="{StaticResource Button.Styles.Fluent.Transparent.Panel}">
-                                    <WrapPanel>
-                                        <iconPacks:PackIconMaterialDesign Kind="ZoomOutMap" />
-                                        <TextBlock Text="查看" Margin="2,0,0,0" />
-                                    </WrapPanel>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding BitmapSource}" />
-                </GroupBox>
-                <!--分割设置-->
-                <GroupBox Grid.Column="1" Header="分割参数" Margin="2,4,4,4">
-                    <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
-                        <sd:FormItem Label="分割类型：">
-                            <ComboBox ItemsSource="{Binding ThresholdTypes}" 
-                                      DisplayMemberPath="Value"
-                                      SelectedValuePath="Key"
-                                      SelectedValue="{Binding ThresholdType}"
-                                      mah:TextBoxHelper.ClearTextButton="False"
-                                      Style="{StaticResource ComboBox.Styles.Fluent}" />
-                        </sd:FormItem>
-                        <sd:FormItem Label="灰度阈值：">
-                            <mah:RangeSlider Minimum="0" Maximum="255"
-                                             LowerValue="{Binding Threshold}"
-                                             UpperValue="{Binding MaxValue}"
-                                             Style="{StaticResource RangeSlider.Styles.Fluent}"
-                                             cm:Message.Attach="
-                                             [Event LowerValueChanged] = [Action SlideThreshold()];
-                                             [Event UpperValueChanged] = [Action SlideThreshold()];
-                                             [Event RangeSelectionChanged] = [Action SlideThreshold()]" />
-                        </sd:FormItem>
-                    </StackPanel>
-                </GroupBox>
-                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
-            </Grid>
+        <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
+            <!--图像预览-->
+            <GroupBox Header="图像预览" Margin="4,4,4,4" Background="LightGray">
+                <sd:ImageViewer ImageSource="{Binding BitmapSource}" />
+            </GroupBox>
         </busyIndicator:BusyMask>
         <!--控制区-->
-        <Grid Grid.Row="1" Style="{StaticResource Form.Styles.Submit.Grid}">
+        <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
             <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">
                 <Button Content="确定" cm:Message.Attach="Submit()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
                 <Button Content="取消" cm:Message.Attach="TryCloseAsync('false')" Style="{StaticResource Button.Styles.Fluent.Default}" />
