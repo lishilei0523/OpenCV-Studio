@@ -41,7 +41,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
-using Image = System.Windows.Controls.Image;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
@@ -3159,21 +3158,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.SaveImage();
             }
-        }
-        #endregion
-
-        #region 鼠标移动事件 —— void OnImageMouseMove(Image image, MouseEventArgs eventArgs)
-        /// <summary>
-        /// 鼠标移动事件
-        /// </summary>
-        public void OnImageMouseMove(Image image, MouseEventArgs eventArgs)
-        {
-            System.Windows.Point mousePosition = eventArgs.GetPosition(image);
-            double scaleX = image.ActualWidth / image.Source.Width;
-            double scaleY = image.ActualHeight / image.Source.Height;
-            int x = (int)Math.Ceiling(mousePosition.X / scaleX);
-            int y = (int)Math.Ceiling(mousePosition.Y / scaleY);
-            this.MousePosition = new System.Windows.Point(x, y);
         }
         #endregion
 

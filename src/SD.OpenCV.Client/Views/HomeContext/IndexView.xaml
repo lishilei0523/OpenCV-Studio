@@ -7,6 +7,7 @@
                  xmlns:busyIndicator="https://github.com/Peoky/BusyIndicator"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  mc:Ignorable="d"
                  Title="OpenCV Studio" 
                  Icon="/favicon.ico"
@@ -184,7 +185,7 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding OriginalImage}" cm:Message.Attach="[Event MouseMove] = [Action OnImageMouseMove($source, $eventArgs)]" />
+                    <sd:ImageViewer ImageSource="{Binding OriginalImage}" />
                 </GroupBox>
                 <!--效果图像-->
                 <GroupBox Grid.Column="1" Margin="2,4,4,4" Background="{Binding BackgroundColor}">
@@ -203,7 +204,7 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <Image Source="{Binding EffectiveImage}" cm:Message.Attach="[Event MouseMove] = [Action OnImageMouseMove($source, $eventArgs)]" />
+                    <sd:ImageViewer ImageSource="{Binding EffectiveImage}" />
                 </GroupBox>
                 <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitter.Vertical}" />
             </Grid>
@@ -217,19 +218,13 @@
                     <TextBlock Text=" | " FontSize="12" />
                     <TextBlock Text="Pixel format: " FontSize="12" />
                     <TextBlock Text="{Binding OriginalImage.Format}" FontSize="12" />
-                    <TextBlock Text=" | " FontSize="12" />
-                    <TextBlock Text="Width: " FontSize="12" />
-                    <TextBlock Text="{Binding OriginalImage.Width}" FontSize="12" />
-                    <TextBlock Text=" | " FontSize="12" />
-                    <TextBlock Text="Height: " FontSize="12" />
-                    <TextBlock Text="{Binding OriginalImage.Height}" FontSize="12" />
                 </WrapPanel>
                 <WrapPanel Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="X: " FontSize="12" />
-                    <TextBlock Text="{Binding MousePosition.X}" FontSize="12" />
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding OriginalImage.Width}" FontSize="12" />
                     <TextBlock Text=", " FontSize="12" />
-                    <TextBlock Text="Y: " FontSize="12" />
-                    <TextBlock Text="{Binding MousePosition.Y}" FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding OriginalImage.Height}" FontSize="12" />
                 </WrapPanel>
             </Grid>
         </Border>
