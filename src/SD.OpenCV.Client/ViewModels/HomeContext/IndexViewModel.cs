@@ -684,6 +684,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //形态学
 
+        #region 综合 —— async void MorphologyEx()
+        /// <summary>
+        /// 综合
+        /// </summary>
+        public async void MorphologyEx()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            CompositeViewModel viewModel = ResolveMediator.Resolve<CompositeViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
         #region 腐蚀 —— async void MorphErode()
         /// <summary>
         /// 腐蚀
