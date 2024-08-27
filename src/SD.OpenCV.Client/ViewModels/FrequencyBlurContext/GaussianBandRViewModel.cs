@@ -5,16 +5,16 @@ using System.Windows;
 namespace SD.OpenCV.Client.ViewModels.FrequencyBlurContext
 {
     /// <summary>
-    /// 高斯带通/阻滤波视图模型
+    /// 高斯带阻滤波视图模型
     /// </summary>
-    public class GaussianBandViewModel : ScreenBase
+    public class GaussianBandRViewModel : ScreenBase
     {
         #region # 字段及构造器
 
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public GaussianBandViewModel()
+        public GaussianBandRViewModel()
         {
             //默认值
             this.Sigma = 18;

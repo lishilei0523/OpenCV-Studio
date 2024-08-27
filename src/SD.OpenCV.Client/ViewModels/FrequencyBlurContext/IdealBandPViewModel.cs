@@ -5,21 +5,20 @@ using System.Windows;
 namespace SD.OpenCV.Client.ViewModels.FrequencyBlurContext
 {
     /// <summary>
-    /// 巴特沃斯带通/阻滤波视图模型
+    /// 理想带通滤波视图模型
     /// </summary>
-    public class ButterworthBandViewModel : ScreenBase
+    public class IdealBandPViewModel : ScreenBase
     {
         #region # 字段及构造器
 
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ButterworthBandViewModel()
+        public IdealBandPViewModel()
         {
             //默认值
             this.Sigma = 18;
             this.BandWidth = 23;
-            this.N = 2;
         }
 
         #endregion
@@ -42,14 +41,6 @@ namespace SD.OpenCV.Client.ViewModels.FrequencyBlurContext
         public float? BandWidth { get; set; }
         #endregion
 
-        #region 阶数 —— int? N
-        /// <summary>
-        /// 阶数
-        /// </summary>
-        [DependencyProperty]
-        public int? N { get; set; }
-        #endregion
-
         #endregion
 
         #region # 方法
@@ -70,11 +61,6 @@ namespace SD.OpenCV.Client.ViewModels.FrequencyBlurContext
             if (!this.BandWidth.HasValue)
             {
                 MessageBox.Show("滤波带宽不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (!this.N.HasValue)
-            {
-                MessageBox.Show("阶数不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

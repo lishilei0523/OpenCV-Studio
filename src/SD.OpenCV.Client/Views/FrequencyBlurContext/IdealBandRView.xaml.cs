@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.FrequencyBlurContext
 {
     /// <summary>
-    /// 巴特沃斯带通/阻滤波视图
+    /// 理想带阻滤波视图
     /// </summary>
-    public partial class ButterworthBandView
+    public partial class IdealBandRView
     {
-        public ButterworthBandView()
+        public IdealBandRView()
         {
             this.InitializeComponent();
         }

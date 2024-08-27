@@ -1268,7 +1268,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            IdealBandViewModel viewModel = ResolveMediator.Resolve<IdealBandViewModel>();
+            IdealBandPViewModel viewModel = ResolveMediator.Resolve<IdealBandPViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -1304,7 +1304,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            IdealBandViewModel viewModel = ResolveMediator.Resolve<IdealBandViewModel>();
+            IdealBandRViewModel viewModel = ResolveMediator.Resolve<IdealBandRViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -1412,7 +1412,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            GaussianBandViewModel viewModel = ResolveMediator.Resolve<GaussianBandViewModel>();
+            GaussianBandPViewModel viewModel = ResolveMediator.Resolve<GaussianBandPViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -1448,7 +1448,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            GaussianBandViewModel viewModel = ResolveMediator.Resolve<GaussianBandViewModel>();
+            GaussianBandRViewModel viewModel = ResolveMediator.Resolve<GaussianBandRViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -1592,7 +1592,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            ButterworthBandViewModel viewModel = ResolveMediator.Resolve<ButterworthBandViewModel>();
+            ButterworthBandPViewModel viewModel = ResolveMediator.Resolve<ButterworthBandPViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -1628,7 +1628,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            ButterworthBandViewModel viewModel = ResolveMediator.Resolve<ButterworthBandViewModel>();
+            ButterworthBandRViewModel viewModel = ResolveMediator.Resolve<ButterworthBandRViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
