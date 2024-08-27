@@ -42,7 +42,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
 using Point = OpenCvSharp.Point;
-using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.HomeContext
 {
@@ -1687,12 +1686,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             LinearViewModel viewModel = ResolveMediator.Resolve<LinearViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.LinearTransform(viewModel.Alpha!.Value, viewModel.Beta!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1718,12 +1716,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GammaViewModel viewModel = ResolveMediator.Resolve<GammaViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GammaTransform(viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1749,12 +1746,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             LogarithmicViewModel viewModel = ResolveMediator.Resolve<LogarithmicViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.LogarithmicTransform(viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1780,13 +1776,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ShadingViewModel viewModel = ResolveMediator.Resolve<ShadingViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
-                using Mat resultImage = image.ShadingTransform(kernelSize, viewModel.Gain!.Value, viewModel.Noise!.Value, viewModel.Offset!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
