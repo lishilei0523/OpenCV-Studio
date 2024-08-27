@@ -1015,14 +1015,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianViewModel viewModel = ResolveMediator.Resolve<GaussianViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = new Mat();
-                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
-                Cv2.GaussianBlur(image, resultImage, kernelSize, viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();

@@ -109,7 +109,6 @@ namespace SD.OpenCV.Client.ViewModels.SpaceBlurContext
 
             this.Busy();
 
-
             using Mat result = new Mat();
             Size kernelSize = new Size(this.KernelSize!.Value, this.KernelSize!.Value);
             await Task.Run(() => Cv2.Blur(this.Image, result, kernelSize));
