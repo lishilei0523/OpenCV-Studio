@@ -1269,12 +1269,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             IdealBandPViewModel viewModel = ResolveMediator.Resolve<IdealBandPViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.IdealBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1305,12 +1304,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             IdealBandRViewModel viewModel = ResolveMediator.Resolve<IdealBandRViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.IdealBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
