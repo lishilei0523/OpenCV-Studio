@@ -1339,12 +1339,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianLowViewModel viewModel = ResolveMediator.Resolve<GaussianLowViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GaussianLPBlur(viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1375,12 +1374,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianHighViewModel viewModel = ResolveMediator.Resolve<GaussianHighViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GaussianHPBlur(viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1411,12 +1409,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianBandPViewModel viewModel = ResolveMediator.Resolve<GaussianBandPViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GaussianBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1447,12 +1444,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianBandRViewModel viewModel = ResolveMediator.Resolve<GaussianBandRViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GaussianBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1483,12 +1479,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GaussianHomoViewModel viewModel = ResolveMediator.Resolve<GaussianHomoViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.GaussianHomoBlur(viewModel.GammaH!.Value, viewModel.GammaL!.Value, viewModel.Sigma!.Value, viewModel.Slope!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1519,12 +1514,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ButterworthLowViewModel viewModel = ResolveMediator.Resolve<ButterworthLowViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ButterworthLPBlur(viewModel.Sigma!.Value, viewModel.N!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1555,12 +1549,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ButterworthHighViewModel viewModel = ResolveMediator.Resolve<ButterworthHighViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ButterworthHPBlur(viewModel.Sigma!.Value, viewModel.N!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1591,12 +1584,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ButterworthBandPViewModel viewModel = ResolveMediator.Resolve<ButterworthBandPViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ButterworthBPBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value, viewModel.N!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1627,12 +1619,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ButterworthBandRViewModel viewModel = ResolveMediator.Resolve<ButterworthBandRViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ButterworthBRBlur(viewModel.Sigma!.Value, viewModel.BandWidth!.Value, viewModel.N!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1663,12 +1654,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ButterworthHomoViewModel viewModel = ResolveMediator.Resolve<ButterworthHomoViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ButterworthHomoBlur(viewModel.GammaH!.Value, viewModel.GammaL!.Value, viewModel.Sigma!.Value, viewModel.Slope!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
