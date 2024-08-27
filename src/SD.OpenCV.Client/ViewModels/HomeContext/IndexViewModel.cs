@@ -1161,12 +1161,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             RetinexViewModel viewModel = ResolveMediator.Resolve<RetinexViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.SingleScaleRetinex(viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
