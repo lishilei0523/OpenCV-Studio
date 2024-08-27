@@ -985,14 +985,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             MeanViewModel viewModel = ResolveMediator.Resolve<MeanViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = new Mat();
-                Size kernelSize = new Size(viewModel.KernelSize!.Value, viewModel.KernelSize!.Value);
-                Cv2.Blur(image, resultImage, kernelSize);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();

@@ -146,21 +146,6 @@ namespace SD.OpenCV.Client.ViewModels.MorphContext
         /// </summary>
         public async void Submit()
         {
-            #region # 验证
-
-            if (!this.KernelSize.HasValue)
-            {
-                MessageBox.Show("核矩阵尺寸不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (this.BitmapSource == null)
-            {
-                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
             await base.TryCloseAsync(true);
         }
         #endregion
