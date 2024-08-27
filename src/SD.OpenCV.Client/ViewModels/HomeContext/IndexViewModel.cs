@@ -1045,13 +1045,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             MedianViewModel viewModel = ResolveMediator.Resolve<MedianViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = new Mat();
-                Cv2.MedianBlur(image, resultImage, viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
