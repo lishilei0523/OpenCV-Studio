@@ -1134,13 +1134,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             BilateralViewModel viewModel = ResolveMediator.Resolve<BilateralViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = new Mat();
-                Cv2.BilateralFilter(image, resultImage, viewModel.Diameter!.Value, viewModel.SigmaColor!.Value, viewModel.SigmaSpace!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
