@@ -1199,12 +1199,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             IdealLowViewModel viewModel = ResolveMediator.Resolve<IdealLowViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.IdealLPBlur(viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1235,12 +1234,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             IdealHighViewModel viewModel = ResolveMediator.Resolve<IdealHighViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.IdealHPBlur(viewModel.Sigma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
