@@ -16,14 +16,24 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!--Header-->
-            <RowDefinition Height="30" />
+            <!--Menu-->
+            <RowDefinition Height="Auto" />
+            <!--ToolBar-->
+            <RowDefinition Height="Auto" />
             <!--Body-->
             <RowDefinition Height="*" />
             <!--控制区-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
+        <!--Menu-->
+        <Border Grid.Row="0" BorderThickness="0,1,0,0" Style="{StaticResource Panel.Styles.Function.Border}">
+            <Menu Grid.Column="0" Margin="4,2">
+                <MenuItem Header="分割图像(_S)" cm:Message.Attach="SegmentImage()" />
+                <MenuItem Header="制作掩膜(_M)" cm:Message.Attach="MakeMask()" />
+            </Menu>
+        </Border>
+        <!--ToolBar-->
+        <Border Grid.Row="1" Style="{StaticResource Panel.Styles.Function.Border}">
             <Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -64,7 +74,7 @@
             </Grid>
         </Border>
         <!--Body-->
-        <busyIndicator:BusyMask Grid.Row="1" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
+        <busyIndicator:BusyMask Grid.Row="2" IndicatorType="Cupertino" IsBusy="{Binding IsBusy}">
             <!--图像画布-->
             <GroupBox Header="图像画布" Margin="4,4,4,4" Background="LightGray">
                 <sd:CanvasEx Mode="{Binding CanvasMode}" cm:Message.Attach="
@@ -78,11 +88,10 @@
             </GroupBox>
         </busyIndicator:BusyMask>
         <!--控制区-->
-        <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
+        <Grid Grid.Row="3" Style="{StaticResource Form.Styles.Submit.Grid}">
             <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">
                 <Button Content="确定" cm:Message.Attach="Submit()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
                 <Button Content="取消" cm:Message.Attach="TryCloseAsync('false')" Style="{StaticResource Button.Styles.Fluent.Default}" />
-                <Button Content="应用" cm:Message.Attach="Apply()" Style="{StaticResource Button.Styles.Fluent.Default}" />
             </WrapPanel>
         </Grid>
     </Grid>

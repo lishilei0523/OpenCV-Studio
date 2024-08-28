@@ -141,11 +141,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
         //Actions
 
-        #region 应用 —— async void Apply()
+        #region 分割图像 —— async void SegmentImage()
         /// <summary>
-        /// 应用
+        /// 分割图像
         /// </summary>
-        public async void Apply()
+        public async void SegmentImage()
         {
             #region # 验证
 
@@ -169,6 +169,39 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             using Mat result = await Task.Run(() => this.Image.GrabCutSegment(rect, out mask));
             this.BitmapSource = result.ToBitmapSource();
             mask?.Dispose();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 制作掩膜 —— async void MakeMask()
+        /// <summary>
+        /// 制作掩膜
+        /// </summary>
+        public async void MakeMask()
+        {
+            #region # 验证
+
+            if (this.RectangleL == null)
+            {
+                MessageBox.Show("矩形区域不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.BitmapSource == null)
+            {
+                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
+            Mat mask = null;
+            using Mat result = await Task.Run(() => this.Image.GrabCutSegment(rect, out mask));
+            this.BitmapSource = mask.ToBitmapSource();
+            mask.Dispose();
 
             this.Idle();
         }
