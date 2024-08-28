@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.MorphContext
 {
     /// <summary>
-    /// 形态学操作视图
+    /// 梯度运算视图
     /// </summary>
-    public partial class MorphView
+    public partial class GradientView
     {
-        public MorphView()
+        public GradientView()
         {
             this.InitializeComponent();
         }

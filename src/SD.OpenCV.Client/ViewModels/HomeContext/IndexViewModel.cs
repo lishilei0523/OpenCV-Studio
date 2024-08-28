@@ -698,7 +698,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            CompositeViewModel viewModel = ResolveMediator.Resolve<CompositeViewModel>();
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
@@ -728,7 +728,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            ErodeViewModel viewModel = ResolveMediator.Resolve<ErodeViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -759,7 +759,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            DilateViewModel viewModel = ResolveMediator.Resolve<DilateViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -790,7 +790,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            OpenViewModel viewModel = ResolveMediator.Resolve<OpenViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -821,7 +821,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            CloseViewModel viewModel = ResolveMediator.Resolve<CloseViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -852,7 +852,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            TopHatViewModel viewModel = ResolveMediator.Resolve<TopHatViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -883,7 +883,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            BlackHatViewModel viewModel = ResolveMediator.Resolve<BlackHatViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -914,7 +914,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            GradientViewModel viewModel = ResolveMediator.Resolve<GradientViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -945,7 +945,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            HitMissViewModel viewModel = ResolveMediator.Resolve<HitMissViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {

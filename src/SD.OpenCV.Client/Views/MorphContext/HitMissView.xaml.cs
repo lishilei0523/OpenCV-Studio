@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.MorphContext
 {
     /// <summary>
-    /// 形态学操作视图
+    /// 击否运算视图
     /// </summary>
-    public partial class MorphView
+    public partial class HitMissView
     {
-        public MorphView()
+        public HitMissView()
         {
             this.InitializeComponent();
         }

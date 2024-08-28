@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.MorphContext
 {
     /// <summary>
-    /// 形态学综合视图
+    /// 腐蚀视图
     /// </summary>
-    public partial class CompositeView
+    public partial class ErodeView
     {
-        public CompositeView()
+        public ErodeView()
         {
             this.InitializeComponent();
         }
