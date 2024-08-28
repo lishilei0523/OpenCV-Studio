@@ -39,7 +39,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
-using Point = OpenCvSharp.Point;
 
 namespace SD.OpenCV.Client.ViewModels.HomeContext
 {
@@ -2301,20 +2300,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             KeyPointContext.HarrisViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.HarrisViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                Point[] points = await Task.Run(() => grayImage.DetectHarris(viewModel.BlockSize!.Value, viewModel.KernelSize!.Value, viewModel.K!.Value));
-
-                //绘制关键点
-                foreach (Point point in points)
-                {
-                    Cv2.Circle(image, point, 2, Scalar.Red);
-                }
-
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2340,20 +2330,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             KeyPointContext.ShiTomasiViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.ShiTomasiViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                Point2f[] points = await Task.Run(() => Cv2.GoodFeaturesToTrack(grayImage, viewModel.MaxCorners!.Value, viewModel.QualityLevel!.Value, viewModel.MinDistance!.Value, null!, viewModel.BlockSize!.Value, false, 0));
-
-                //绘制关键点
-                foreach (Point point in points)
-                {
-                    Cv2.Circle(image, point, 2, Scalar.Red);
-                }
-
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2412,19 +2393,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             KeyPointContext.SurfViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.SurfViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                using SURF surf = SURF.Create(viewModel.HessianThreshold!.Value);
-                using Mat descriptors = new Mat();
-                KeyPoint[] keyPoints = { };
-                await Task.Run(() => surf.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
-
-                //绘制关键点
-                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2450,17 +2423,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             KeyPointContext.FastViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.FastViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                using FastFeatureDetector fast = FastFeatureDetector.Create(viewModel.Threshold!.Value, viewModel.NonmaxSuppression);
-                KeyPoint[] keyPoints = await Task.Run(() => fast.Detect(grayImage));
-
-                //绘制关键点
-                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2486,19 +2453,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             KeyPointContext.OrbViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.OrbViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                using ORB orb = ORB.Create(viewModel.Threshold!.Value);
-                using Mat descriptors = new Mat();
-                KeyPoint[] keyPoints = { };
-                await Task.Run(() => orb.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
-
-                //绘制关键点
-                await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
-                this.EffectiveImage = image.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
