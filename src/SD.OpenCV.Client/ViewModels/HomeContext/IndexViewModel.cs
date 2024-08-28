@@ -1910,12 +1910,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             SobelViewModel viewModel = ResolveMediator.Resolve<SobelViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ApplySobel(viewModel.KernelSize!.Value, viewModel.Alpha!.Value, viewModel.Beta!.Value, viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1941,12 +1940,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             CannyViewModel viewModel = ResolveMediator.Resolve<CannyViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.Canny(viewModel.Threshold1!.Value, viewModel.Threshold2!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -1972,12 +1970,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ScharrViewModel viewModel = ResolveMediator.Resolve<ScharrViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ApplyScharr(viewModel.Alpha!.Value, viewModel.Beta!.Value, viewModel.Gamma!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2013,7 +2010,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         #region Laplacian边缘检测 —— async void ApplyLaplacian()
         /// <summary>
-        /// Sobel边缘检测
+        /// Laplacian边缘检测
         /// </summary>
         public async void ApplyLaplacian()
         {
@@ -2030,12 +2027,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             LaplacianViewModel viewModel = ResolveMediator.Resolve<LaplacianViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.ApplyLaplacian(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
