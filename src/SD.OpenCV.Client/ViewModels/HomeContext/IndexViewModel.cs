@@ -351,11 +351,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //颜色空间
 
-        #region 转换灰度空间 —— async void ConvertGray()
+        #region BRG转换GRAY —— async void BGRToGray()
         /// <summary>
-        /// 转换灰度空间
+        /// BRG转换GRAY
         /// </summary>
-        public async void ConvertGray()
+        public async void BGRToGray()
         {
             #region # 验证
 
@@ -382,11 +382,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换BGR空间 —— async void ConvertBGR()
+        #region GRAY转换BGR —— async void GrayToBGR()
         /// <summary>
-        /// 转换BGR空间
+        /// GRAY转换BGR
         /// </summary>
-        public async void ConvertBGR()
+        public async void GrayToBGR()
         {
             #region # 验证
 
@@ -413,11 +413,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换HSV空间 —— async void ConvertHSV()
+        #region BGR转换HSV —— async void BGRToHSV()
         /// <summary>
-        /// 转换HSV空间
+        /// BGR转换HSV
         /// </summary>
-        public async void ConvertHSV()
+        public async void BGRToHSV()
         {
             #region # 验证
 
@@ -444,11 +444,42 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换HLS空间 —— async void ConvertHLS()
+        #region HSV转换BGR —— async void HSVToBGR()
         /// <summary>
-        /// 转换HLS空间
+        /// HSV转换BGR
         /// </summary>
-        public async void ConvertHLS()
+        public async void HSVToBGR()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为HSV三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat hsvImage = this.EffectiveImage.ToMat();
+            using Mat bgrImage = await Task.Run(() => hsvImage.CvtColor(ColorConversionCodes.HSV2BGR));
+            this.EffectiveImage = bgrImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region BGR转换HLS —— async void BGRToHLS()
+        /// <summary>
+        /// BGR转换HLS
+        /// </summary>
+        public async void BGRToHLS()
         {
             #region # 验证
 
@@ -475,11 +506,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换Lab空间 —— async void ConvertLab()
+        #region BGR转换Lab —— async void BGRToLab()
         /// <summary>
-        /// 转换Lab空间
+        /// BGR转换Lab
         /// </summary>
-        public async void ConvertLab()
+        public async void BGRToLab()
         {
             #region # 验证
 
@@ -506,11 +537,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换Luv空间 —— async void ConvertLuv()
+        #region BGR转换Luv —— async void BGRToLuv()
         /// <summary>
-        /// 转换Luv空间
+        /// BGR转换Luv
         /// </summary>
-        public async void ConvertLuv()
+        public async void BGRToLuv()
         {
             #region # 验证
 
@@ -537,11 +568,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 转换YCrCb空间 —— async void ConvertYCrCb()
+        #region BGR转换YCrCb —— async void BGRToYCrCb()
         /// <summary>
-        /// 转换YCrCb空间
+        /// BGR转换YCrCb
         /// </summary>
-        public async void ConvertYCrCb()
+        public async void BGRToYCrCb()
         {
             #region # 验证
 
