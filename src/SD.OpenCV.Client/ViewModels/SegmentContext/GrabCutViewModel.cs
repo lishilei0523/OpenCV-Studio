@@ -52,14 +52,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
         #region 选中拖拽 —— bool DragChecked
         /// <summary>
         /// 选中拖拽
@@ -100,6 +92,21 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public RectangleL RectangleL { get; set; }
         #endregion
 
+        #region 图像 —— Mat Image
+        /// <summary>
+        /// 图像
+        /// </summary>
+        public Mat Image { get; set; }
+        #endregion
+
+        #region 图像源 —— BitmapSource BitmapSource
+        /// <summary>
+        /// 图像源
+        /// </summary>
+        [DependencyProperty]
+        public BitmapSource BitmapSource { get; set; }
+        #endregion
+
         #endregion
 
         #region # 方法
@@ -127,20 +134,26 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public void Load(BitmapSource bitmapSource)
         {
             this.BitmapSource = bitmapSource;
+            this.Image = bitmapSource.ToMat();
         }
         #endregion
 
 
         //Actions
 
-        #region 提交 —— async void Submit()
+        #region 应用 —— async void Apply()
         /// <summary>
-        /// 提交
+        /// 应用
         /// </summary>
-        public async void Submit()
+        public async void Apply()
         {
             #region # 验证
 
+            if (this.RectangleL == null)
+            {
+                MessageBox.Show("矩形区域不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             if (this.BitmapSource == null)
             {
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -151,15 +164,22 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             this.Busy();
 
-            using Mat image = this.BitmapSource.ToMat();
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
             Mat mask = null;
-            using Mat result = await Task.Run(() => image.GrabCutSegment(rect, out mask));
+            using Mat result = await Task.Run(() => this.Image.GrabCutSegment(rect, out mask));
             this.BitmapSource = result.ToBitmapSource();
             mask?.Dispose();
 
             this.Idle();
+        }
+        #endregion
 
+        #region 提交 —— async void Submit()
+        /// <summary>
+        /// 提交
+        /// </summary>
+        public async void Submit()
+        {
             await base.TryCloseAsync(true);
         }
         #endregion
@@ -278,6 +298,20 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             {
                 this.DrawRectangle(canvas);
             }
+        }
+        #endregion
+
+        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
+        /// <summary>
+        /// 页面失活事件
+        /// </summary>
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (close)
+            {
+                this.Image?.Dispose();
+            }
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 
