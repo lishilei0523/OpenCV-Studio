@@ -92,13 +92,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         public RectangleL RectangleL { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
         #region 图像源 —— BitmapSource BitmapSource
         /// <summary>
         /// 图像源
@@ -134,7 +127,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         public void Load(BitmapSource bitmapSource)
         {
             this.BitmapSource = bitmapSource;
-            this.Image = bitmapSource.ToMat();
         }
         #endregion
 
@@ -165,7 +157,8 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             this.Busy();
 
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
-            using Mat result = await Task.Run(() => this.Image.Inpaint(rect));
+            using Mat image = this.BitmapSource.ToMat();
+            using Mat result = await Task.Run(() => image.Inpaint(rect));
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();
@@ -296,20 +289,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             {
                 this.DrawRectangle(canvas);
             }
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

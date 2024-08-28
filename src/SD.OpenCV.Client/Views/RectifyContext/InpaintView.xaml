@@ -9,7 +9,7 @@
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  mc:Ignorable="d"
-                 Title="污点矫正" 
+                 Title="矫正污点" 
                  Width="1440" Height="900" FontSize="14"
                  WindowStartupLocation="CenterOwner"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
