@@ -31,7 +31,6 @@ using SD.OpenCV.Reconstructions;
 using SD.OpenCV.SkiaSharp;
 using SkiaSharp;
 using SkiaSharp.Views.WPF;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -2153,29 +2152,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ScaleViewModel viewModel = ResolveMediator.Resolve<ScaleViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                Mat resultImage;
-                switch (viewModel.SelectedScaleMode)
-                {
-                    case ScaleMode.Absolute:
-                        resultImage = image.ResizeAbsolutely(viewModel.Width!.Value, viewModel.Height!.Value);
-                        break;
-                    case ScaleMode.Relative:
-                        resultImage = image.ResizeRelatively(viewModel.ScaleRatio!.Value);
-                        break;
-                    case ScaleMode.Adaptive:
-                        resultImage = image.ResizeAdaptively(viewModel.SideSize!.Value);
-                        break;
-                    case null:
-                        throw new NotSupportedException();
-                    default:
-                        throw new NotSupportedException();
-                }
-
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2201,12 +2182,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             RotationViewModel viewModel = ResolveMediator.Resolve<RotationViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.RotateTrans(viewModel.Angle!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -2232,12 +2212,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             TranslationViewModel viewModel = ResolveMediator.Resolve<TranslationViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.TranslateTrans(viewModel.OffsetX!.Value, viewModel.OffsetY!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();

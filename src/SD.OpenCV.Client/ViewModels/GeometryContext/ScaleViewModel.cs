@@ -1,12 +1,17 @@
-﻿using SD.Common;
+﻿using Caliburn.Micro;
+using OpenCvSharp;
+using OpenCvSharp.WpfExtensions;
+using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
+using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace SD.OpenCV.Client.ViewModels.GeometryContext
 {
@@ -18,19 +23,16 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         #region # 字段及构造器
 
         /// <summary>
+        /// 窗体管理器
+        /// </summary>
+        private readonly IWindowManager _windowManager;
+
+        /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ScaleViewModel()
+        public ScaleViewModel(IWindowManager windowManager)
         {
-            //默认值
-            this.SelectedScaleMode = ScaleMode.Absolute;
-            this.Width = 1024;
-            this.Height = 768;
-            this.ScaleRatio = 0.5f;
-            this.SideSize = 512;
-            this.AbsoluteVisibility = Visibility.Visible;
-            this.RelativeVisibility = Visibility.Collapsed;
-            this.AdaptiveVisibility = Visibility.Collapsed;
+            this._windowManager = windowManager;
         }
 
         #endregion
@@ -109,6 +111,21 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         public IDictionary<string, string> ScaleModes { get; set; }
         #endregion
 
+        #region 图像 —— Mat Image
+        /// <summary>
+        /// 图像
+        /// </summary>
+        public Mat Image { get; set; }
+        #endregion
+
+        #region 图像源 —— BitmapSource BitmapSource
+        /// <summary>
+        /// 图像源
+        /// </summary>
+        [DependencyProperty]
+        public BitmapSource BitmapSource { get; set; }
+        #endregion
+
         #endregion
 
         #region # 方法
@@ -119,8 +136,29 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         /// </summary>
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
+            //默认值
+            this.SelectedScaleMode = ScaleMode.Absolute;
+            this.Width = 1024;
+            this.Height = 768;
+            this.ScaleRatio = 0.5f;
+            this.SideSize = 512;
+            this.AbsoluteVisibility = Visibility.Visible;
+            this.RelativeVisibility = Visibility.Collapsed;
+            this.AdaptiveVisibility = Visibility.Collapsed;
             this.ScaleModes = typeof(ScaleMode).GetEnumMembers();
+
             return base.OnInitializeAsync(cancellationToken);
+        }
+        #endregion
+
+        #region 加载 —— void Load(BitmapSource bitmapSource)
+        /// <summary>
+        /// 加载
+        /// </summary>
+        public void Load(BitmapSource bitmapSource)
+        {
+            this.BitmapSource = bitmapSource;
+            this.Image = bitmapSource.ToMat();
         }
         #endregion
 
@@ -158,11 +196,11 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         }
         #endregion
 
-        #region 提交 —— async void Submit()
+        #region 应用 —— async void Apply()
         /// <summary>
-        /// 提交
+        /// 应用
         /// </summary>
-        public async void Submit()
+        public async void Apply()
         {
             #region # 验证
 
@@ -191,10 +229,51 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
                 MessageBox.Show("目标边长不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (this.BitmapSource == null)
+            {
+                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             #endregion
 
+            this.Busy();
+
+            using Mat result = this.SelectedScaleMode switch
+            {
+                ScaleMode.Absolute => await Task.Run(() => this.Image.ResizeAbsolutely(this.Width!.Value, this.Height!.Value)),
+                ScaleMode.Relative => await Task.Run(() => this.Image.ResizeRelatively(this.ScaleRatio!.Value)),
+                ScaleMode.Adaptive => await Task.Run(() => this.Image.ResizeAdaptively(this.SideSize!.Value)),
+                null => throw new NotSupportedException(),
+                _ => throw new NotSupportedException()
+            };
+            this.BitmapSource = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 提交 —— async void Submit()
+        /// <summary>
+        /// 提交
+        /// </summary>
+        public async void Submit()
+        {
             await base.TryCloseAsync(true);
+        }
+        #endregion
+
+        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
+        /// <summary>
+        /// 页面失活事件
+        /// </summary>
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (close)
+            {
+                this.Image?.Dispose();
+            }
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 
