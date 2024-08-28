@@ -1,7 +1,7 @@
-﻿namespace SD.OpenCV.Client.Views.FeatureContext
+﻿namespace SD.OpenCV.Client.Views.KeyPointContext
 {
     /// <summary>
-    /// Shi-Tomasi特征视图
+    /// Shi-Tomasi关键点视图
     /// </summary>
     public partial class ShiTomasiView
     {

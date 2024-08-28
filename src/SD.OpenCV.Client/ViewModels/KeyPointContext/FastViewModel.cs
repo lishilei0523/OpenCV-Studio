@@ -2,34 +2,43 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.FeatureContext
+namespace SD.OpenCV.Client.ViewModels.KeyPointContext
 {
     /// <summary>
-    /// SURF特征视图模型
+    /// FAST关键点视图模型
     /// </summary>
-    public class SurfViewModel : ScreenBase
+    public class FastViewModel : ScreenBase
     {
         #region # 字段及构造器
 
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public SurfViewModel()
+        public FastViewModel()
         {
             //默认值
-            this.HessianThreshold = 100;
+            this.Threshold = 100;
+            this.NonmaxSuppression = true;
         }
 
         #endregion
 
         #region # 属性
 
-        #region Hessian阈值 —— double? HessianThreshold
+        #region 阈值 —— int? Threshold
         /// <summary>
-        /// Hessian阈值
+        /// 阈值
         /// </summary>
         [DependencyProperty]
-        public double? HessianThreshold { get; set; }
+        public int? Threshold { get; set; }
+        #endregion
+
+        #region 非极大值抑制 —— double? NonmaxSuppression
+        /// <summary>
+        /// 非极大值抑制
+        /// </summary>
+        [DependencyProperty]
+        public bool NonmaxSuppression { get; set; }
         #endregion
 
         #endregion
@@ -44,9 +53,9 @@ namespace SD.OpenCV.Client.ViewModels.FeatureContext
         {
             #region # 验证
 
-            if (!this.HessianThreshold.HasValue)
+            if (!this.Threshold.HasValue)
             {
-                MessageBox.Show("Hessian阈值不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("阈值不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

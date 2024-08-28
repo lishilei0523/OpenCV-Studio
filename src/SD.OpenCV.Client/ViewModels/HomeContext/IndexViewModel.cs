@@ -13,7 +13,6 @@ using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.DrawContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
-using SD.OpenCV.Client.ViewModels.FeatureContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Client.ViewModels.GrayscaleContext;
@@ -2301,7 +2300,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            HarrisViewModel viewModel = ResolveMediator.Resolve<HarrisViewModel>();
+            KeyPointContext.HarrisViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.HarrisViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2340,7 +2339,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            ShiTomasiViewModel viewModel = ResolveMediator.Resolve<ShiTomasiViewModel>();
+            KeyPointContext.ShiTomasiViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.ShiTomasiViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2412,7 +2411,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            SurfViewModel viewModel = ResolveMediator.Resolve<SurfViewModel>();
+            KeyPointContext.SurfViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.SurfViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2450,7 +2449,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            FastViewModel viewModel = ResolveMediator.Resolve<FastViewModel>();
+            KeyPointContext.FastViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.FastViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2486,7 +2485,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            OrbViewModel viewModel = ResolveMediator.Resolve<OrbViewModel>();
+            KeyPointContext.OrbViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.OrbViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2599,7 +2598,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            SurfViewModel viewModel = ResolveMediator.Resolve<SurfViewModel>();
+            FeatureContext.SurfViewModel viewModel = ResolveMediator.Resolve<FeatureContext.SurfViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
@@ -2642,7 +2641,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            FastViewModel viewModel = ResolveMediator.Resolve<FastViewModel>();
+            FeatureContext.OrbViewModel viewModel = ResolveMediator.Resolve<FeatureContext.OrbViewModel>();
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {

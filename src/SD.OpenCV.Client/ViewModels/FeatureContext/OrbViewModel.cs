@@ -5,7 +5,7 @@ using System.Windows;
 namespace SD.OpenCV.Client.ViewModels.FeatureContext
 {
     /// <summary>
-    /// ORB视图模型
+    /// ORB特征视图模型
     /// </summary>
     public class OrbViewModel : ScreenBase
     {

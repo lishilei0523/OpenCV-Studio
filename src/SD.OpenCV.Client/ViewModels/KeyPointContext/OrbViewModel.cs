@@ -2,23 +2,22 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.FeatureContext
+namespace SD.OpenCV.Client.ViewModels.KeyPointContext
 {
     /// <summary>
-    /// FAST视图模型
+    /// ORB关键点视图模型
     /// </summary>
-    public class FastViewModel : ScreenBase
+    public class OrbViewModel : ScreenBase
     {
         #region # 字段及构造器
 
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public FastViewModel()
+        public OrbViewModel()
         {
             //默认值
-            this.Threshold = 100;
-            this.NonmaxSuppression = true;
+            this.Threshold = 500;
         }
 
         #endregion
@@ -31,14 +30,6 @@ namespace SD.OpenCV.Client.ViewModels.FeatureContext
         /// </summary>
         [DependencyProperty]
         public int? Threshold { get; set; }
-        #endregion
-
-        #region 非极大值抑制 —— double? NonmaxSuppression
-        /// <summary>
-        /// 非极大值抑制
-        /// </summary>
-        [DependencyProperty]
-        public bool NonmaxSuppression { get; set; }
         #endregion
 
         #endregion

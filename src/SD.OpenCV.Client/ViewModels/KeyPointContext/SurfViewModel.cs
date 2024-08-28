@@ -2,10 +2,10 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.FeatureContext
+namespace SD.OpenCV.Client.ViewModels.KeyPointContext
 {
     /// <summary>
-    /// SURF特征视图模型
+    /// SURF关键点视图模型
     /// </summary>
     public class SurfViewModel : ScreenBase
     {

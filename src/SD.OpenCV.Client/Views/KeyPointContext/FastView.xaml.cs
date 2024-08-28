@@ -1,7 +1,7 @@
-﻿namespace SD.OpenCV.Client.Views.FeatureContext
+﻿namespace SD.OpenCV.Client.Views.KeyPointContext
 {
     /// <summary>
-    /// FAST特征视图
+    /// FAST关键点视图
     /// </summary>
     public partial class FastView
     {

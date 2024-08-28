@@ -2,10 +2,10 @@
 using SD.Infrastructure.WPF.Caliburn.Base;
 using System.Windows;
 
-namespace SD.OpenCV.Client.ViewModels.FeatureContext
+namespace SD.OpenCV.Client.ViewModels.KeyPointContext
 {
     /// <summary>
-    /// Harris视图模型
+    /// Harris关键点视图模型
     /// </summary>
     public class HarrisViewModel : ScreenBase
     {
