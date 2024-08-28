@@ -680,36 +680,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //形态学
 
-        #region 综合 —— async void MorphologyEx()
-        /// <summary>
-        /// 综合
-        /// </summary>
-        public async void MorphologyEx()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
         #region 腐蚀 —— async void MorphErode()
         /// <summary>
         /// 腐蚀
@@ -729,12 +699,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ErodeViewModel viewModel = ResolveMediator.Resolve<ErodeViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphErode(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -760,12 +729,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             DilateViewModel viewModel = ResolveMediator.Resolve<DilateViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphDilate(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -791,12 +759,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             OpenViewModel viewModel = ResolveMediator.Resolve<OpenViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphOpen(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -822,12 +789,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             CloseViewModel viewModel = ResolveMediator.Resolve<CloseViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphClose(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -853,12 +819,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             TopHatViewModel viewModel = ResolveMediator.Resolve<TopHatViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphTopHat(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -884,12 +849,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             BlackHatViewModel viewModel = ResolveMediator.Resolve<BlackHatViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphBlackHat(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -915,12 +879,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             GradientViewModel viewModel = ResolveMediator.Resolve<GradientViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat resultImage = image.MorphGradient(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
@@ -946,13 +909,41 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             HitMissViewModel viewModel = ResolveMediator.Resolve<HitMissViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                using Mat resultImage = grayImage.MorphHitMiss(viewModel.KernelSize!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 形态学综合 —— async void MorphologyEx()
+        /// <summary>
+        /// 形态学综合
+        /// </summary>
+        public async void MorphologyEx()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MorphViewModel viewModel = ResolveMediator.Resolve<MorphViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
