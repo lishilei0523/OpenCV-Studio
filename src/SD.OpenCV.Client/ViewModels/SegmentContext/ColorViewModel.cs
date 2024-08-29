@@ -2,7 +2,7 @@
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
     /// <summary>
     /// 颜色分割视图模型
     /// </summary>
-    public class ColorViewModel : ScreenBase
+    public class ColorViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -83,21 +83,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public double MaxV { get; set; }
         #endregion
 
-        #region HSV图像 —— Mat ImageHSV
-        /// <summary>
-        /// HSV图像
-        /// </summary>
-        public Mat ImageHSV { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
         #endregion
 
         #region # 方法
@@ -120,15 +105,15 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
+        #region 加载 —— override void Load(BitmapSource bitmapSource)
         /// <summary>
         /// 加载
         /// </summary>
-        public void Load(BitmapSource bitmapSource)
+        public override void Load(BitmapSource bitmapSource)
         {
             using Mat imageBGR = bitmapSource.ToMat();
-            this.ImageHSV = imageBGR.CvtColor(ColorConversionCodes.BGR2HSV);
-            this.BitmapSource = imageBGR.ToBitmapSource();
+            this.Image = imageBGR.CvtColor(ColorConversionCodes.BGR2HSV);
+            this.BitmapSource = bitmapSource;
         }
         #endregion
 
@@ -137,19 +122,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// 滑动颜色通道
         /// </summary>
         public async void SlideColorChannel()
-        {
-            Scalar lowerScalar = new Scalar(this.MinH, this.MinS, this.MinV);
-            Scalar upperScalar = new Scalar(this.MaxH, this.MaxS, this.MaxV);
-            using Mat resultBGR = await Task.Run(() => this.ImageHSV.ColorSegment(lowerScalar, upperScalar));
-            this.BitmapSource = resultBGR.ToBitmapSource();
-        }
-        #endregion
-
-        #region 提交 —— async void Submit()
-        /// <summary>
-        /// 提交
-        /// </summary>
-        public async void Submit()
         {
             #region # 验证
 
@@ -161,21 +133,10 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             #endregion
 
-            await base.TryCloseAsync(true);
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.ImageHSV?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
+            Scalar lowerScalar = new Scalar(this.MinH, this.MinS, this.MinV);
+            Scalar upperScalar = new Scalar(this.MaxH, this.MaxS, this.MaxV);
+            using Mat resultBGR = await Task.Run(() => this.Image.ColorSegment(lowerScalar, upperScalar));
+            this.BitmapSource = resultBGR.ToBitmapSource();
         }
         #endregion
 

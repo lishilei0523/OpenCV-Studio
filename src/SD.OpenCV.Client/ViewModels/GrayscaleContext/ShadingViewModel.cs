@@ -2,12 +2,11 @@
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
@@ -15,7 +14,7 @@ namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
     /// <summary>
     /// 阴影变换视图模型
     /// </summary>
-    public class ShadingViewModel : ScreenBase
+    public class ShadingViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -68,21 +67,6 @@ namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
         public byte? Offset { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
         #endregion
 
         #region # 方法
@@ -100,17 +84,6 @@ namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
             this.Offset = 140;
 
             return base.OnInitializeAsync(cancellationToken);
-        }
-        #endregion
-
-        #region 加载 —— void Load(BitmapSource bitmapSource)
-        /// <summary>
-        /// 加载
-        /// </summary>
-        public void Load(BitmapSource bitmapSource)
-        {
-            this.BitmapSource = bitmapSource;
-            this.Image = bitmapSource.ToMat();
         }
         #endregion
 
@@ -157,30 +130,6 @@ namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();
-        }
-        #endregion
-
-        #region 提交 —— async void Submit()
-        /// <summary>
-        /// 提交
-        /// </summary>
-        public async void Submit()
-        {
-            await base.TryCloseAsync(true);
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

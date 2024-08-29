@@ -3,7 +3,7 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
     /// <summary>
     /// 阈值分割视图模型
     /// </summary>
-    public class ThresholdViewModel : ScreenBase
+    public class ThresholdViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -60,21 +60,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         public ThresholdTypes ThresholdType { get; set; }
         #endregion
 
-        #region 图像 —— Mat Image
-        /// <summary>
-        /// 图像
-        /// </summary>
-        public Mat Image { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
         #region 阈值分割类型字典 —— IDictionary<string, string> ThresholdTypes
         /// <summary>
         /// 阈值分割类型字典
@@ -103,11 +88,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
+        #region 加载 —— override void Load(BitmapSource bitmapSource)
         /// <summary>
         /// 加载
         /// </summary>
-        public void Load(BitmapSource bitmapSource)
+        public override void Load(BitmapSource bitmapSource)
         {
             Mat image = bitmapSource.ToMat();
             if (image.Type() == MatType.CV_8UC3)
@@ -129,18 +114,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         public async void SlideThreshold()
         {
-            using Mat result = new Mat();
-            await Task.Run(() => Cv2.Threshold(this.Image, result, this.Threshold, this.MaxValue, this.ThresholdType));
-            this.BitmapSource = result.ToBitmapSource();
-        }
-        #endregion
-
-        #region 提交 —— async void Submit()
-        /// <summary>
-        /// 提交
-        /// </summary>
-        public async void Submit()
-        {
             #region # 验证
 
             if (this.BitmapSource == null)
@@ -151,21 +124,9 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             #endregion
 
-            await base.TryCloseAsync(true);
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close)
-            {
-                this.Image?.Dispose();
-            }
-            return base.OnDeactivateAsync(close, cancellationToken);
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.Threshold(this.Image, result, this.Threshold, this.MaxValue, this.ThresholdType));
+            this.BitmapSource = result.ToBitmapSource();
         }
         #endregion
 

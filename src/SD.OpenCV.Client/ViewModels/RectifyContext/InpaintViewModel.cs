@@ -3,9 +3,9 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
 using System;
 using System.Threading;
@@ -23,7 +23,7 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
     /// <summary>
     /// 矫正污点视图模型
     /// </summary>
-    public class InpaintViewModel : ScreenBase
+    public class InpaintViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -92,14 +92,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         public RectangleL RectangleL { get; set; }
         #endregion
 
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
-        #endregion
-
         #endregion
 
         #region # 方法
@@ -120,11 +112,11 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
+        #region 加载 —— override void Load(BitmapSource bitmapSource)
         /// <summary>
         /// 加载
         /// </summary>
-        public void Load(BitmapSource bitmapSource)
+        public override void Load(BitmapSource bitmapSource)
         {
             this.BitmapSource = bitmapSource;
         }
@@ -162,16 +154,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();
-        }
-        #endregion
-
-        #region 提交 —— async void Submit()
-        /// <summary>
-        /// 提交
-        /// </summary>
-        public async void Submit()
-        {
-            await base.TryCloseAsync(true);
         }
         #endregion
 
