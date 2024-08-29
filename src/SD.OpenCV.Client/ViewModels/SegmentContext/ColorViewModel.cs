@@ -117,6 +117,17 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
+        #region 重置 —— override void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public override void Reset()
+        {
+            using Mat imageBGR = this.Image.CvtColor(ColorConversionCodes.HSV2BGR);
+            this.BitmapSource = imageBGR.ToBitmapSource();
+        }
+        #endregion
+
         #region 滑动颜色通道 —— async void SlideColorChannel()
         /// <summary>
         /// 滑动颜色通道

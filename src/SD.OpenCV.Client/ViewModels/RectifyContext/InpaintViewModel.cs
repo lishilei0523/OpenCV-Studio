@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
@@ -109,16 +108,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             this.OnRectangleClick();
 
             return base.OnInitializeAsync(cancellationToken);
-        }
-        #endregion
-
-        #region 加载 —— override void Load(BitmapSource bitmapSource)
-        /// <summary>
-        /// 加载
-        /// </summary>
-        public override void Load(BitmapSource bitmapSource)
-        {
-            this.BitmapSource = bitmapSource;
         }
         #endregion
 

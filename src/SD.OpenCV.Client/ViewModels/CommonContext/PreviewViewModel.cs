@@ -45,6 +45,16 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
         }
         #endregion
 
+        #region 重置 —— virtual void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public virtual void Reset()
+        {
+            this.BitmapSource = this.Image.ToBitmapSource();
+        }
+        #endregion
+
         #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
         /// <summary>
         /// 页面失活事件
