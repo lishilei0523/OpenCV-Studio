@@ -752,6 +752,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 RectangleL newRectangleL = new RectangleL(x, y, width, height);
 
                 rectangle.Tag = newRectangleL;
+                newRectangleL.Tag = rectangle;
                 this.ShapeLs.Insert(index, newRectangleL);
             }
         }
@@ -778,6 +779,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 CircleL newCircleL = new CircleL(x, y, radius);
 
                 circle.Tag = newCircleL;
+                newCircleL.Tag = circle;
                 this.ShapeLs.Insert(index, newCircleL);
             }
         }
@@ -805,6 +807,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 EllipseL newEllipseL = new EllipseL(x, y, radiusX, radiusY);
 
                 ellipse.Tag = newEllipseL;
+                newEllipseL.Tag = ellipse;
                 this.ShapeLs.Insert(index, newEllipseL);
             }
         }
@@ -836,6 +839,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 PolygonL newPolygonL = new PolygonL(pointIs);
 
                 polygon.Tag = newPolygonL;
+                newPolygonL.Tag = polygon;
                 this.ShapeLs.Insert(index, newPolygonL);
             }
         }

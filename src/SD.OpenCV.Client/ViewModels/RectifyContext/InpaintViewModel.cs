@@ -309,6 +309,8 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             int width = (int)Math.Ceiling(rectangle.Width);
             int height = (int)Math.Ceiling(rectangle.Height);
             this.RectangleL = new RectangleL(x, y, width, height);
+            this.Rectangle.Tag = rectangle;
+            rectangle.Tag = this.RectangleL;
         }
         #endregion
 
