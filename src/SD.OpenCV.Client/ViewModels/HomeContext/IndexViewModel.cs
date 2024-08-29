@@ -1858,13 +1858,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
+            viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
             {
-                using Mat image = this.EffectiveImage.ToMat();
-                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-                using Mat resultImage = grayImage.AdaptiveEqualizeHist(viewModel.ClipLimit!.Value);
-                this.EffectiveImage = resultImage.ToBitmapSource();
+                this.EffectiveImage = viewModel.BitmapSource;
             }
 
             this.Idle();
