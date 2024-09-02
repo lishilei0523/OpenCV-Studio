@@ -7,9 +7,6 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Models;
-using SD.OpenCV.SkiaSharp;
-using SkiaSharp;
-using SkiaSharp.Views.WPF;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -128,9 +125,11 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             await Task.Run(() => mergeMertens.Process(images, mergedResult));
             mergedResult *= 255;
 
-            byte[] imageBytes = await Task.Run(() => mergedResult.ToBytes(".bmp"));
-            using SKBitmap skBitmap = await Task.Run(() => SKBitmap.Decode(imageBytes));
-            BitmapSource bitmapSource = skBitmap.ToWriteableBitmap();
+            //转换格式
+            Mat mergedImage = new Mat();
+            mergedResult.ConvertTo(mergedImage, MatType.CV_8UC3);
+
+            BitmapSource bitmapSource = mergedImage.ToBitmapSource();
             Wrap<BitmapSource> wrapModel = bitmapSource.Wrap();
             this.SelectedBitmapSource = wrapModel;
             this.BitmapSources.Add(wrapModel);
@@ -141,6 +140,7 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
                 image.Dispose();
             }
             mergedResult.Dispose();
+            mergedImage.Dispose();
 
             this.Idle();
         }
@@ -171,8 +171,7 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             if (saveFileDialog.ShowDialog() == true)
             {
                 this.Busy();
-                using SKBitmap skBitmap = this.SelectedBitmapSource.Model.ToSKBitmap();
-                using Mat image = skBitmap.ToMat();
+                using Mat image = this.SelectedBitmapSource.Model.ToMat();
                 await Task.Run(() => image.SaveImage(saveFileDialog.FileName));
 
                 this.Idle();
