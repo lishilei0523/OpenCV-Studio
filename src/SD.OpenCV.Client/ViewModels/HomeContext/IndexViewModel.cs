@@ -340,11 +340,111 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 this.Busy();
 
                 using Mat image = this.EffectiveImage.ToMat();
-                await Task.Run(() => image.SaveImage(this.FilePath));
+                await Task.Run(() => image.SaveImage(saveFileDialog.FileName));
 
                 this.Idle();
                 this.ToastSuccess("保存成功！");
             }
+        }
+        #endregion
+
+
+        //工具
+
+        #region 仿射变换 —— async void AffineTransform()
+        /// <summary>
+        /// 仿射变换
+        /// </summary>
+        public async void AffineTransform()
+        {
+            this.Busy();
+
+            AffineViewModel viewModel = ResolveMediator.Resolve<AffineViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 透视变换 —— async void PerspectiveTransform()
+        /// <summary>
+        /// 透视变换
+        /// </summary>
+        public async void PerspectiveTransform()
+        {
+            this.Busy();
+
+            PerspectiveViewModel viewModel = ResolveMediator.Resolve<PerspectiveViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 曝光融合 —— async void ExposureFusion()
+        /// <summary>
+        /// 曝光融合
+        /// </summary>
+        public async void ExposureFusion()
+        {
+            this.Busy();
+
+            ExposureViewModel viewModel = ResolveMediator.Resolve<ExposureViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 模板匹配 —— async void TemplateMatch()
+        /// <summary>
+        /// 模板匹配
+        /// </summary>
+        public async void TemplateMatch()
+        {
+            this.Busy();
+
+            TemplateViewModel viewModel = ResolveMediator.Resolve<TemplateViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 特征匹配 —— async void FeatureMatch()
+        /// <summary>
+        /// 特征匹配
+        /// </summary>
+        public async void FeatureMatch()
+        {
+            this.Busy();
+
+            FeatureViewModel viewModel = ResolveMediator.Resolve<FeatureViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 单目标定 —— async void MonoCalibrate()
+        /// <summary>
+        /// 单目标定
+        /// </summary>
+        public async void MonoCalibrate()
+        {
+            MonoViewModel viewModel = ResolveMediator.Resolve<MonoViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
+        #region 手眼标定 —— async void CalibrateHandEye()
+        /// <summary>
+        /// 手眼标定
+        /// </summary>
+        public async void CalibrateHandEye()
+        {
+            HandEyeViewModel viewModel = ResolveMediator.Resolve<HandEyeViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 
@@ -2241,36 +2341,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 仿射变换 —— async void AffineTransform()
-        /// <summary>
-        /// 仿射变换
-        /// </summary>
-        public async void AffineTransform()
-        {
-            this.Busy();
-
-            AffineViewModel viewModel = ResolveMediator.Resolve<AffineViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 透视变换 —— async void PerspectiveTransform()
-        /// <summary>
-        /// 透视变换
-        /// </summary>
-        public async void PerspectiveTransform()
-        {
-            this.Busy();
-
-            PerspectiveViewModel viewModel = ResolveMediator.Resolve<PerspectiveViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
-        }
-        #endregion
-
         #region 距离变换 —— async void DistanceTransform()
         /// <summary>
         /// 距离变换
@@ -3009,64 +3079,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
-        }
-        #endregion
-
-
-        //匹配
-
-        #region 模板匹配 —— async void TemplateMatch()
-        /// <summary>
-        /// 模板匹配
-        /// </summary>
-        public async void TemplateMatch()
-        {
-            this.Busy();
-
-            TemplateViewModel viewModel = ResolveMediator.Resolve<TemplateViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 特征匹配 —— async void FeatureMatch()
-        /// <summary>
-        /// 特征匹配
-        /// </summary>
-        public async void FeatureMatch()
-        {
-            this.Busy();
-
-            FeatureViewModel viewModel = ResolveMediator.Resolve<FeatureViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //标定
-
-        #region 单目标定 —— async void MonoCalibrate()
-        /// <summary>
-        /// 单目标定
-        /// </summary>
-        public async void MonoCalibrate()
-        {
-            MonoViewModel viewModel = ResolveMediator.Resolve<MonoViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
-        }
-        #endregion
-
-        #region 手眼标定 —— async void CalibrateHandEye()
-        /// <summary>
-        /// 手眼标定
-        /// </summary>
-        public async void CalibrateHandEye()
-        {
-            HandEyeViewModel viewModel = ResolveMediator.Resolve<HandEyeViewModel>();
-            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 

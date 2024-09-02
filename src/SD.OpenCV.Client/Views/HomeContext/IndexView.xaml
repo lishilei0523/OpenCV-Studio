@@ -41,7 +41,17 @@
                     <MenuItem Header="保存(_S)" cm:Message.Attach="SaveImage()" />
                     <MenuItem Header="另存为(_A)" cm:Message.Attach="SaveAsImage()" />
                 </MenuItem>
-                <MenuItem Header="颜色空间(_V)">
+
+                <MenuItem Header="工具(_T)">
+                    <MenuItem Header="仿射变换(_A)" cm:Message.Attach="AffineTransform()" />
+                    <MenuItem Header="透视变换(_P)" cm:Message.Attach="PerspectiveTransform()" />
+                    <MenuItem Header="模板匹配(_T)" cm:Message.Attach="TemplateMatch()" />
+                    <MenuItem Header="特征匹配(_F)" cm:Message.Attach="FeatureMatch()" />
+                    <MenuItem Header="曝光融合(_E)" cm:Message.Attach="ExposureFusion()" />
+                    <MenuItem Header="单目标定(_M)" cm:Message.Attach="MonoCalibrate()" />
+                    <MenuItem Header="手眼标定(_H)" cm:Message.Attach="CalibrateHandEye()" />
+                </MenuItem>
+                <MenuItem Header="颜色空间(_C)">
                     <MenuItem Header="BGR→GRAY(_G)" cm:Message.Attach="BGRToGray()" />
                     <MenuItem Header="GRAY→BGR(_B)" cm:Message.Attach="GrayToBGR()" />
                     <MenuItem Header="BGR→HSV(_H)" cm:Message.Attach="BGRToHSV()" />
@@ -51,7 +61,7 @@
                     <MenuItem Header="BGR→Luv(_U)" cm:Message.Attach="BGRToLuv()" />
                     <MenuItem Header="BGR→YCrCb(_Y)" cm:Message.Attach="BGRToYCrCb()" />
                 </MenuItem>
-                <MenuItem Header="算术(_I)">
+                <MenuItem Header="算术(_A)">
                     <MenuItem Header="图像加法(_A)" cm:Message.Attach="AddImage()" />
                     <MenuItem Header="图像减法(_M)" cm:Message.Attach="MinusImage()" />
                 </MenuItem>
@@ -75,7 +85,7 @@
                     <MenuItem Header="双边滤波(_D)" cm:Message.Attach="BilateralBlur()" />
                     <MenuItem Header="Retinex增强(_E)" cm:Message.Attach="SingleScaleRetinex()" />
                 </MenuItem>
-                <MenuItem Header="频率滤波(_H)">
+                <MenuItem Header="频率滤波(_V)">
                     <MenuItem Header="理想低通滤波(_A)" cm:Message.Attach="IdealLPBlur()" />
                     <MenuItem Header="理想高通滤波(_B)" cm:Message.Attach="IdealHPBlur()" />
                     <MenuItem Header="理想带通滤波(_C)" cm:Message.Attach="IdealBPBlur()" />
@@ -97,7 +107,7 @@
                     <MenuItem Header="对数变换(_N)" cm:Message.Attach="LogarithmicTransform()" />
                     <MenuItem Header="阴影变换(_S)" cm:Message.Attach="ShadingTransform()" />
                 </MenuItem>
-                <MenuItem Header="直方图(_D)">
+                <MenuItem Header="直方图(_H)">
                     <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />
                     <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
                     <MenuItem Header="直方图规定化(_S)" cm:Message.Attach="SpecifyHist()" />
@@ -118,8 +128,6 @@
                     <MenuItem Header="缩放(_S)" cm:Message.Attach="ScaleTransform()" />
                     <MenuItem Header="旋转(_R)" cm:Message.Attach="RotateTransform()" />
                     <MenuItem Header="平移(_T)" cm:Message.Attach="TranslateTransform()" />
-                    <MenuItem Header="仿射变换(_A)" cm:Message.Attach="AffineTransform()" />
-                    <MenuItem Header="透视变换(_P)" cm:Message.Attach="PerspectiveTransform()" />
                     <MenuItem Header="距离变换(_D)" cm:Message.Attach="DistanceTransform()" />
                 </MenuItem>
                 <MenuItem Header="关键点(_K)">
@@ -131,7 +139,7 @@
                     <MenuItem Header="ORB关键点(_O)" cm:Message.Attach="DetectORB()" />
                     <MenuItem Header="Super关键点(_P)" cm:Message.Attach="DetectSuper()" />
                 </MenuItem>
-                <MenuItem Header="特征(_T)">
+                <MenuItem Header="特征(_D)">
                     <MenuItem Header="SIFT特征(_S)" cm:Message.Attach="ComputeSIFT()" />
                     <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
                     <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
@@ -152,14 +160,6 @@
                 <MenuItem Header="矫正(_R)">
                     <MenuItem Header="矫正污点(_S)" cm:Message.Attach="RectifyStains()" />
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
-                </MenuItem>
-                <MenuItem Header="匹配(_A)">
-                    <MenuItem Header="模板匹配(_T)" cm:Message.Attach="TemplateMatch()" />
-                    <MenuItem Header="特征匹配(_F)" cm:Message.Attach="FeatureMatch()" />
-                </MenuItem>
-                <MenuItem Header="标定(_C)">
-                    <MenuItem Header="单目标定(_I)" cm:Message.Attach="MonoCalibrate()" />
-                    <MenuItem Header="手眼标定(_H)" cm:Message.Attach="CalibrateHandEye()" />
                 </MenuItem>
             </Menu>
         </Border>
