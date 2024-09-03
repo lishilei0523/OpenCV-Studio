@@ -42,11 +42,11 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="滞后性阈值1：">
                             <mah:NumericUpDown Value="{Binding Threshold1, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="滞后性阈值2：">
                             <mah:NumericUpDown Value="{Binding Threshold2, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

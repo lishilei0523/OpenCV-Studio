@@ -8,7 +8,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
                  Title="SURF特征"
-                 Width="500" Height="260" ResizeMode="NoResize"
+                 Width="420" Height="260" ResizeMode="NoResize"
                  FontSize="14"
                  WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterOwner"
@@ -26,7 +26,8 @@
         <!--表单区-->
         <StackPanel Grid.Row="0" Grid.IsSharedSizeScope="True" Margin="20,30">
             <sd:FormItem Label="Hessian阈值：">
-                <TextBox Text="{Binding HessianThreshold}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding HessianThreshold, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
             </sd:FormItem>
         </StackPanel>
         <!--占位区-->

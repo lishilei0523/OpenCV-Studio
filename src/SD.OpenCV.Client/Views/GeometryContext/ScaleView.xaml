@@ -59,7 +59,7 @@
                         </sd:FormItem>
                         <sd:FormItem Label="缩放率：" Visibility="{Binding RelativeVisibility}">
                             <mah:NumericUpDown Value="{Binding ScaleRatio, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="目标边长：" Visibility="{Binding AdaptiveVisibility}">
                             <mah:NumericUpDown Value="{Binding SideSize, UpdateSourceTrigger=PropertyChanged}"

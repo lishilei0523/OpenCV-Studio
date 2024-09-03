@@ -8,7 +8,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
                  Title="标定参数"
-                 Width="500" Height="550" ResizeMode="NoResize"
+                 Width="420" Height="550" ResizeMode="NoResize"
                  FontSize="14"
                  WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterOwner"
@@ -43,19 +43,24 @@
                           Style="{StaticResource ComboBox.Styles.Fluent}" />
             </sd:FormItem>
             <sd:FormItem Label="网格边长：">
-                <TextBox Text="{Binding PatternSideSize}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding PatternSideSize, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
             </sd:FormItem>
             <sd:FormItem Label="行角点数：">
-                <TextBox Text="{Binding RowPointsCount}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding RowPointsCount, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
             </sd:FormItem>
             <sd:FormItem Label="列角点数：">
-                <TextBox Text="{Binding ColumnPointsCount}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding ColumnPointsCount, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
             </sd:FormItem>
             <sd:FormItem Label="优化迭代次数：">
-                <TextBox Text="{Binding MaxCount}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding MaxCount, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
             </sd:FormItem>
             <sd:FormItem Label="优化误差：">
-                <TextBox Text="{Binding Epsilon}" Style="{StaticResource TextBoxRevealStyle}" />
+                <mah:NumericUpDown Value="{Binding Epsilon, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
             </sd:FormItem>
         </StackPanel>
         <!--占位区-->

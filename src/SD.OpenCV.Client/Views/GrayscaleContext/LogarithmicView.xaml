@@ -42,7 +42,7 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="伽马值：">
                             <mah:NumericUpDown Value="{Binding Gamma, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

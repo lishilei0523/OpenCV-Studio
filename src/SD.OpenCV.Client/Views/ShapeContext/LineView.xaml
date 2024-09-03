@@ -48,13 +48,13 @@
                 </WrapPanel>
                 <WrapPanel Grid.Column="1" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="距离精度：" />
-                    <TextBox Text="{Binding Rho}" Width="150"
-                         mah:TextBoxHelper.Watermark="距离精度"
-                         mah:TextBoxHelper.ClearTextButton="True" />
+                    <mah:NumericUpDown Value="{Binding Rho, UpdateSourceTrigger=PropertyChanged}"
+                                       Width="150"
+                                       Style="{StaticResource NumericUpDown.Styles.Default.Float}" />
                     <TextBlock Text="角度精度：" Margin="10,0,0,0" />
-                    <TextBox Text="{Binding Theta}" Width="150"
-                         mah:TextBoxHelper.Watermark="角度精度"
-                         mah:TextBoxHelper.ClearTextButton="True" />
+                    <mah:NumericUpDown Value="{Binding Theta, UpdateSourceTrigger=PropertyChanged}"
+                                       Width="150"
+                                       Style="{StaticResource NumericUpDown.Styles.Default.Float}" />
                     <TextBlock Text="阈值：" Margin="10,0,0,0" />
                     <mah:NumericUpDown Minimum="0" Maximum="2000000"
                                    Value="{Binding Threshold, UpdateSourceTrigger=PropertyChanged}"

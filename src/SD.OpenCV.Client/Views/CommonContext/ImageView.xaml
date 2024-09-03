@@ -8,7 +8,6 @@
                  mc:Ignorable="d"
                  Title="查看图像" 
                  Width="1280" Height="800" FontSize="14"
-                 WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
 

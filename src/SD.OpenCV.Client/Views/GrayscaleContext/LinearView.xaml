@@ -42,11 +42,11 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="对比度：">
                             <mah:NumericUpDown Value="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="亮度：">
                             <mah:NumericUpDown Value="{Binding Beta, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

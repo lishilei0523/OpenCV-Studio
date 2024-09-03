@@ -42,12 +42,12 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="滤波半径：">
                             <mah:NumericUpDown Value="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
-                                              Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                              Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="滤波带宽：">
                             <mah:NumericUpDown Minimum="1" Maximum="100" 
                                                Value="{Binding BandWidth, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="阶数：">
                             <mah:NumericUpDown Minimum="1" Maximum="100" 

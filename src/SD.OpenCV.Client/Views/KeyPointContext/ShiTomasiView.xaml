@@ -46,11 +46,11 @@
                         </sd:FormItem>
                         <sd:FormItem Label="质量级别：">
                             <mah:NumericUpDown Value="{Binding QualityLevel, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="最小距离：">
                             <mah:NumericUpDown Value="{Binding MinDistance, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="块尺寸：">
                             <mah:NumericUpDown Value="{Binding BlockSize, UpdateSourceTrigger=PropertyChanged}"

@@ -51,7 +51,7 @@
                         </sd:FormItem>
                         <sd:FormItem Label="自由参数：">
                             <mah:NumericUpDown Value="{Binding K, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

@@ -47,15 +47,15 @@
                         </sd:FormItem>
                         <sd:FormItem Label="X轴卷积权重：">
                             <mah:NumericUpDown Value="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="Y轴卷积权重：">
                             <mah:NumericUpDown Value="{Binding Beta, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="伽马值：">
                             <mah:NumericUpDown Value="{Binding Gamma, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

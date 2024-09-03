@@ -48,12 +48,12 @@
                         <sd:FormItem Label="颜色标准差：">
                             <mah:NumericUpDown Minimum="1" Maximum="1000" 
                                                Value="{Binding SigmaColor, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="空间标准差：">
                             <mah:NumericUpDown Minimum="1" Maximum="1000" 
                                                Value="{Binding SigmaSpace, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>
