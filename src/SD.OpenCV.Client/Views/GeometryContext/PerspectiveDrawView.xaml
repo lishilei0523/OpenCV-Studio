@@ -11,7 +11,6 @@
                  Title="透视绘制"
                  Width="1440" Height="900"
                  FontSize="14"
-                 WindowStyle="ThreeDBorderWindow"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
 
