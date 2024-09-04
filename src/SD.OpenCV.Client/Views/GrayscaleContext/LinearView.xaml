@@ -41,10 +41,16 @@
                 <GroupBox Grid.Column="1" Header="灰度参数" Margin="2,4,4,4">
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="对比度：">
+                            <Slider Value="{Binding Alpha}" Style="{StaticResource Slider.Styles.Fluent}" />
+                        </sd:FormItem>
+                        <sd:FormItem>
                             <mah:NumericUpDown Value="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
                                                Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="亮度：">
+                            <Slider Value="{Binding Beta}" Style="{StaticResource Slider.Styles.Fluent}" />
+                        </sd:FormItem>
+                        <sd:FormItem>
                             <mah:NumericUpDown Value="{Binding Beta, UpdateSourceTrigger=PropertyChanged}"
                                                Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
