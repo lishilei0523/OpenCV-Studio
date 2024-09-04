@@ -43,81 +43,75 @@
                     <ColumnDefinition Width="260" />
                 </Grid.ColumnDefinitions>
                 <!--图像&位姿-->
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TabControl Grid.Row="0" Style="{StaticResource TabControl.Styles.Document}" Margin="4,4,2,2"
-                                ItemContainerStyle="{StaticResource TabControlItem.Styles.Document}">
-                        <TabItem Header="图像列表">
-                            <ListBox ItemsSource="{Binding BitmapSources}" SelectedItem="{Binding SelectedBitmapSource}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Image Width="180" Height="150" Stretch="Uniform" Source="{Binding}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="删除(_D)" cm:Message.Attach="RemoveImage()" />
-                                    </ContextMenu>
-                                </ListBox.ContextMenu>
-                            </ListBox>
-                        </TabItem>
-                        <TabItem Header="位姿列表">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="376" />
-                                </Grid.RowDefinitions>
-                                <!--位姿列表-->
-                                <GroupBox Grid.Row="0" Header="位姿列表" Margin="2,2,2,2">
-                                    <ListBox ItemsSource="{Binding Poses}" SelectedItem="{Binding SelectedPose}"
+                <TabControl Grid.Column="0" Margin="4,4,2,4" Style="{StaticResource TabControl.Styles.Document}"
+                            ItemContainerStyle="{StaticResource TabControlItem.Styles.Document}">
+                    <TabItem Header="图像列表">
+                        <ListBox ItemsSource="{Binding BitmapSources}" SelectedItem="{Binding SelectedBitmapSource}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Width="180" Height="150" Stretch="Uniform" Source="{Binding}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="删除(_D)" cm:Message.Attach="RemoveImage()" />
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </TabItem>
+                    <TabItem Header="位姿列表">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="376" />
+                            </Grid.RowDefinitions>
+                            <!--位姿列表-->
+                            <GroupBox Grid.Row="0" Header="位姿列表" Margin="2,2,2,2">
+                                <ListBox ItemsSource="{Binding Poses}" SelectedItem="{Binding SelectedPose}"
                                          cm:Message.Attach="[Event SelectionChanged] = [Action SelectPose()]">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="3" Width="200" Height="28">
-                                                    <TextBlock Text="{Binding Id}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                        <ListBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="删除(_D)" cm:Message.Attach="RemovePose()" />
-                                            </ContextMenu>
-                                        </ListBox.ContextMenu>
-                                    </ListBox>
-                                </GroupBox>
-                                <!--位姿预览-->
-                                <GroupBox Grid.Row="1" Header="位姿预览" Margin="2,2,2,2">
-                                    <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
-                                        <sd:FormItem Label="TX：">
-                                            <TextBlock Text="{Binding SelectedPose.X}" />
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="TY：">
-                                            <TextBlock Text="{Binding SelectedPose.Y}"/>
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="TZ：">
-                                            <TextBlock Text="{Binding SelectedPose.Z}" />
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="RX：">
-                                            <TextBlock Text="{Binding SelectedPose.RX}" />
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="RY：">
-                                            <TextBlock Text="{Binding SelectedPose.RY}" />
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="RZ：">
-                                            <TextBlock Text="{Binding SelectedPose.RZ}" />
-                                        </sd:FormItem>
-                                        <sd:FormItem Label="矩阵：" />
-                                        <TextBlock Text="{Binding SelectedPoseMatrix}" HorizontalAlignment="Center" />
-                                    </StackPanel>
-                                </GroupBox>
-                                <GridSplitter Grid.Row="0" Style="{StaticResource GridSplitter.Horizontal}" />
-                            </Grid>
-                        </TabItem>
-                    </TabControl>
-                </Grid>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="3" Width="200" Height="28">
+                                                <TextBlock Text="{Binding Id}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="删除(_D)" cm:Message.Attach="RemovePose()" />
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
+                                </ListBox>
+                            </GroupBox>
+                            <!--位姿预览-->
+                            <GroupBox Grid.Row="1" Header="位姿预览" Margin="2,2,2,2">
+                                <StackPanel Grid.IsSharedSizeScope="True" Margin="5,10">
+                                    <sd:FormItem Label="TX：">
+                                        <TextBlock Text="{Binding SelectedPose.X}" />
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="TY：">
+                                        <TextBlock Text="{Binding SelectedPose.Y}"/>
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="TZ：">
+                                        <TextBlock Text="{Binding SelectedPose.Z}" />
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="RX：">
+                                        <TextBlock Text="{Binding SelectedPose.RX}" />
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="RY：">
+                                        <TextBlock Text="{Binding SelectedPose.RY}" />
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="RZ：">
+                                        <TextBlock Text="{Binding SelectedPose.RZ}" />
+                                    </sd:FormItem>
+                                    <sd:FormItem Label="矩阵：" />
+                                    <TextBlock Text="{Binding SelectedPoseMatrix}" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </GroupBox>
+                            <GridSplitter Grid.Row="0" Style="{StaticResource GridSplitter.Horizontal}" />
+                        </Grid>
+                    </TabItem>
+                </TabControl>
                 <!--图像预览-->
                 <GroupBox Grid.Column="1" Header="图像预览" Margin="2,4,2,4" Background="LightGray">
                     <sd:ImageViewer ImageSource="{Binding SelectedBitmapSource}" />
