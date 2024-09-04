@@ -25,7 +25,7 @@
         <!--Header-->
         <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
             <Menu Margin="4,2">
-                <MenuItem Header="加载图像(_I)" cm:Message.Attach="LoadImages()" />
+                <MenuItem Header="打开图像(_O)" cm:Message.Attach="OpenImages()" />
                 <MenuItem Header="标定参数(_P)" cm:Message.Attach="SetParameters()" />
                 <MenuItem Header="绘制角点(_K)" cm:Message.Attach="DrawKeyPoints()" />
                 <MenuItem Header="执行标定(_C)" cm:Message.Attach="ExecuteCalibration()" />
@@ -42,20 +42,22 @@
                 </Grid.ColumnDefinitions>
                 <!--图像列表-->
                 <GroupBox Grid.Column="0" Header="图像列表" Margin="4,4,2,4">
-                    <ListBox ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage}"
-                             cm:Message.Attach="[Event SelectionChanged] = [Action SelectImage()]">
+                    <ListBox ItemsSource="{Binding BitmapSources}" SelectedItem="{Binding SelectedBitmapSource}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="3" Width="205" Height="28">
-                                    <TextBlock Text="{Binding Key}" />
-                                </Grid>
+                                <Image Width="180" Height="150" Stretch="Uniform" Source="{Binding}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="删除(_D)" cm:Message.Attach="RemoveImage()" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                     </ListBox>
                 </GroupBox>
                 <!--图像预览-->
                 <GroupBox Grid.Column="1" Header="图像预览" Margin="2,4,2,4" Background="LightGray">
-                    <sd:ImageViewer ImageSource="{Binding SelectedBitmap}" />
+                    <sd:ImageViewer ImageSource="{Binding SelectedBitmapSource}" />
                 </GroupBox>
                 <!--标定结果-->
                 <Grid Grid.Column="2">
@@ -116,7 +118,19 @@
         </busyIndicator:BusyMask>
         <!--Footer-->
         <Border Grid.Row="2" Style="{StaticResource Panel.Styles.Function.Border}" BorderThickness="0,1,0,0">
-
+            <Grid>
+                <WrapPanel Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="图像数量: " FontSize="12" />
+                    <TextBlock Text="{Binding BitmapSources.Count}" FontSize="12" />
+                </WrapPanel>
+                <WrapPanel Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding SelectedBitmapSource.Width}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding SelectedBitmapSource.Height}" FontSize="12" />
+                </WrapPanel>
+            </Grid>
         </Border>
     </Grid>
 </mah:MetroWindow>

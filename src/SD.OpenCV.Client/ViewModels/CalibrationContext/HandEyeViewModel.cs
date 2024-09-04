@@ -49,22 +49,6 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
         #region # 属性
 
-        #region 已选图像 —— BitmapSource SelectedBitmap
-        /// <summary>
-        /// 已选图像
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource SelectedBitmap { get; set; }
-        #endregion
-
-        #region 已选图像 —— KeyValuePair<string, Mat>? SelectedImage
-        /// <summary>
-        /// 已选图像
-        /// </summary>
-        [DependencyProperty]
-        public KeyValuePair<string, Mat>? SelectedImage { get; set; }
-        #endregion
-
         #region 已选位姿 —— Pose? SelectedPose
         /// <summary>
         /// 已选位姿
@@ -79,6 +63,14 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         /// </summary>
         [DependencyProperty]
         public string SelectedPoseMatrix { get; set; }
+        #endregion
+
+        #region 已选图像源 —— BitmapSource SelectedBitmapSource
+        /// <summary>
+        /// 已选图像源
+        /// </summary>
+        [DependencyProperty]
+        public BitmapSource SelectedBitmapSource { get; set; }
         #endregion
 
         #region 标定重投影误差 —— string CalibratedReprojectionError
@@ -135,20 +127,20 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         public string HandEyeMatrixText { get; set; }
         #endregion
 
-        #region 图像字典 —— IDictionary<string, Mat> Images
-        /// <summary>
-        /// 图像字典
-        /// </summary>
-        [DependencyProperty]
-        public IDictionary<string, Mat> Images { get; set; }
-        #endregion
-
         #region 位姿列表 —— ObservableCollection<Pose> Poses
         /// <summary>
         /// 位姿列表
         /// </summary>
         [DependencyProperty]
         public ObservableCollection<Pose> Poses { get; set; }
+        #endregion
+
+        #region 图像源列表 —— ObservableCollection<BitmapSource> BitmapSources
+        /// <summary>
+        /// 图像源列表
+        /// </summary>
+        [DependencyProperty]
+        public ObservableCollection<BitmapSource> BitmapSources { get; set; }
         #endregion
 
         #region 标定参数视图模型 —— HandEyeParamViewModel ParamViewModel
@@ -163,11 +155,23 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
         #region # 方法
 
-        #region 加载图像 —— async void LoadImages()
+        #region 初始化 —— override Task OnInitializeAsync(CancellationToken cancellationToken)
         /// <summary>
-        /// 加载图像
+        /// 初始化
         /// </summary>
-        public async void LoadImages()
+        protected override Task OnInitializeAsync(CancellationToken cancellationToken)
+        {
+            this.BitmapSources = new ObservableCollection<BitmapSource>();
+
+            return base.OnInitializeAsync(cancellationToken);
+        }
+        #endregion
+
+        #region 打开图像 —— async void OpenImages()
+        /// <summary>
+        /// 打开图像
+        /// </summary>
+        public async void OpenImages()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -190,53 +194,39 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
                 this.Busy();
 
-                IDictionary<string, Mat> images = new Dictionary<string, Mat>();
-                foreach (string filePath in openFileDialog.FileNames)
+                foreach (string fileName in openFileDialog.FileNames)
                 {
-                    string fileName = Path.GetFileName(filePath);
-                    Mat image = await Task.Run(() => Cv2.ImRead(filePath));
-                    images.Add(fileName, image);
+                    using Mat image = await Task.Run(() => Cv2.ImRead(fileName));
+                    BitmapSource bitmapSource = image.ToBitmapSource();
+                    this.BitmapSources.Add(bitmapSource);
                 }
-                this.Images = images;
 
                 //默认预览第一张
-                KeyValuePair<string, Mat> first = this.Images.First();
-                this.SelectedImage = first;
-                this.SelectedBitmap = first.Value.ToBitmapSource();
+                this.SelectedBitmapSource = this.BitmapSources.First();
 
                 this.Idle();
             }
         }
         #endregion
 
-        #region 选择图像 —— async void SelectImage()
+        #region 删除图像 —— void RemoveImage()
         /// <summary>
-        /// 选择图像
+        /// 删除图像
         /// </summary>
-        public async void SelectImage()
+        public void RemoveImage()
         {
-            this.Busy();
-
-            if (this.SelectedImage != null)
+            if (this.SelectedBitmapSource != null)
             {
-                await this.OnUIThreadAsync(() =>
-                {
-                    BitmapSource bitmapSource = this.SelectedImage.Value.Value.ToBitmapSource();
-                    this.SelectedBitmap = bitmapSource;
-
-                    return Task.CompletedTask;
-                });
+                this.BitmapSources.Remove(this.SelectedBitmapSource);
             }
-
-            this.Idle();
         }
         #endregion
 
-        #region 加载位姿 —— async void LoadPoses()
+        #region 打开位姿 —— async void OpenPoses()
         /// <summary>
-        /// 加载位姿
+        /// 打开位姿
         /// </summary>
-        public async void LoadPoses()
+        public async void OpenPoses()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -302,11 +292,24 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         }
         #endregion
 
-        #region 加载内参 —— async void LoadCameraIntrinsics()
+        #region 删除位姿 —— void RemovePose()
         /// <summary>
-        /// 加载内参
+        /// 删除位姿
         /// </summary>
-        public async void LoadCameraIntrinsics()
+        public void RemovePose()
+        {
+            if (this.SelectedPose.HasValue)
+            {
+                this.Poses.Remove(this.SelectedPose.Value);
+            }
+        }
+        #endregion
+
+        #region 打开内参 —— async void OpenCameraIntrinsics()
+        /// <summary>
+        /// 打开内参
+        /// </summary>
+        public async void OpenCameraIntrinsics()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -363,7 +366,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         {
             #region # 验证
 
-            if (!this.SelectedImage.HasValue)
+            if (this.SelectedBitmapSource == null)
             {
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -378,9 +381,10 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
 
             this.Busy();
 
-            using Mat image = this.SelectedImage.Value.Value.Clone();
-            using Mat grayImage = new Mat();
-            Cv2.CvtColor(image, grayImage, ColorConversionCodes.BGR2GRAY);
+            using Mat image = this.SelectedBitmapSource.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3
+                ? image.CvtColor(ColorConversionCodes.BGR2GRAY)
+                : image.Clone();
             PatternType patternType = this.ParamViewModel.SelectedPatternType!.Value;
             Size patternSize = new Size(this.ParamViewModel.RowPointsCount!.Value, this.ParamViewModel.ColumnPointsCount!.Value);
             int maxCount = this.ParamViewModel.MaxCount!.Value;
@@ -404,7 +408,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             if (success)
             {
                 Cv2.DrawChessboardCorners(image, patternSize, cornerPoints, true);
-                this.SelectedBitmap = image.ToBitmapSource();
+                this.SelectedBitmapSource = image.ToBitmapSource();
             }
             else
             {
@@ -423,7 +427,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
         {
             #region # 验证
 
-            if (this.Images == null || !this.Images.Any())
+            if (this.BitmapSources == null || !this.BitmapSources.Any())
             {
                 MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -433,7 +437,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
                 MessageBox.Show("位姿未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.Images.Count != this.Poses.Count)
+            if (this.BitmapSources.Count != this.Poses.Count)
             {
                 MessageBox.Show("图像与位姿数量不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -465,20 +469,33 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             int maxCount = this.ParamViewModel.MaxCount!.Value;
             double epsilon = this.ParamViewModel.Epsilon!.Value;
             IDictionary<string, Pose> robotPoses = new Dictionary<string, Pose>();
-            for (int i = 0; i < this.Images.Count; i++)
+            for (int i = 0; i < this.BitmapSources.Count; i++)
             {
-                KeyValuePair<string, Mat> keyImage = this.Images.ElementAt(i);
                 Pose pose = this.Poses.ElementAt(i);
-                robotPoses.Add(keyImage.Key, pose);
+                robotPoses.Add(i.ToString(), pose);
             }
 
             //转灰度图
             IDictionary<string, Mat> grayImages = new Dictionary<string, Mat>();
-            foreach (KeyValuePair<string, Mat> kv in this.Images)
+            for (int i = 0; i < this.BitmapSources.Count; i++)
             {
-                Mat grayImage = new Mat();
-                Cv2.CvtColor(kv.Value, grayImage, ColorConversionCodes.BGR2GRAY);
-                grayImages.Add(kv.Key, grayImage);
+                BitmapSource bitmapSource = this.BitmapSources[i];
+                using Mat image = bitmapSource.ToMat();
+                Mat grayImage;
+                if (image.Type() == MatType.CV_8UC3)
+                {
+                    grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+                }
+                else if (image.Type() == MatType.CV_8UC1)
+                {
+                    grayImage = image.Clone();
+                }
+                else
+                {
+                    MessageBox.Show($"不支持的图像格式：{image.Type()}！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                grayImages.Add(i.ToString(), grayImage);
             }
 
             IDictionary<string, Matrix<double>> extrinsicMatrices = await Task.Run(() => Calibrator.SolveExtrinsicMatrices(patternSideSize, patternSize, patternType, maxCount, epsilon, this.CameraIntrinsics, grayImages));
@@ -538,24 +555,6 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             }
 
             this.Idle();
-        }
-        #endregion
-
-        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
-        /// <summary>
-        /// 页面失活事件
-        /// </summary>
-        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-        {
-            if (close && this.Images != null)
-            {
-                foreach (Mat image in this.Images.Values)
-                {
-                    image.Dispose();
-                }
-            }
-
-            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 
