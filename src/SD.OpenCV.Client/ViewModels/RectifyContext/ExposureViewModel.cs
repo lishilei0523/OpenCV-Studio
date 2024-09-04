@@ -180,6 +180,19 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         }
         #endregion
 
+        #region 删除图像 —— void RemoveImage()
+        /// <summary>
+        /// 删除图像
+        /// </summary>
+        public void RemoveImage()
+        {
+            if (this.SelectedBitmapSource != null)
+            {
+                this.BitmapSources.Remove(this.SelectedBitmapSource);
+            }
+        }
+        #endregion
+
         #region 全选图像 —— void CheckAll()
         /// <summary>
         /// 全选图像

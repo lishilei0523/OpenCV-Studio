@@ -69,6 +69,11 @@
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="删除(_D)" cm:Message.Attach="RemoveImage()" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                     </ListBox>
                 </GroupBox>
                 <!--图像预览-->
