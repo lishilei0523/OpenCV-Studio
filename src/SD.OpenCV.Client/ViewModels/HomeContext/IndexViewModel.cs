@@ -2449,16 +2449,13 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            using Mat image = this.EffectiveImage.ToMat();
-            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using SIFT sift = SIFT.Create();
-            using Mat descriptors = new Mat();
-            KeyPoint[] keyPoints = { };
-            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out keyPoints, descriptors));
-
-            //绘制关键点
-            await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
-            this.EffectiveImage = image.ToBitmapSource();
+            KeyPointContext.SiftViewModel viewModel = ResolveMediator.Resolve<KeyPointContext.SiftViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
 
             this.Idle();
         }
