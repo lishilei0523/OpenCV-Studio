@@ -74,7 +74,22 @@
         </Grid>
         <!--Footer-->
         <Border Grid.Row="2" Style="{StaticResource Panel.Styles.Function.Border}" BorderThickness="0,1,0,0">
-
+            <Grid>
+                <WrapPanel Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding SourceImage.Width}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding SourceImage.Height}" FontSize="12" />
+                </WrapPanel>
+                <WrapPanel Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Width: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetImage.Width}" FontSize="12" />
+                    <TextBlock Text=", " FontSize="12" />
+                    <TextBlock Text="Height: " FontSize="12" />
+                    <TextBlock Text="{Binding TargetImage.Height}" FontSize="12" />
+                </WrapPanel>
+            </Grid>
         </Border>
     </Grid>
 </mah:MetroWindow>
