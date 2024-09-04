@@ -1,0 +1,58 @@
+﻿<mah:MetroWindow x:Class="SD.OpenCV.Client.Views.FeatureContext.SiftView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
+                 xmlns:cm="http://www.caliburnproject.org"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 mc:Ignorable="d"
+                 Title="SIFT特征"
+                 Width="420" Height="400" ResizeMode="NoResize"
+                 FontSize="14"
+                 WindowStartupLocation="CenterOwner"
+                 Style="{StaticResource MetroWindow.Styles.Clean}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!--表单区-->
+            <RowDefinition Height="300" />
+            <!--占位区-->
+            <RowDefinition Height="*" />
+            <!--控制区-->
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <!--表单区-->
+        <StackPanel Grid.Row="0" Grid.IsSharedSizeScope="True" Margin="20,30">
+            <sd:FormItem Label="保留特征数：">
+                <mah:NumericUpDown Value="{Binding NFeatures, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+            </sd:FormItem>
+            <sd:FormItem Label="每层DoG个数：">
+                <mah:NumericUpDown Value="{Binding NOctaveLayers, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+            </sd:FormItem>
+            <sd:FormItem Label="对比度阈值：">
+                <mah:NumericUpDown Value="{Binding ContrastThreshold, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+            </sd:FormItem>
+            <sd:FormItem Label="边缘阈值：">
+                <mah:NumericUpDown Value="{Binding EdgeThreshold, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+            </sd:FormItem>
+            <sd:FormItem Label="0层高斯因子：">
+                <mah:NumericUpDown Value="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+            </sd:FormItem>
+        </StackPanel>
+        <!--占位区-->
+        <Grid Grid.Row="1" />
+        <!--控制区-->
+        <Grid Grid.Row="2" Style="{StaticResource Form.Styles.Submit.Grid}">
+            <WrapPanel Style="{StaticResource Form.Styles.Submit.WrapPanel}">
+                <Button Content="确定" cm:Message.Attach="Submit()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
+                <Button Content="取消" cm:Message.Attach="TryCloseAsync('false')" Style="{StaticResource Button.Styles.Fluent.Default}" />
+            </WrapPanel>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

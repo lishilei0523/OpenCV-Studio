@@ -2606,21 +2606,26 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            using Mat image = this.EffectiveImage.ToMat();
-            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using SIFT sift = SIFT.Create();
-            using Mat descriptors = new Mat();
-            await Task.Run(() => sift.DetectAndCompute(grayImage, null, out _, descriptors));
+            FeatureContext.SiftViewModel viewModel = ResolveMediator.Resolve<FeatureContext.SiftViewModel>();
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                using Mat image = this.EffectiveImage.ToMat();
+                using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+                using SIFT sift = SIFT.Create(viewModel.NFeatures!.Value, viewModel.NOctaveLayers!.Value, viewModel.ContrastThreshold!.Value, viewModel.EdgeThreshold!.Value, viewModel.Sigma!.Value);
+                using Mat descriptors = new Mat();
+                await Task.Run(() => sift.DetectAndCompute(grayImage, null, out _, descriptors));
 
-            //绘制直方图
-            using Plot plot = new Plot();
-            plot.AddDescriptors(descriptors);
-            using SKImage skImage = plot.GetSKImage(1280, 800);
-            BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+                //绘制直方图
+                using Plot plot = new Plot();
+                plot.AddDescriptors(descriptors);
+                using SKImage skImage = plot.GetSKImage(1280, 800);
+                BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
-            ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
-            imageViewModel.Load(bitmapSource);
-            await this._windowManager.ShowWindowAsync(imageViewModel);
+                ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+                imageViewModel.Load(bitmapSource);
+                await this._windowManager.ShowWindowAsync(imageViewModel);
+            }
 
             this.Idle();
         }
