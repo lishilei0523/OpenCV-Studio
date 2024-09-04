@@ -41,7 +41,7 @@
                 <GroupBox Grid.Column="1" Header="滤波参数" Margin="2,4,4,4">
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="核矩阵尺寸：">
-                            <mah:NumericUpDown Minimum="1" Maximum="100" Interval="2"
+                            <mah:NumericUpDown Minimum="1" Maximum="100"
                                                Value="{Binding KernelSize, UpdateSourceTrigger=PropertyChanged}"
                                                Style="{StaticResource NumericUpDown.Styles.Fluent}" />
                         </sd:FormItem>
