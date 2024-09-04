@@ -26,7 +26,7 @@
         <!--Header-->
         <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
             <Menu Margin="4,2">
-                <MenuItem Header="打开图像(_S)" cm:Message.Attach="OpenImages()" />
+                <MenuItem Header="打开图像(_O)" cm:Message.Attach="OpenImages()" />
                 <MenuItem Header="曝光融合(_E)" cm:Message.Attach="ExposureFusion()" />
                 <MenuItem Header="另存为(_A)" cm:Message.Attach="SaveAsImage()" />
             </Menu>
