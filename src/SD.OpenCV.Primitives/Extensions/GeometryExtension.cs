@@ -291,10 +291,13 @@ namespace SD.OpenCV.Primitives.Extensions
             Mat distanceMatrix = new Mat();
             Cv2.DistanceTransform(binaryMatrix, distanceMatrix, DistanceTypes.L2, DistanceTransformMasks.Mask3);
 
-            //归一化
-            Cv2.Normalize(distanceMatrix, distanceMatrix, 0, 1, NormTypes.MinMax);
+            //转换格式
+            Mat result = distanceMatrix.ConvertScaleAbs();
 
-            return distanceMatrix;
+            //归一化
+            Cv2.Normalize(result, result, 0, 255, NormTypes.MinMax);
+
+            return result;
         }
         #endregion
 
