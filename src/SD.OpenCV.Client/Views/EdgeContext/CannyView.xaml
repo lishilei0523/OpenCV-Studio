@@ -51,11 +51,13 @@
                                              [Event RangeSelectionChanged] = [Action SlideThreshold()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="滞后性阈值1：">
-                            <mah:NumericUpDown Value="{Binding Threshold1, UpdateSourceTrigger=PropertyChanged}"
+                            <mah:NumericUpDown Interval="1"
+                                               Value="{Binding Threshold1, UpdateSourceTrigger=PropertyChanged}"
                                                Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="滞后性阈值2：">
-                            <mah:NumericUpDown Value="{Binding Threshold2, UpdateSourceTrigger=PropertyChanged}"
+                            <mah:NumericUpDown Interval="1"
+                                               Value="{Binding Threshold2, UpdateSourceTrigger=PropertyChanged}"
                                                Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="核矩阵尺寸：">
