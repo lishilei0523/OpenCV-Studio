@@ -48,10 +48,9 @@
                 </WrapPanel>
                 <StackPanel Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalAlignment="Center" Margin="10,0,0,0">
                     <sd:FormItem Label="灰度阈值：" Margin="0">
-                        <mah:RangeSlider Minimum="0" Maximum="255"
+                        <mah:RangeSlider Minimum="0" Maximum="255" TickFrequency="1"
                                          LowerValue="{Binding Threshold}"
                                          UpperValue="{Binding MaxValue}"
-                                         TickFrequency="1"
                                          Style="{StaticResource RangeSlider.Styles.Fluent}"
                                          cm:Message.Attach="
                                          [Event LowerValueChanged] = [Action SlideThreshold()];

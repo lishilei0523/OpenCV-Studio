@@ -33,20 +33,36 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
         #region # 属性
 
-        #region 滞后性阈值1 —— double? Threshold1
+        #region 滞后性阈值1 —— double Threshold1
         /// <summary>
         /// 滞后性阈值1
         /// </summary>
         [DependencyProperty]
-        public double? Threshold1 { get; set; }
+        public double Threshold1 { get; set; }
         #endregion
 
-        #region 滞后性阈值2 —— double? Threshold2
+        #region 滞后性阈值2 —— double Threshold2
         /// <summary>
         /// 滞后性阈值2
         /// </summary>
         [DependencyProperty]
-        public double? Threshold2 { get; set; }
+        public double Threshold2 { get; set; }
+        #endregion
+
+        #region 核矩阵尺寸 —— int KernelSize
+        /// <summary>
+        /// 核矩阵尺寸
+        /// </summary>
+        [DependencyProperty]
+        public int KernelSize { get; set; }
+        #endregion
+
+        #region 是否使用L2范式 —— bool L2Gradient
+        /// <summary>
+        /// 是否使用L2范式
+        /// </summary>
+        [DependencyProperty]
+        public bool L2Gradient { get; set; }
         #endregion
 
         #endregion
@@ -62,6 +78,8 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
             //默认值
             this.Threshold1 = 50;
             this.Threshold2 = 150;
+            this.KernelSize = 3;
+            this.L2Gradient = false;
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -75,16 +93,6 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
         {
             #region # 验证
 
-            if (!this.Threshold1.HasValue)
-            {
-                MessageBox.Show("滞后性阈值1不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (!this.Threshold2.HasValue)
-            {
-                MessageBox.Show("滞后性阈值2不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             if (this.BitmapSource == null)
             {
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -95,10 +103,31 @@ namespace SD.OpenCV.Client.ViewModels.EdgeContext
 
             this.Busy();
 
-            using Mat result = await Task.Run(() => this.Image.Canny(this.Threshold1!.Value, this.Threshold2!.Value));
+            using Mat result = await Task.Run(() => this.Image.Canny(this.Threshold1, this.Threshold2, this.KernelSize, this.L2Gradient));
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();
+        }
+        #endregion
+
+        #region 滑动阈值 —— async void SlideThreshold()
+        /// <summary>
+        /// 滑动阈值
+        /// </summary>
+        public async void SlideThreshold()
+        {
+            #region # 验证
+
+            if (this.BitmapSource == null)
+            {
+                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            using Mat result = await Task.Run(() => this.Image.Canny(this.Threshold1, this.Threshold2, this.KernelSize, this.L2Gradient));
+            this.BitmapSource = result.ToBitmapSource();
         }
         #endregion
 
