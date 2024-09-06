@@ -1,5 +1,11 @@
-﻿using SD.Infrastructure.WPF.Caliburn.Aspects;
+﻿using Caliburn.Micro;
+using Microsoft.Win32;
+using OpenCvSharp;
+using OpenCvSharp.WpfExtensions;
+using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace SD.OpenCV.Client.ViewModels.CommonContext
@@ -12,11 +18,16 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
         #region # 字段及构造器
 
         /// <summary>
+        /// 窗体管理器
+        /// </summary>
+        private readonly IWindowManager _windowManager;
+
+        /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ImageViewModel()
+        public ImageViewModel(IWindowManager windowManager)
         {
-
+            this._windowManager = windowManager;
         }
 
         #endregion
@@ -35,8 +46,6 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
 
         #region # 方法
 
-        //Initializations
-
         #region 加载 —— void Load(BitmapSource image)
         /// <summary>
         /// 加载
@@ -45,6 +54,41 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
         public void Load(BitmapSource image)
         {
             this.Image = image;
+        }
+        #endregion
+
+        #region 另存为图像 —— async void SaveAsImage()
+        /// <summary>
+        /// 另存为图像
+        /// </summary>
+        public async void SaveAsImage()
+        {
+            #region # 验证
+
+            if (this.Image == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                this.Busy();
+
+                using Mat image = this.Image.ToMat();
+                await Task.Run(() => image.SaveImage(saveFileDialog.FileName));
+
+                this.Idle();
+                this.ToastSuccess("保存成功！");
+            }
         }
         #endregion
 

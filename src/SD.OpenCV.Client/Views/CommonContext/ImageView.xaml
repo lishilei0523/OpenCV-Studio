@@ -5,11 +5,18 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
+                 xmlns:cm="http://caliburnmicro.com"
                  mc:Ignorable="d"
                  Title="查看图像" 
                  Width="1280" Height="800" FontSize="14"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}">
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button Content="另存为" cm:Message.Attach="SaveAsImage()" />
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
 
     <Grid Background="LightGray">
         <sd:ImageViewer ImageSource="{Binding Image}" />
