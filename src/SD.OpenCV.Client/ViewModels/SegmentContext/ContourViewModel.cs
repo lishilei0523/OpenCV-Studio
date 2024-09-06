@@ -3,11 +3,11 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Primitives.Extensions;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
@@ -26,7 +25,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
     /// <summary>
     /// 轮廓分割视图模型
     /// </summary>
-    public class ContourViewModel : ScreenBase
+    public class ContourViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -58,14 +57,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// </summary>
         [DependencyProperty]
         public CanvasMode CanvasMode { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
         #endregion
 
         #region 选中拖拽 —— bool DragChecked
@@ -129,30 +120,25 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
-        /// <summary>
-        /// 加载
-        /// </summary>
-        public void Load(BitmapSource bitmapSource)
-        {
-            this.BitmapSource = bitmapSource;
-        }
-        #endregion
-
 
         //Actions
 
-        #region 提交 —— async void Submit()
+        #region 应用 —— void Apply()
         /// <summary>
-        /// 提交
+        /// 应用
         /// </summary>
-        public async void Submit()
+        public void Apply()
         {
             #region # 验证
 
             if (this.BitmapSource == null)
             {
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.Polygon == null || (this.Polygon != null && !this.Polygon.Points.Any()))
+            {
+                MessageBox.Show("多边形不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -162,22 +148,23 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             using Mat image = this.BitmapSource.ToMat();
 
-            //制作掩膜
+            //生成掩膜
             OpenCvSharp.Point[] contour = this.PolygonL.Points.Select(pointL => new OpenCvSharp.Point(pointL.X, pointL.Y)).ToArray();
             using Mat mask = image.GenerateMask(contour);
 
-            //提取有效区域
+            //适用掩膜
             using Mat canvas = new Mat();
             image.CopyTo(canvas, mask);
 
-            //外接矩形截取
+            //提取有效区域
             Rect boundingRect = Cv2.BoundingRect(contour);
             using Mat result = canvas[boundingRect];
             this.BitmapSource = result.ToBitmapSource();
 
-            this.Idle();
+            //重置多边形
+            this.Polygon.Points.Clear();
 
-            await base.TryCloseAsync(true);
+            this.Idle();
         }
         #endregion
 
@@ -303,6 +290,10 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
                 {
                     //锚点
                     this.DrawPolyAnchor(canvas);
+                    if (this.Polygon != null && this.Polygon.Points.Any())
+                    {
+                        this.Polygon.Points.Clear();
+                    }
                 }
             }
         }
