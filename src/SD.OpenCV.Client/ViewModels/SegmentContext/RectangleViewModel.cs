@@ -135,8 +135,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             #endregion
 
-            this.Busy();
-
             //生成掩膜
             Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
             using Mat mask = this.Image.GenerateMask(rect);
@@ -152,8 +150,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
             //重置矩形
             this.Rectangle.Width = 0;
             this.Rectangle.Height = 0;
-
-            this.Idle();
         }
         #endregion
 

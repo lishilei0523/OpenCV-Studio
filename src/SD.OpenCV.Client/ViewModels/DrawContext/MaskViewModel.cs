@@ -3,11 +3,11 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
@@ -31,7 +30,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
     /// <summary>
     /// 绘制掩膜视图模型
     /// </summary>
-    public class MaskViewModel : ScreenBase
+    public class MaskViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -110,14 +109,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         [DependencyProperty]
         public Visibility GridLinesVisibility { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
         #endregion
 
         #region 选中缩放 —— bool ScaleChecked
@@ -226,16 +217,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 加载 —— void Load(BitmapSource bitmapSource)
-        /// <summary>
-        /// 加载
-        /// </summary>
-        public void Load(BitmapSource bitmapSource)
-        {
-            this.BitmapSource = bitmapSource;
-        }
-        #endregion
-
 
         //Actions
 
@@ -281,11 +262,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 提交 —— async void Submit()
+        #region 应用 —— async void Apply()
         /// <summary>
-        /// 提交
+        /// 应用
         /// </summary>
-        public async void Submit()
+        public async void Apply()
         {
             #region # 验证
 
@@ -338,8 +319,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this.BitmapSource = mask.ToBitmapSource();
 
             this.Idle();
-
-            await base.TryCloseAsync(true);
         }
         #endregion
 

@@ -144,17 +144,13 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             #endregion
 
-            this.Busy();
-
-            using Mat image = this.BitmapSource.ToMat();
-
             //生成掩膜
             OpenCvSharp.Point[] contour = this.PolygonL.Points.Select(pointL => new OpenCvSharp.Point(pointL.X, pointL.Y)).ToArray();
-            using Mat mask = image.GenerateMask(contour);
+            using Mat mask = this.Image.GenerateMask(contour);
 
             //适用掩膜
             using Mat canvas = new Mat();
-            image.CopyTo(canvas, mask);
+            this.Image.CopyTo(canvas, mask);
 
             //提取有效区域
             Rect boundingRect = Cv2.BoundingRect(contour);
@@ -163,8 +159,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             //重置多边形
             this.Polygon.Points.Clear();
-
-            this.Idle();
         }
         #endregion
 
