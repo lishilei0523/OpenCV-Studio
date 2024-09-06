@@ -3,10 +3,10 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
-using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
+using SD.OpenCV.Client.ViewModels.CommonContext;
 using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.ObjectModel;
@@ -16,7 +16,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 
@@ -25,7 +24,7 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
     /// <summary>
     /// 霍夫线查找视图模型
     /// </summary>
-    public class LineViewModel : ScreenBase
+    public class LineViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -60,14 +59,6 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
         /// </summary>
         [DependencyProperty]
         public CanvasMode CanvasMode { get; set; }
-        #endregion
-
-        #region 图像源 —— BitmapSource BitmapSource
-        /// <summary>
-        /// 图像源
-        /// </summary>
-        [DependencyProperty]
-        public BitmapSource BitmapSource { get; set; }
         #endregion
 
         #region 选中缩放 —— bool ScaleChecked
@@ -163,16 +154,6 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
             this.ShapeLs = new ObservableCollection<ShapeL>();
 
             return base.OnInitializeAsync(cancellationToken);
-        }
-        #endregion
-
-        #region 加载 —— void Load(BitmapSource bitmapSource)
-        /// <summary>
-        /// 加载
-        /// </summary>
-        public void Load(BitmapSource bitmapSource)
-        {
-            this.BitmapSource = bitmapSource;
         }
         #endregion
 
@@ -316,6 +297,24 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
             this.Idle();
 
             await base.TryCloseAsync(true);
+        }
+        #endregion
+
+        #region 重置 —— override void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public override void Reset()
+        {
+            foreach (Shape shape in this.Shapes)
+            {
+                CanvasEx canvasEx = (CanvasEx)shape.Parent;
+                canvasEx.Children.Remove(shape);
+            }
+            this.Shapes.Clear();
+            this.ShapeLs.Clear();
+
+            base.Reset();
         }
         #endregion
 
