@@ -736,18 +736,20 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 if (source.Size() != target.Size())
                 {
                     MessageBox.Show("源图像与目标图像尺寸不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Idle();
                     return;
                 }
                 if (source.Channels() != target.Channels())
                 {
                     MessageBox.Show("源图像与目标图像通道数不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Idle();
                     return;
                 }
 
                 #endregion
 
                 using Mat result = new Mat();
-                Cv2.Add(source, target, result);
+                await Task.Run(() => Cv2.Add(source, target, result));
                 this.EffectiveImage = result.ToBitmapSource();
 
                 this.Idle();
@@ -789,18 +791,20 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 if (source.Size() != target.Size())
                 {
                     MessageBox.Show("源图像与目标图像尺寸不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Idle();
                     return;
                 }
                 if (source.Channels() != target.Channels())
                 {
                     MessageBox.Show("源图像与目标图像通道数不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.Idle();
                     return;
                 }
 
                 #endregion
 
                 using Mat result = new Mat();
-                Cv2.Subtract(source, target, result);
+                await Task.Run(() => Cv2.Subtract(source, target, result));
                 this.EffectiveImage = result.ToBitmapSource();
 
                 this.Idle();
@@ -2002,6 +2006,69 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+
+        //幅度图
+
+        #region 查看频谱图 —— async void LookFrequencySpectrum()
+        /// <summary>
+        /// 查看频谱图
+        /// </summary>
+        public async void LookFrequencySpectrum()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat spectrumImage = await Task.Run(() => grayImage.GenerateFrequencySpectrum());
+            BitmapSource bitmapSource = spectrumImage.ToBitmapSource();
+            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
+            viewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 查看相位谱图 —— async void LookPhaseSpectrum()
+        /// <summary>
+        /// 查看相位谱图
+        /// </summary>
+        public async void LookPhaseSpectrum()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat spectrumImage = await Task.Run(() => grayImage.GeneratePhaseSpectrum());
+            BitmapSource bitmapSource = spectrumImage.ToBitmapSource();
+            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
+            viewModel.Load(bitmapSource);
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
         }
         #endregion
 
