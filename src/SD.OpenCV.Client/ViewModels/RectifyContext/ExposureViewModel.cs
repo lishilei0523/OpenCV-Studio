@@ -87,6 +87,16 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             };
             if (openFileDialog.ShowDialog() == true)
             {
+                #region # 验证
+
+                if (!openFileDialog.FileNames.Any())
+                {
+                    MessageBox.Show("未选择图像！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                #endregion
+
                 this.Busy();
 
                 foreach (string fileName in openFileDialog.FileNames)
@@ -95,6 +105,9 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
                     BitmapSource bitmapSource = image.ToBitmapSource();
                     this.BitmapSources.Add(bitmapSource.Wrap());
                 }
+
+                //默认预览第一张
+                this.SelectedBitmapSource = this.BitmapSources.First();
 
                 this.Idle();
             }
