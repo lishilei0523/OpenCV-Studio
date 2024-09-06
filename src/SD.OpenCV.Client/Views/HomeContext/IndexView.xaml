@@ -109,8 +109,9 @@
                 </MenuItem>
                 <MenuItem Header="直方图(_H)">
                     <MenuItem Header="灰度直方图(_G)" cm:Message.Attach="LookHistogram()" />
-                    <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
                     <MenuItem Header="直方图规定化(_S)" cm:Message.Attach="SpecifyHist()" />
+                    <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
+                    <MenuItem Header="自适应直方图均衡化(_A)" cm:Message.Attach="AdaptiveEqualizeHist()" />
                 </MenuItem>
                 <MenuItem Header="幅度图(_N)">
                     <MenuItem Header="频谱图(_F)" cm:Message.Attach="LookFrequencySpectrum()" />

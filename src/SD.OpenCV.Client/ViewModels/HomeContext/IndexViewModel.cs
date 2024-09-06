@@ -1943,36 +1943,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 直方图均衡化 —— async void EqualizeHist()
-        /// <summary>
-        /// 直方图均衡化
-        /// </summary>
-        public async void EqualizeHist()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
         #region 直方图规定化 —— async void SpecifyHist()
         /// <summary>
         /// 直方图规定化
@@ -2006,6 +1976,64 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 this.Idle();
             }
+        }
+        #endregion
+
+        #region 直方图均衡化 —— async void EqualizeHist()
+        /// <summary>
+        /// 直方图均衡化
+        /// </summary>
+        public async void EqualizeHist()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.EqualizeHist(grayImage, result));
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 自适应直方图均衡化 —— async void AdaptiveEqualizeHist()
+        /// <summary>
+        /// 自适应直方图均衡化
+        /// </summary>
+        public async void AdaptiveEqualizeHist()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            EqualizationViewModel viewModel = ResolveMediator.Resolve<EqualizationViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
         }
         #endregion
 
