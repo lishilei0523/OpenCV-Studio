@@ -2038,13 +2038,13 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         #endregion
 
 
-        //幅度图
+        //频谱图
 
-        #region 查看频谱图 —— async void LookFrequencySpectrum()
+        #region 查看幅度谱图 —— async void LookMagnitudeSpectrum()
         /// <summary>
-        /// 查看频谱图
+        /// 查看幅度谱图
         /// </summary>
-        public async void LookFrequencySpectrum()
+        public async void LookMagnitudeSpectrum()
         {
             #region # 验证
 
@@ -2060,7 +2060,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             using Mat image = this.EffectiveImage.ToMat();
             using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using Mat spectrumImage = await Task.Run(() => grayImage.GenerateFrequencySpectrum());
+            using Mat spectrumImage = await Task.Run(() => grayImage.GenerateMagnitudeSpectrum());
             BitmapSource bitmapSource = spectrumImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(bitmapSource);

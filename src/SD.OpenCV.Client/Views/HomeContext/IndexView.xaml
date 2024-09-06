@@ -113,8 +113,8 @@
                     <MenuItem Header="直方图均衡化(_E)" cm:Message.Attach="EqualizeHist()" />
                     <MenuItem Header="自适应直方图均衡化(_A)" cm:Message.Attach="AdaptiveEqualizeHist()" />
                 </MenuItem>
-                <MenuItem Header="幅度图(_N)">
-                    <MenuItem Header="频谱图(_F)" cm:Message.Attach="LookFrequencySpectrum()" />
+                <MenuItem Header="频谱图(_N)">
+                    <MenuItem Header="幅度谱图(_M)" cm:Message.Attach="LookMagnitudeSpectrum()" />
                     <MenuItem Header="相位谱图(_P)" cm:Message.Attach="LookPhaseSpectrum()" />
                 </MenuItem>
                 <MenuItem Header="边缘检测(_E)">

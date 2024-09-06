@@ -113,13 +113,13 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 生成频率谱图 —— static Mat GenerateFrequencySpectrum(this Mat matrix)
+        #region # 生成幅度谱图 —— static Mat GenerateMagnitudeSpectrum(this Mat matrix)
         /// <summary>
-        /// 生成频率谱图
+        /// 生成幅度谱图
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
-        /// <returns>频率谱图矩阵</returns>
-        public static Mat GenerateFrequencySpectrum(this Mat matrix)
+        /// <returns>幅度谱图矩阵</returns>
+        public static Mat GenerateMagnitudeSpectrum(this Mat matrix)
         {
             //为傅立叶变换的结果分配存储空间
             //将planes数组组合成一个多通道的数组，两个通道搭配，分别保存实部和虚部

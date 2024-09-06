@@ -10,18 +10,18 @@ namespace SD.OpenCV.Tests.TestCases
     [TestClass]
     public class FrequencyTests
     {
-        #region # 测试频率谱图 —— void TestFrequencySpectrum()
+        #region # 测试幅度谱图 —— void TestMagnitudeSpectrum()
         /// <summary>
-        /// 测试频率谱图
+        /// 测试幅度谱图
         /// </summary>
         [TestMethod]
-        public void TestFrequencySpectrum()
+        public void TestMagnitudeSpectrum()
         {
             using Mat matrix = Cv2.ImRead("Content/Images/Deer.jpg", ImreadModes.Grayscale);
-            using Mat magnitudeMatrix = matrix.GenerateFrequencySpectrum();
+            using Mat magnitudeMatrix = matrix.GenerateMagnitudeSpectrum();
 
             Cv2.ImShow("OpenCV傅里叶变换-原图", matrix);
-            Cv2.ImShow("OpenCV傅里叶变换-频率谱图", magnitudeMatrix);
+            Cv2.ImShow("OpenCV傅里叶变换-幅度谱图", magnitudeMatrix);
             Cv2.WaitKey();
         }
         #endregion
