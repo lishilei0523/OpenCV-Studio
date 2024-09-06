@@ -21,7 +21,7 @@
             <RowDefinition Height="Auto" />
             <!--Body-->
             <RowDefinition Height="*" />
-            <!--控制区-->
+            <!--Footer-->
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <!--Header-->

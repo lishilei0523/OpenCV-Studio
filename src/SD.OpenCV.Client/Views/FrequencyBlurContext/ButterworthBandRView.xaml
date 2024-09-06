@@ -23,7 +23,7 @@
         <Grid.RowDefinitions>
             <!--Body-->
             <RowDefinition Height="*" />
-            <!--Footer-->
+            <!--控制区-->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <!--Body-->
