@@ -41,7 +41,7 @@ namespace SD.OpenCV.Client
         protected override async void OnStartup(object sender, StartupEventArgs e)
         {
             //启动屏幕
-            SplashScreen splashScreen = new SplashScreen("Content/Images/SlamDunk.png");
+            SplashScreen splashScreen = new SplashScreen("Content/Images/OpenCV.png");
             splashScreen.Show(true);
 
             await base.DisplayRootViewForAsync<IndexViewModel>();

@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Resource Include="favicon.ico" />
-    <Resource Include="Content\Images\SlamDunk.png" />
+    <Resource Include="Content\Images\OpenCV.png" />
     <Content Include="$(OpenCvSharp4ExternalNativeDlls)\win-x86\native\*.*">
       <Visible>False</Visible>
     </Content>
