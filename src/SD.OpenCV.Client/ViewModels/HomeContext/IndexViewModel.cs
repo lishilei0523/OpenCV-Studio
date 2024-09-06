@@ -2303,7 +2303,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            ContourViewModel viewModel = ResolveMediator.Resolve<ContourViewModel>();
+            ShapeContext.ContourViewModel viewModel = ResolveMediator.Resolve<ShapeContext.ContourViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
@@ -3000,6 +3000,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 轮廓分割 —— async void ContourSegment()
+        /// <summary>
+        /// 轮廓分割
+        /// </summary>
+        public async void ContourSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            SegmentContext.ContourViewModel viewModel = ResolveMediator.Resolve<SegmentContext.ContourViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)

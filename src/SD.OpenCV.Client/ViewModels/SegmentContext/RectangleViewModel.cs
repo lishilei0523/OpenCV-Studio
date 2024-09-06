@@ -6,6 +6,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
+using SD.OpenCV.Primitives.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -150,11 +151,13 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             this.Busy();
 
-            //适用掩膜
-            Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
             using Mat image = this.BitmapSource.ToMat();
-            using Mat mask = Mat.Zeros(image.Size(), MatType.CV_8UC1);
-            mask.Rectangle(rect, Scalar.White, -1);
+
+            //生成掩膜
+            Rect rect = new Rect(this.RectangleL.X, this.RectangleL.Y, this.RectangleL.Width, this.RectangleL.Height);
+            using Mat mask = image.GenerateMask(rect);
+
+            //适用
             using Mat canvas = new Mat();
             image.CopyTo(canvas, mask);
 
