@@ -1264,6 +1264,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 均值漂移滤波 —— async void MeanShiftBlur()
+        /// <summary>
+        /// 均值漂移滤波
+        /// </summary>
+        public async void MeanShiftBlur()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            MeanShiftViewModel viewModel = ResolveMediator.Resolve<MeanShiftViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
         #region Retinex增强 —— async void SingleScaleRetinex()
         /// <summary>
         /// Retinex增强

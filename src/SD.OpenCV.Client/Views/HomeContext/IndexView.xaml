@@ -83,6 +83,7 @@
                     <MenuItem Header="锐化滤波(_H)" cm:Message.Attach="SharpBlur()" />
                     <MenuItem Header="方块滤波(_B)" cm:Message.Attach="BoxBlur()" />
                     <MenuItem Header="双边滤波(_D)" cm:Message.Attach="BilateralBlur()" />
+                    <MenuItem Header="均值漂移滤波(_S)" cm:Message.Attach="MeanShiftBlur()" />
                     <MenuItem Header="Retinex增强(_E)" cm:Message.Attach="SingleScaleRetinex()" />
                 </MenuItem>
                 <MenuItem Header="频率滤波(_V)">
