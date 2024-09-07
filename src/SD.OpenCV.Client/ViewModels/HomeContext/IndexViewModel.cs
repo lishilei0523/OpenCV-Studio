@@ -2436,6 +2436,60 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 上采样 —— async void PyramidUp()
+        /// <summary>
+        /// 上采样
+        /// </summary>
+        public async void PyramidUp()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.PyrUp(image, result));
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 下采样 —— async void PyramidDown()
+        /// <summary>
+        /// 下采样
+        /// </summary>
+        public async void PyramidDown()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat result = new Mat();
+            await Task.Run(() => Cv2.PyrDown(image, result));
+            this.EffectiveImage = result.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
         #region 距离变换 —— async void DistanceTransform()
         /// <summary>
         /// 距离变换
