@@ -157,6 +157,7 @@
                 <MenuItem Header="分割(_J)">
                     <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
                     <MenuItem Header="Otsu阈值分割(_O)" cm:Message.Attach="OtsuThresholdSegment()" />
+                    <MenuItem Header="自适应阈值分割(_A)" cm:Message.Attach="AdaptiveThresholdSegment()" />
                     <MenuItem Header="颜色分割(_H)" cm:Message.Attach="ColorSegment()" />
                     <MenuItem Header="矩形分割(_R)" cm:Message.Attach="RectangleSegment()" />
                     <MenuItem Header="轮廓分割(_C)" cm:Message.Attach="ContourSegment()" />

@@ -2974,6 +2974,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 自适应阈值分割 —— async void AdaptiveThresholdSegment()
+        /// <summary>
+        /// 自适应阈值分割
+        /// </summary>
+        public async void AdaptiveThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            AdThresholdViewModel viewModel = ResolveMediator.Resolve<AdThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
         #region 颜色分割 —— async void ColorSegment()
         /// <summary>
         /// 颜色分割
