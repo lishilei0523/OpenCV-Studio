@@ -77,7 +77,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// <summary>
         /// 文件格式
         /// </summary>
-        [DependencyProperty]
         public string FileExtension { get; set; }
         #endregion
 
@@ -103,14 +102,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         [DependencyProperty]
         public Brush BackgroundColor { get; set; }
-        #endregion
-
-        #region 鼠标位置 —— Point MousePosition
-        /// <summary>
-        /// 鼠标位置
-        /// </summary>
-        [DependencyProperty]
-        public System.Windows.Point MousePosition { get; set; }
         #endregion
 
         #endregion
