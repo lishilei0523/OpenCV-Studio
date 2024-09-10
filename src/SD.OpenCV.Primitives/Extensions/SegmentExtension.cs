@@ -239,6 +239,85 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # KMeans聚类分割 —— static Mat KMeansSegment(this Mat matrix, int clustersCount...
+        /// <summary>
+        /// KMeans聚类分割
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="clustersCount">簇数量</param>
+        /// <param name="criteriaMaxCount">优化迭代次数</param>
+        /// <param name="criteriaEpsilon">优化误差</param>
+        /// <param name="attempts">重复试验次数</param>
+        /// <param name="kMeansFlag">初始中心类型</param>
+        /// <returns></returns>
+        public static unsafe Mat KMeansSegment(this Mat matrix, int clustersCount, int criteriaMaxCount = 10, double criteriaEpsilon = 0.1, int attempts = 3, KMeansFlags kMeansFlag = KMeansFlags.PpCenters)
+        {
+            //定义颜色
+            Scalar[] colors;
+            if (clustersCount < 9)
+            {
+                colors = new[]
+                {
+                    new Scalar(0, 0, 0),
+                    new Scalar(0, 0, 255),
+                    new Scalar(0, 255, 0),
+                    new Scalar(255, 0, 0),
+                    new Scalar(0, 255, 255),
+                    new Scalar(255, 0, 255),
+                    new Scalar(255, 255, 0),
+                    new Scalar(204, 204, 204),
+                    new Scalar(255, 255, 255)
+                };
+            }
+            else
+            {
+                Random random = new Random((int)(DateTime.Now.Ticks / 1000));
+                colors = new Scalar[clustersCount];
+                for (int index = 0; index < clustersCount; index++)
+                {
+                    colors[index] = new Scalar(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+                }
+            }
+
+            //初始化参数
+            int samplesCount = matrix.Rows * matrix.Cols;
+            using Mat points = new Mat(samplesCount, matrix.Channels(), MatType.CV_32F, new Scalar(10));
+            using Mat labels = new Mat();
+            using Mat centers = new Mat(clustersCount, 1, points.Type());
+
+            //BGR数据转换到样本数据
+            matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+            {
+                int rowIndex = positionPtr[0];
+                int colIndex = positionPtr[1];
+                Vec3b vector = *valuePtr;
+
+                int index = rowIndex * matrix.Cols + colIndex;
+                points.At<float>(index, 0) = vector[0];
+                points.At<float>(index, 1) = vector[1];
+                points.At<float>(index, 2) = vector[2];
+            });
+
+            //执行K-Means聚类
+            TermCriteria termCriteria = new TermCriteria(CriteriaTypes.Eps | CriteriaTypes.Count, criteriaMaxCount, criteriaEpsilon);
+            Cv2.Kmeans(points, clustersCount, labels, termCriteria, attempts, kMeansFlag, centers);
+
+            //绘制图像分割结果
+            Mat result = Mat.Zeros(matrix.Size(), matrix.Type());
+            matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+            {
+                int rowIndex = positionPtr[0];
+                int colIndex = positionPtr[1];
+
+                int index = rowIndex * matrix.Cols + colIndex;
+                int label = labels.At<int>(index, 0);
+                result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
+            });
+
+            return result;
+        }
+        #endregion
+
         #region # GrabCut分割 —— static Mat GrabCutSegment(this Mat matrix, Rect rectangle...
         /// <summary>
         /// GrabCut分割

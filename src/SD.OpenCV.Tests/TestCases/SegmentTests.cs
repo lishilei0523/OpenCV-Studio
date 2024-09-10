@@ -195,6 +195,22 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
+        #region # 测试KMeans聚类分割 —— void TestKMeansSegment()
+        /// <summary>
+        /// 测试KMeans聚类分割
+        /// </summary>
+        [TestMethod]
+        public void TestKMeansSegment()
+        {
+            using Mat matrix = Cv2.ImRead("Content/Images/Ballon.jpg");
+            using Mat result = matrix.KMeansSegment(3);
+
+            Cv2.ImShow("OpenCV KMeans聚类分割-原图", matrix);
+            Cv2.ImShow("OpenCV KMeans聚类分割-效果图", result);
+            Cv2.WaitKey();
+        }
+        #endregion
+
         #region # 测试滑动窗口 —— void TestSlideWindow()
         /// <summary>
         /// 测试线性变换
