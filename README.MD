@@ -17,13 +17,11 @@
 
 ## 推荐
 
-    /> 关联项目，点云可视化：
-    /> [PCLSharp](https://gitee.com/lishilei0523/PCLSharp)
+> 关联项目，点云可视化：
+> [PCLSharp](https://gitee.com/lishilei0523/PCLSharp)
 
 ## 主要功能
-
     颜色空间、图像加减、形态学操作、空间滤波、频率滤波、灰度变换、直方图、频谱图、边缘检测、形状查找、几何变换、关键点、特征、绘制、分割、校正、模板匹配、特征匹配、单目标定、手眼标定等等；
 
 ## 首页预览
-
-    ![Index](assets/Index.png)
+![Index](assets/Index.png)
