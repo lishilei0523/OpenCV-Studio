@@ -247,10 +247,10 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <param name="clustersCount">簇数量</param>
         /// <param name="criteriaMaxCount">优化迭代次数</param>
         /// <param name="criteriaEpsilon">优化误差</param>
-        /// <param name="attempts">重复试验次数</param>
+        /// <param name="attemptsCount">重复试验次数</param>
         /// <param name="kMeansFlag">初始中心类型</param>
         /// <returns></returns>
-        public static unsafe Mat KMeansSegment(this Mat matrix, int clustersCount, int criteriaMaxCount = 10, double criteriaEpsilon = 0.1, int attempts = 3, KMeansFlags kMeansFlag = KMeansFlags.PpCenters)
+        public static unsafe Mat KMeansSegment(this Mat matrix, int clustersCount, int criteriaMaxCount = 10, double criteriaEpsilon = 0.1, int attemptsCount = 3, KMeansFlags kMeansFlag = KMeansFlags.PpCenters)
         {
             //定义颜色
             Scalar[] colors;
@@ -300,7 +300,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //执行K-Means聚类
             TermCriteria termCriteria = new TermCriteria(CriteriaTypes.Eps | CriteriaTypes.Count, criteriaMaxCount, criteriaEpsilon);
-            Cv2.Kmeans(points, clustersCount, labels, termCriteria, attempts, kMeansFlag, centers);
+            Cv2.Kmeans(points, clustersCount, labels, termCriteria, attemptsCount, kMeansFlag, centers);
 
             //绘制图像分割结果
             Mat result = Mat.Zeros(matrix.Size(), matrix.Type());
