@@ -3,7 +3,6 @@ using OpenCvSharp;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using System;
@@ -14,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CanvasEx = SD.Infrastructure.WPF.CustomControls.CanvasEx;
 using Point = System.Windows.Point;
 
 namespace SD.OpenCV.Client.ViewModels.GeometryContext
@@ -146,6 +146,25 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
             this.SourceImage = sourceImage;
             this.TargetImage = targetImage;
             this.PerspectiveMatrix = perspectiveMatrix;
+        }
+        #endregion
+
+
+        //Actions
+
+        #region 重置 —— void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public void Reset()
+        {
+            if (this.Rectangle != null)
+            {
+                CanvasEx canvasEx = this.Rectangle.Parent as CanvasEx;
+                canvasEx?.Children.Remove(this.Rectangle);
+                this.Rectangle = null;
+            }
+            this.Polygon.Points.Clear();
         }
         #endregion
 

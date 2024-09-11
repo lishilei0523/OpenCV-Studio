@@ -292,6 +292,28 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         }
         #endregion
 
+        #region 重置 —— void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public void Reset()
+        {
+            if (this.SourceRectangle != null)
+            {
+                CanvasEx canvasEx = this.SourceRectangle.Parent as CanvasEx;
+                canvasEx?.Children.Remove(this.SourceRectangle);
+            }
+
+            this.SourceRectangle = null;
+            this.SourceRectangleL = null;
+            this.TargetRectangle.Visibility = Visibility.Collapsed;
+            this.TargetRectangle.Location = new Point(0, 0);
+            this.TargetRectangle.Size = new Size(0, 0);
+            this.MinScoreValue = null;
+            this.MaxScoreValue = null;
+        }
+        #endregion
+
 
         //Events
 

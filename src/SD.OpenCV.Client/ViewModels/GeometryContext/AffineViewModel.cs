@@ -283,6 +283,29 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         }
         #endregion
 
+        #region 重置 —— void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public void Reset()
+        {
+            this.AffineMatrix = null;
+            foreach (PointVisual2D point in this.SourcePoints)
+            {
+                CanvasEx canvasEx = point.Parent as CanvasEx;
+                canvasEx?.Children.Remove(point);
+            }
+            foreach (PointVisual2D point in this.TargetPoints)
+            {
+                CanvasEx canvasEx = point.Parent as CanvasEx;
+                canvasEx?.Children.Remove(point);
+            }
+
+            this.SourcePointLs.Clear();
+            this.TargetPointLs.Clear();
+        }
+        #endregion
+
 
         //Events
 

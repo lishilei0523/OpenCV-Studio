@@ -278,7 +278,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             }
 
             //推理匹配
-            this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, this.Threshold / 100));
+            this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, this.Threshold / 100.0f));
             this.SourceKeypointsCount = this.MatchResult.SourceKeyPoints.Count;
             this.TargetKeypointsCount = this.MatchResult.TargetKeyPoints.Count;
             this.MatchedKeypointsCount = this.MatchResult.MatchedCount;
@@ -337,6 +337,30 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
+        }
+        #endregion
+
+        #region 重置 —— void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public void Reset()
+        {
+            if (this.SourceRectangle != null)
+            {
+                CanvasEx canvasEx = this.SourceRectangle.Parent as CanvasEx;
+                canvasEx?.Children.Remove(this.SourceRectangle);
+            }
+
+            this.SourceRectangle = null;
+            this.SourceRectangleL = null;
+            this.TargetRectangle.Visibility = Visibility.Collapsed;
+            this.TargetRectangle.Location = new Point(0, 0);
+            this.TargetRectangle.Size = new Size(0, 0);
+            this.MatchResult = null;
+            this.SourceKeypointsCount = 0;
+            this.TargetKeypointsCount = 0;
+            this.MatchedKeypointsCount = 0;
         }
         #endregion
 
