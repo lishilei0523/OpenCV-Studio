@@ -280,39 +280,79 @@ namespace SD.OpenCV.Primitives.Extensions
             }
 
             //初始化参数
+            int channelsCount = matrix.Channels();
             int samplesCount = matrix.Rows * matrix.Cols;
-            using Mat points = new Mat(samplesCount, matrix.Channels(), MatType.CV_32F, new Scalar(10));
+            using Mat points = new Mat(samplesCount, channelsCount, MatType.CV_32F, new Scalar(10));
             using Mat labels = new Mat();
             using Mat centers = new Mat(clustersCount, 1, points.Type());
 
-            //BGR数据转换到样本数据
-            matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+            if (channelsCount == 1)
             {
-                int rowIndex = positionPtr[0];
-                int colIndex = positionPtr[1];
-                Vec3b vector = *valuePtr;
+                //GRAY数据转换到样本数据
+                matrix.ForEachAsByte((valuePtr, positionPtr) =>
+                {
+                    int rowIndex = positionPtr[0];
+                    int colIndex = positionPtr[1];
+                    byte value = *valuePtr;
 
-                int index = rowIndex * matrix.Cols + colIndex;
-                points.At<float>(index, 0) = vector[0];
-                points.At<float>(index, 1) = vector[1];
-                points.At<float>(index, 2) = vector[2];
-            });
+                    int index = rowIndex * matrix.Cols + colIndex;
+                    points.At<float>(index, 0) = value;
+                });
+            }
+            else if (channelsCount == 3)
+            {
+                //BGR数据转换到样本数据
+                matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+                {
+                    int rowIndex = positionPtr[0];
+                    int colIndex = positionPtr[1];
+                    Vec3b vector = *valuePtr;
+
+                    int index = rowIndex * matrix.Cols + colIndex;
+                    points.At<float>(index, 0) = vector[0];
+                    points.At<float>(index, 1) = vector[1];
+                    points.At<float>(index, 2) = vector[2];
+                });
+            }
+            else
+            {
+                throw new NotSupportedException($"不支持的像素格式！Channels: {channelsCount}");
+            }
 
             //执行K-Means聚类
             TermCriteria termCriteria = new TermCriteria(CriteriaTypes.Eps | CriteriaTypes.Count, criteriaMaxCount, criteriaEpsilon);
             Cv2.Kmeans(points, clustersCount, labels, termCriteria, attemptsCount, kMeansFlag, centers);
 
             //绘制图像分割结果
-            Mat result = Mat.Zeros(matrix.Size(), matrix.Type());
-            matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+            Mat result = Mat.Zeros(matrix.Size(), MatType.CV_8UC3);
+            if (channelsCount == 1)
             {
-                int rowIndex = positionPtr[0];
-                int colIndex = positionPtr[1];
+                matrix.ForEachAsByte((valuePtr, positionPtr) =>
+                {
+                    int rowIndex = positionPtr[0];
+                    int colIndex = positionPtr[1];
 
-                int index = rowIndex * matrix.Cols + colIndex;
-                int label = labels.At<int>(index, 0);
-                result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
-            });
+                    int index = rowIndex * matrix.Cols + colIndex;
+                    int label = labels.At<int>(index, 0);
+                    result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
+                });
+            }
+            else if (channelsCount == 3)
+            {
+                matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
+                {
+                    int rowIndex = positionPtr[0];
+                    int colIndex = positionPtr[1];
+
+                    int index = rowIndex * matrix.Cols + colIndex;
+                    int label = labels.At<int>(index, 0);
+                    result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
+                });
+            }
+            else
+            {
+                throw new NotSupportedException($"不支持的像素格式！Channels: {channelsCount}");
+            }
 
             return result;
         }
