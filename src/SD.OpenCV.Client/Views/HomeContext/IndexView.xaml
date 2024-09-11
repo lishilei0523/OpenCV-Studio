@@ -18,7 +18,7 @@
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button Content="刷新图像" cm:Message.Attach="RefreshImage()" />
+            <Button Content="重置图像" cm:Message.Attach="ResetImage()" />
             <Button Content="背景颜色" cm:Message.Attach="SetBackgroundColor()" />
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
@@ -52,14 +52,18 @@
                     <MenuItem Header="手眼标定(_H)" cm:Message.Attach="CalibrateHandEye()" />
                 </MenuItem>
                 <MenuItem Header="颜色空间(_C)">
-                    <MenuItem Header="BGR→GRAY(_G)" cm:Message.Attach="BGRToGray()" />
+                    <MenuItem Header="BGR→GRAY(_A)" cm:Message.Attach="BGRToGray()" />
                     <MenuItem Header="GRAY→BGR(_B)" cm:Message.Attach="GrayToBGR()" />
-                    <MenuItem Header="BGR→HSV(_H)" cm:Message.Attach="BGRToHSV()" />
-                    <MenuItem Header="HSV→BGR(_V)" cm:Message.Attach="HSVToBGR()" />
-                    <MenuItem Header="BGR→HLS(_S)" cm:Message.Attach="BGRToHLS()" />
-                    <MenuItem Header="BGR→Lab(_L)" cm:Message.Attach="BGRToLab()" />
-                    <MenuItem Header="BGR→Luv(_U)" cm:Message.Attach="BGRToLuv()" />
-                    <MenuItem Header="BGR→YCrCb(_Y)" cm:Message.Attach="BGRToYCrCb()" />
+                    <MenuItem Header="BGR→HSV(_C)" cm:Message.Attach="BGRToHSV()" />
+                    <MenuItem Header="HSV→BGR(_D)" cm:Message.Attach="HSVToBGR()" />
+                    <MenuItem Header="BGR→HLS(_E)" cm:Message.Attach="BGRToHLS()" />
+                    <MenuItem Header="HLS→BGR(_F)" cm:Message.Attach="HLSToBGR()" />
+                    <MenuItem Header="BGR→Lab(_G)" cm:Message.Attach="BGRToLab()" />
+                    <MenuItem Header="Lab→BGR(_H)" cm:Message.Attach="LabToBGR()" />
+                    <MenuItem Header="BGR→Luv(_I)" cm:Message.Attach="BGRToLuv()" />
+                    <MenuItem Header="Luv→BGR(_J)" cm:Message.Attach="LuvToBGR()" />
+                    <MenuItem Header="BGR→YCrCb(_K)" cm:Message.Attach="BGRToYCrCb()" />
+                    <MenuItem Header="YCrCb→BGR(_L)" cm:Message.Attach="YCrCbToBGR()" />
                 </MenuItem>
                 <MenuItem Header="算术(_A)">
                     <MenuItem Header="图像加法(_A)" cm:Message.Attach="AddImage()" />

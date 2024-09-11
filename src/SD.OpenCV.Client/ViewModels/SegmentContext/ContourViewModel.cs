@@ -162,6 +162,31 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
+        #region 重置 —— override void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public override void Reset()
+        {
+            foreach (PointVisual2D anchor in this._polyAnchors)
+            {
+                CanvasEx canvasEx = anchor.Parent as CanvasEx;
+                canvasEx?.Children.Remove(anchor);
+            }
+            if (this.Polygon != null)
+            {
+                CanvasEx canvasEx = this.Polygon.Parent as CanvasEx;
+                canvasEx?.Children.Remove(this.Polygon);
+                this.Polygon.Points.Clear();
+            }
+            this.Polygon = null;
+            this.PolygonL = null;
+            this._polyAnchors.Clear();
+
+            base.Reset();
+        }
+        #endregion
+
 
         //Events
 

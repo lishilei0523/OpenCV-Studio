@@ -126,11 +126,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
         //常用
 
-        #region 刷新图像 —— async void RefreshImage()
+        #region 重置图像 —— async void ResetImage()
         /// <summary>
-        /// 刷新图像
+        /// 重置图像
         /// </summary>
-        public async void RefreshImage()
+        public async void ResetImage()
         {
             #region # 验证
 
@@ -597,6 +597,37 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region HLS转换BGR —— async void HLSToBGR()
+        /// <summary>
+        /// HLS转换BGR
+        /// </summary>
+        public async void HLSToBGR()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为HLS三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat bgrImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.HLS2BGR));
+            this.EffectiveImage = bgrImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
         #region BGR转换Lab —— async void BGRToLab()
         /// <summary>
         /// BGR转换Lab
@@ -623,6 +654,37 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat image = this.EffectiveImage.ToMat();
             using Mat labImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2Lab));
             this.EffectiveImage = labImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Lab转换BGR —— async void LabToBGR()
+        /// <summary>
+        /// Lab转换BGR
+        /// </summary>
+        public async void LabToBGR()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为Lab三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat bgrImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.Lab2BGR));
+            this.EffectiveImage = bgrImage.ToBitmapSource();
 
             this.Idle();
         }
@@ -659,6 +721,37 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region Luv转换BGR —— async void LuvToBGR()
+        /// <summary>
+        /// Luv转换BGR
+        /// </summary>
+        public async void LuvToBGR()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为Luv三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat bgrImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.Luv2BGR));
+            this.EffectiveImage = bgrImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
         #region BGR转换YCrCb —— async void BGRToYCrCb()
         /// <summary>
         /// BGR转换YCrCb
@@ -685,6 +778,37 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat image = this.EffectiveImage.ToMat();
             using Mat yCrCbImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.BGR2YCrCb));
             this.EffectiveImage = yCrCbImage.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region YCrCb转换BGR —— async void YCrCbToBGR()
+        /// <summary>
+        /// YCrCb转换BGR
+        /// </summary>
+        public async void YCrCbToBGR()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.EffectiveImage.Format != PixelFormats.Bgr24)
+            {
+                MessageBox.Show("图像必须为YCrCb三通道！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat bgrImage = await Task.Run(() => image.CvtColor(ColorConversionCodes.YCrCb2BGR));
+            this.EffectiveImage = bgrImage.ToBitmapSource();
 
             this.Idle();
         }
@@ -3395,7 +3519,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 #endregion
 
-                this.RefreshImage();
+                this.ResetImage();
             }
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
             {

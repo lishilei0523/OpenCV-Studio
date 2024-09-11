@@ -153,6 +153,24 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
+        #region 重置 —— override void Reset()
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public override void Reset()
+        {
+            if (this.Rectangle != null)
+            {
+                CanvasEx canvasEx = this.Rectangle.Parent as CanvasEx;
+                canvasEx?.Children.Remove(this.Rectangle);
+            }
+            this.Rectangle = null;
+            this.RectangleL = null;
+
+            base.Reset();
+        }
+        #endregion
+
 
         //Events
 
