@@ -31,6 +31,7 @@ using SD.OpenCV.SkiaSharp;
 using SkiaSharp;
 using SkiaSharp.Views.WPF;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -214,6 +215,16 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             {
                 this.BackgroundColor = new SolidColorBrush(viewModel.Color!.Value);
             }
+        }
+        #endregion
+
+        #region 技术支持 —— void Support()
+        /// <summary>
+        /// 技术支持
+        /// </summary>
+        public void Support()
+        {
+            Process.Start("https://gitee.com/lishilei0523/OpenCV-Studio");
         }
         #endregion
 

@@ -20,6 +20,7 @@
         <mah:WindowCommands>
             <Button Content="重置图像" cm:Message.Attach="ResetImage()" />
             <Button Content="背景颜色" cm:Message.Attach="SetBackgroundColor()" />
+            <Button Content="技术支持" cm:Message.Attach="Support()" Cursor="Hand" />
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
