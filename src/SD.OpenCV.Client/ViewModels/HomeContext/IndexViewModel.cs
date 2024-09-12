@@ -2078,7 +2078,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             using Mat image = this.EffectiveImage.ToMat();
             using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 800));
+            using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 770));
             BitmapSource bitmapSource = histImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
             viewModel.Load(bitmapSource);
@@ -2913,7 +2913,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 //绘制直方图
                 using Plot plot = new Plot();
                 plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 800);
+                using SKImage skImage = plot.GetSKImage(1280, 770);
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -2956,7 +2956,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 //绘制直方图
                 using Plot plot = new Plot();
                 plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 800);
+                using SKImage skImage = plot.GetSKImage(1280, 770);
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -2999,7 +2999,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 //绘制直方图
                 using Plot plot = new Plot();
                 plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 800);
+                using SKImage skImage = plot.GetSKImage(1280, 770);
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -3038,7 +3038,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             //绘制直方图
             using Plot plot = new Plot();
             plot.AddDescriptors(descriptors);
-            using SKImage skImage = plot.GetSKImage(1280, 800);
+            using SKImage skImage = plot.GetSKImage(1280, 770);
             BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
             ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
