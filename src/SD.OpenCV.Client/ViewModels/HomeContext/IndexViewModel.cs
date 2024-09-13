@@ -2923,8 +2923,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 //绘制直方图
                 using Plot plot = new Plot();
-                plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 770);
+                await Task.Run(() => plot.AddDescriptors(descriptors));
+                using SKImage skImage = await Task.Run(() => plot.GetSKImage(1280, 770));
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -2966,8 +2966,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 //绘制直方图
                 using Plot plot = new Plot();
-                plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 770);
+                await Task.Run(() => plot.AddDescriptors(descriptors));
+                using SKImage skImage = await Task.Run(() => plot.GetSKImage(1280, 770));
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -3009,8 +3009,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
                 //绘制直方图
                 using Plot plot = new Plot();
-                plot.AddDescriptors(descriptors);
-                using SKImage skImage = plot.GetSKImage(1280, 770);
+                await Task.Run(() => plot.AddDescriptors(descriptors));
+                using SKImage skImage = await Task.Run(() => plot.GetSKImage(1280, 770));
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
@@ -3048,8 +3048,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             //绘制直方图
             using Plot plot = new Plot();
-            plot.AddDescriptors(descriptors);
-            using SKImage skImage = plot.GetSKImage(1280, 770);
+            await Task.Run(() => plot.AddDescriptors(descriptors));
+            using SKImage skImage = await Task.Run(() => plot.GetSKImage(1280, 770));
             BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
             ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
