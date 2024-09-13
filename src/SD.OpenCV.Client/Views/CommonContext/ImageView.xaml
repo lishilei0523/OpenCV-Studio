@@ -7,7 +7,7 @@
                  xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  xmlns:cm="http://caliburnmicro.com"
                  mc:Ignorable="d"
-                 Title="查看图像" 
+                 Title="{Binding Title}" 
                  Width="1280" Height="800" FontSize="14"
                  WindowStartupLocation="CenterScreen"
                  Style="{StaticResource MetroWindow.Styles.Clean}">

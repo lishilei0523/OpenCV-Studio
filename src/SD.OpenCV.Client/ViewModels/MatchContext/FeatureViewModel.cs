@@ -295,7 +295,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
             //查看匹配结果
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(resultImage.ToBitmapSource());
+            viewModel.Load(resultImage.ToBitmapSource(), "匹配效果图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             //释放资源
@@ -333,7 +333,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
             //查看矫正结果
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(resultImage.ToBitmapSource());
+            viewModel.Load(resultImage.ToBitmapSource(), "参考图像变换效果图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();

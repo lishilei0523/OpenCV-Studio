@@ -170,7 +170,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.OriginalImage);
+            viewModel.Load(this.OriginalImage, "原始图像");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -196,7 +196,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(this.EffectiveImage);
+            viewModel.Load(this.EffectiveImage, "效果图像");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -2092,7 +2092,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat histImage = await Task.Run(() => grayImage.GenerateHistogramImage(1280, 770));
             BitmapSource bitmapSource = histImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(bitmapSource);
+            viewModel.Load(bitmapSource, "灰度直方图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -2219,7 +2219,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat spectrumImage = await Task.Run(() => grayImage.GenerateMagnitudeSpectrum());
             BitmapSource bitmapSource = spectrumImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(bitmapSource);
+            viewModel.Load(bitmapSource, "幅度谱图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -2249,7 +2249,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat spectrumImage = await Task.Run(() => grayImage.GeneratePhaseSpectrum());
             BitmapSource bitmapSource = spectrumImage.ToBitmapSource();
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(bitmapSource);
+            viewModel.Load(bitmapSource, "相位谱图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -2928,7 +2928,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
-                imageViewModel.Load(bitmapSource);
+                imageViewModel.Load(bitmapSource, "SIFT特征直方图");
                 await this._windowManager.ShowWindowAsync(imageViewModel);
             }
 
@@ -2971,7 +2971,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
-                imageViewModel.Load(bitmapSource);
+                imageViewModel.Load(bitmapSource, "SURF特征直方图");
                 await this._windowManager.ShowWindowAsync(imageViewModel);
             }
 
@@ -3014,7 +3014,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
                 ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
-                imageViewModel.Load(bitmapSource);
+                imageViewModel.Load(bitmapSource, "ORB特征直方图");
                 await this._windowManager.ShowWindowAsync(imageViewModel);
             }
 
@@ -3053,7 +3053,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             BitmapSource bitmapSource = skImage.ToWriteableBitmap();
 
             ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
-            imageViewModel.Load(bitmapSource);
+            imageViewModel.Load(bitmapSource, "Super特征直方图");
             await this._windowManager.ShowWindowAsync(imageViewModel);
 
             this.Idle();

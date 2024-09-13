@@ -34,6 +34,14 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
 
         #region # 属性
 
+        #region 标题 —— string Title
+        /// <summary>
+        /// 标题
+        /// </summary>
+        [DependencyProperty]
+        public string Title { get; set; }
+        #endregion
+
         #region 图像源 —— BitmapSource Image
         /// <summary>
         /// 图像源
@@ -46,14 +54,16 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
 
         #region # 方法
 
-        #region 加载 —— void Load(BitmapSource image)
+        #region 加载 —— void Load(BitmapSource image...
         /// <summary>
         /// 加载
         /// </summary>
         /// <param name="image">图像</param>
-        public void Load(BitmapSource image)
+        /// <param name="title">标题</param>
+        public void Load(BitmapSource image, string title = "查看图像")
         {
             this.Image = image;
+            this.Title = title;
         }
         #endregion
 
