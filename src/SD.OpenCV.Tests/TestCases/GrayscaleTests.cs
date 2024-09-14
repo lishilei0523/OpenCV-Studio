@@ -62,6 +62,22 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
+        #region # 测试距离变换 —— void TestDistanceTrans()
+        /// <summary>
+        /// 测试距离变换
+        /// </summary>
+        [TestMethod]
+        public void TestDistanceTrans()
+        {
+            using Mat matrix = Cv2.ImRead("Content/Images/Chessboard.jpg", ImreadModes.Grayscale);
+            using Mat result = matrix.DistanceTrans();
+
+            Cv2.ImShow("OpenCV距离变换-原图", matrix);
+            Cv2.ImShow("OpenCV距离变换-效果图", result);
+            Cv2.WaitKey();
+        }
+        #endregion
+
         #region # 测试阴影变换 —— void TestShadingTransform()
         /// <summary>
         /// 测试阴影变换

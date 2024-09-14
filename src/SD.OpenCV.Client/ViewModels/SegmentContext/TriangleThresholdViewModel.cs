@@ -14,9 +14,9 @@ using System.Windows.Media.Imaging;
 namespace SD.OpenCV.Client.ViewModels.SegmentContext
 {
     /// <summary>
-    /// 阈值分割视图模型
+    /// Triangle阈值分割视图模型
     /// </summary>
-    public class ThresholdViewModel : PreviewViewModel
+    public class TriangleThresholdViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -28,7 +28,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ThresholdViewModel(IWindowManager windowManager)
+        public TriangleThresholdViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -36,22 +36,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         #endregion
 
         #region # 属性
-
-        #region 阈值 —— double Threshold
-        /// <summary>
-        /// 阈值
-        /// </summary>
-        [DependencyProperty]
-        public double Threshold { get; set; }
-        #endregion
-
-        #region 最大值 —— double MaxValue
-        /// <summary>
-        /// 最大值
-        /// </summary>
-        [DependencyProperty]
-        public double MaxValue { get; set; }
-        #endregion
 
         #region 阈值分割类型 —— ThresholdTypes ThresholdType
         /// <summary>
@@ -80,8 +64,6 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.Threshold = 127;
-            this.MaxValue = 255;
             this.ThresholdType = OpenCvSharp.ThresholdTypes.Binary;
             this.ThresholdTypes = typeof(ThresholdTypes).GetEnumMembers().Take(5).ToDictionary(x => x.Key, x => x.Value);
 
@@ -109,11 +91,11 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         }
         #endregion
 
-        #region 滑动阈值 —— async void SlideThreshold()
+        #region 应用 —— async void Apply()
         /// <summary>
-        /// 滑动阈值
+        /// 应用
         /// </summary>
-        public async void SlideThreshold()
+        public async void Apply()
         {
             #region # 验证
 
@@ -125,9 +107,13 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             #endregion
 
+            this.Busy();
+
             using Mat result = new Mat();
-            await Task.Run(() => Cv2.Threshold(this.Image, result, this.Threshold, this.MaxValue, this.ThresholdType));
+            await Task.Run(() => Cv2.Threshold(this.Image, result, 0, 255, this.ThresholdType | OpenCvSharp.ThresholdTypes.Triangle));
             this.BitmapSource = result.ToBitmapSource();
+
+            this.Idle();
         }
         #endregion
 

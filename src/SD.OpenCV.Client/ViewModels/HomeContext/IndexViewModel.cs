@@ -3159,9 +3159,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region Otsu阈值分割 —— async void OtsuThresholdSegment()
+        #region OTSU阈值分割 —— async void OtsuThresholdSegment()
         /// <summary>
-        /// Otsu阈值分割
+        /// OTSU阈值分割
         /// </summary>
         public async void OtsuThresholdSegment()
         {
@@ -3177,11 +3177,43 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            using Mat image = this.EffectiveImage.ToMat();
-            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using Mat result = new Mat();
-            await Task.Run(() => Cv2.Threshold(grayImage, result, 0, 255, ThresholdTypes.Otsu));
-            this.EffectiveImage = result.ToBitmapSource();
+            OtsuThresholdViewModel viewModel = ResolveMediator.Resolve<OtsuThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
+        #region Triangle阈值分割 —— async void TriangleThresholdSegment()
+        /// <summary>
+        /// Triangle阈值分割
+        /// </summary>
+        public async void TriangleThresholdSegment()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            TriangleThresholdViewModel viewModel = ResolveMediator.Resolve<TriangleThresholdViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
 
             this.Idle();
         }

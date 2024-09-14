@@ -141,6 +141,30 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # 距离变换 —— static Mat DistanceTrans(this Mat matrix...
+        /// <summary>
+        /// 距离变换
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="distanceType">距离类型</param>
+        /// <param name="distanceTransformMask">掩膜尺寸类型</param>
+        /// <returns>距离变换图像矩阵</returns>
+        public static Mat DistanceTrans(this Mat matrix, DistanceTypes distanceType = DistanceTypes.L2, DistanceTransformMasks distanceTransformMask = DistanceTransformMasks.Mask3)
+        {
+            //距离变换
+            Mat distanceMatrix = new Mat();
+            Cv2.DistanceTransform(matrix, distanceMatrix, distanceType, distanceTransformMask);
+
+            //转换格式
+            Mat result = distanceMatrix.ConvertScaleAbs();
+
+            //归一化
+            Cv2.Normalize(result, result, 0, 255, NormTypes.MinMax);
+
+            return result;
+        }
+        #endregion
+
         #region # 阴影变换 —— static Mat ShadingTransform(this Mat matrix, Size kernelSize...
         /// <summary>
         /// 阴影变换
