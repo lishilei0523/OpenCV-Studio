@@ -124,7 +124,7 @@ namespace SD.OpenCV.Primitives.Extensions
             {
                 {-1, -1, -1},
                 {-1, 9, -1},
-                {-1, -1, -1},
+                {-1, -1, -1}
             };
             using Mat kernel = Mat.FromArray(kernelArray);
 
