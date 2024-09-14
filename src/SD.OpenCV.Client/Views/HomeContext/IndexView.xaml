@@ -111,6 +111,7 @@
                     <MenuItem Header="线性变换(_L)" cm:Message.Attach="LinearTransform()" />
                     <MenuItem Header="伽马变换(_G)" cm:Message.Attach="GammaTransform()" />
                     <MenuItem Header="对数变换(_N)" cm:Message.Attach="LogarithmicTransform()" />
+                    <MenuItem Header="距离变换(_D)" cm:Message.Attach="DistanceTransform()" />
                     <MenuItem Header="阴影变换(_S)" cm:Message.Attach="ShadingTransform()" />
                 </MenuItem>
                 <MenuItem Header="直方图(_H)">
@@ -141,7 +142,6 @@
                     <MenuItem Header="平移(_T)" cm:Message.Attach="TranslateTransform()" />
                     <MenuItem Header="上采样(_U)" cm:Message.Attach="PyramidUp()" />
                     <MenuItem Header="下采样(_D)" cm:Message.Attach="PyramidDown()" />
-                    <MenuItem Header="距离变换(_L)" cm:Message.Attach="DistanceTransform()" />
                 </MenuItem>
                 <MenuItem Header="关键点(_K)">
                     <MenuItem Header="Harris关键点(_H)" cm:Message.Attach="DetectHarris()" />

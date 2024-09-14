@@ -4,18 +4,19 @@ using OpenCvSharp.WpfExtensions;
 using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Primitives.Extensions;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace SD.OpenCV.Client.ViewModels.SegmentContext
+namespace SD.OpenCV.Client.ViewModels.GrayscaleContext
 {
     /// <summary>
-    /// 自适应阈值分割视图模型
+    /// 距离变换视图模型
     /// </summary>
-    public class AdThresholdViewModel : PreviewViewModel
+    public class DistanceViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -27,7 +28,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public AdThresholdViewModel(IWindowManager windowManager)
+        public DistanceViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -36,60 +37,36 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
         #region # 属性
 
-        #region 最大值 —— double MaxValue
+        #region 距离类型 —— DistanceTypes DistanceType
         /// <summary>
-        /// 最大值
+        /// 距离类型
         /// </summary>
         [DependencyProperty]
-        public double MaxValue { get; set; }
+        public DistanceTypes DistanceType { get; set; }
         #endregion
 
-        #region 块大小 —— int BlockSize
+        #region 距离类型字典 —— IDictionary<string, string> DistanceTypes
         /// <summary>
-        /// 块大小
+        /// 距离类型字典
         /// </summary>
         [DependencyProperty]
-        public int BlockSize { get; set; }
+        public IDictionary<string, string> DistanceTypes { get; set; }
         #endregion
 
-        #region 阈值常数 —— double C
+        #region 掩膜尺寸类型 —— DistanceTransformMasks DistanceTransformMask
         /// <summary>
-        /// 阈值常数
+        /// 掩膜尺寸类型
         /// </summary>
         [DependencyProperty]
-        public double C { get; set; }
+        public DistanceTransformMasks DistanceTransformMask { get; set; }
         #endregion
 
-        #region 阈值分割类型 —— ThresholdTypes ThresholdType
+        #region 掩膜尺寸类型字典 —— IDictionary<string, string> DistanceTransformMasks
         /// <summary>
-        /// 阈值分割类型
+        /// 掩膜尺寸类型字典
         /// </summary>
         [DependencyProperty]
-        public ThresholdTypes ThresholdType { get; set; }
-        #endregion
-
-        #region 阈值分割类型字典 —— IDictionary<string, string> ThresholdTypes
-        /// <summary>
-        /// 阈值分割类型字典
-        /// </summary>
-        [DependencyProperty]
-        public IDictionary<string, string> ThresholdTypes { get; set; }
-        #endregion
-
-        #region 自适应阈值分割类型 —— AdaptiveThresholdTypes AdaptiveThresholdType
-        /// <summary>
-        /// 自适应阈值分割类型
-        /// </summary>
-        [DependencyProperty]
-        public AdaptiveThresholdTypes AdaptiveThresholdType { get; set; }
-        #endregion
-
-        #region 自适应阈值分割类型字典 —— IDictionary<string, string> AdaptiveThresholdTypes
-        /// <summary>
-        /// 自适应阈值分割类型字典
-        /// </summary>
-        [DependencyProperty]
-        public IDictionary<string, string> AdaptiveThresholdTypes { get; set; }
+        public IDictionary<string, string> DistanceTransformMasks { get; set; }
         #endregion
 
         #endregion
@@ -103,13 +80,10 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.MaxValue = 255;
-            this.BlockSize = 3;
-            this.C = 1;
-            this.ThresholdType = OpenCvSharp.ThresholdTypes.Binary;
-            this.AdaptiveThresholdType = OpenCvSharp.AdaptiveThresholdTypes.GaussianC;
-            this.ThresholdTypes = typeof(ThresholdTypes).GetEnumMembers();
-            this.AdaptiveThresholdTypes = typeof(AdaptiveThresholdTypes).GetEnumMembers();
+            this.DistanceType = OpenCvSharp.DistanceTypes.L2;
+            this.DistanceTransformMask = OpenCvSharp.DistanceTransformMasks.Mask3;
+            this.DistanceTypes = typeof(DistanceTypes).GetEnumMembers();
+            this.DistanceTransformMasks = typeof(DistanceTransformMasks).GetEnumMembers();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -153,8 +127,7 @@ namespace SD.OpenCV.Client.ViewModels.SegmentContext
 
             this.Busy();
 
-            using Mat result = new Mat();
-            await Task.Run(() => Cv2.AdaptiveThreshold(this.Image, result, this.MaxValue, this.AdaptiveThresholdType, this.ThresholdType, this.BlockSize, this.C));
+            using Mat result = await Task.Run(() => this.Image.DistanceTrans(this.DistanceType, this.DistanceTransformMask));
             this.BitmapSource = result.ToBitmapSource();
 
             this.Idle();

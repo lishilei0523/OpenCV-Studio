@@ -2036,6 +2036,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region 距离变换 —— async void DistanceTransform()
+        /// <summary>
+        /// 距离变换
+        /// </summary>
+        public async void DistanceTransform()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            DistanceViewModel viewModel = ResolveMediator.Resolve<DistanceViewModel>();
+            viewModel.Load(this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
+
         #region 阴影变换 —— async void ShadingTransform()
         /// <summary>
         /// 阴影变换
@@ -2640,33 +2670,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             using Mat image = this.EffectiveImage.ToMat();
             using Mat result = new Mat();
             await Task.Run(() => Cv2.PyrDown(image, result));
-            this.EffectiveImage = result.ToBitmapSource();
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 距离变换 —— async void DistanceTransform()
-        /// <summary>
-        /// 距离变换
-        /// </summary>
-        public async void DistanceTransform()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            using Mat image = this.EffectiveImage.ToMat();
-            using Mat grayImage = image.Type() == MatType.CV_8UC3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
-            using Mat result = await Task.Run(() => grayImage.DistanceTrans());
             this.EffectiveImage = result.ToBitmapSource();
 
             this.Idle();

@@ -275,21 +275,19 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # 距离变换 —— static Mat DistanceTrans(this Mat matrix)
+        #region # 距离变换 —— static Mat DistanceTrans(this Mat matrix...
         /// <summary>
         /// 距离变换
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
+        /// <param name="distanceType">距离类型</param>
+        /// <param name="distanceTransformMask">掩膜尺寸类型</param>
         /// <returns>距离变换图像矩阵</returns>
-        public static Mat DistanceTrans(this Mat matrix)
+        public static Mat DistanceTrans(this Mat matrix, DistanceTypes distanceType = DistanceTypes.L2, DistanceTransformMasks distanceTransformMask = DistanceTransformMasks.Mask3)
         {
-            //阈值分割
-            using Mat binaryMatrix = new Mat();
-            Cv2.Threshold(matrix, binaryMatrix, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
-
             //距离变换
             Mat distanceMatrix = new Mat();
-            Cv2.DistanceTransform(binaryMatrix, distanceMatrix, DistanceTypes.L2, DistanceTransformMasks.Mask3);
+            Cv2.DistanceTransform(matrix, distanceMatrix, distanceType, distanceTransformMask);
 
             //转换格式
             Mat result = distanceMatrix.ConvertScaleAbs();
