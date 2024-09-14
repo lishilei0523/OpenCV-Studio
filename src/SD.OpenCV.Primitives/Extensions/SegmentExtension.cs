@@ -316,6 +316,7 @@ namespace SD.OpenCV.Primitives.Extensions
             }
             else
             {
+                OpenCvSharp.ML.KNearest.Create();
                 throw new NotSupportedException($"不支持的像素格式！Channels: {channelsCount}");
             }
 
@@ -337,7 +338,7 @@ namespace SD.OpenCV.Primitives.Extensions
                     result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
                 });
             }
-            else if (channelsCount == 3)
+            else
             {
                 matrix.ForEachAsVec3b((valuePtr, positionPtr) =>
                 {
@@ -348,10 +349,6 @@ namespace SD.OpenCV.Primitives.Extensions
                     int label = labels.At<int>(index, 0);
                     result.At<Vec3b>(rowIndex, colIndex) = new Vec3b((byte)colors[label][0], (byte)colors[label][1], (byte)colors[label][2]);
                 });
-            }
-            else
-            {
-                throw new NotSupportedException($"不支持的像素格式！Channels: {channelsCount}");
             }
 
             return result;
