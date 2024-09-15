@@ -134,7 +134,7 @@ namespace SD.OpenCV.Reconstructions
 
             //运行推理
             IDisposableReadOnlyCollection<DisposableNamedOnnxValue> inferResults = this._superpoint.Run(namedOnnxValues);
-            Tensor<long> keyPointsTensor = inferResults.Single(o => o.Name == "keypoints").AsTensor<long>();
+            Tensor<long> keyPointsTensor = inferResults.Single(x => x.Name == "keypoints").AsTensor<long>();
             Tensor<float> descriptorsTensor = inferResults.Single(x => x.Name == "descriptors").AsTensor<float>();
             Tensor<float> scoresTensor = inferResults.Single(x => x.Name == "scores").AsTensor<float>();
 

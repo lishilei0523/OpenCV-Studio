@@ -129,7 +129,7 @@ namespace SD.OpenCV.Reconstructions
         /// <param name="targetImage">目标图像</param>
         /// <param name="threshold">匹配阈值</param>
         /// <param name="scaledSize">图像缩放尺寸</param>
-        /// <returns>旋转平移矩阵: 4x4二维数组</returns>
+        /// <returns>匹配结果</returns>
         public static MatchResult Match(Mat sourceImage, Mat targetImage, float threshold = 0.9f, int scaledSize = 512)
         {
             #region # 验证
