@@ -91,35 +91,25 @@ namespace SD.OpenCV.Reconstructions
         /// <param name="descriptors">描述子列表</param>
         public void ComputeAll(Mat image, Mat mask, out long[] keyPointsArray, out int[] keyPointsDims, out float[] descriptorsArray, out int[] descriptorsDims, out KeyPoint[] keyPoints, out Mat descriptors)
         {
-            bool needDispose;
-            Mat grayImage;
-
             #region # 验证
 
             if (image == null)
             {
                 throw new ArgumentNullException(nameof(image), "图像不可为空！");
             }
-            if (image.Type() == MatType.CV_8UC1)
-            {
-                grayImage = image;
-                needDispose = false;
-            }
-            else
-            {
-                grayImage = image.CvtColor(ColorConversionCodes.BGR2GRAY);
-                needDispose = true;
-            }
+
+            #endregion
+
+            Mat grayImage = image.Type() == MatType.CV_8UC1
+                ? image.Clone()
+                : image.CvtColor(ColorConversionCodes.BGR2GRAY);
             if (mask != null)
             {
                 Mat result = new Mat();
                 grayImage.CopyTo(result, mask);
                 grayImage.Dispose();
                 grayImage = result;
-                needDispose = true;
             }
-
-            #endregion
 
             //特征工程
             float[] imageFeatures = grayImage.GetImageFeatures();
@@ -171,10 +161,7 @@ namespace SD.OpenCV.Reconstructions
 
             //释放资源
             inferResults.Dispose();
-            if (needDispose)
-            {
-                grayImage.Dispose();
-            }
+            grayImage.Dispose();
         }
         #endregion
 
