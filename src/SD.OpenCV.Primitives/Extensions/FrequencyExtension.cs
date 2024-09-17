@@ -137,29 +137,38 @@ namespace SD.OpenCV.Primitives.Extensions
             Cv2.Merge(planes, complexMatrix);
 
             //离散傅里叶变换
-            Cv2.Dft(complexMatrix, complexMatrix, DftFlags.ComplexOutput);
+            using Mat dftMatrix = new Mat();
+            Cv2.Dft(complexMatrix, dftMatrix, DftFlags.ComplexOutput);
 
             //分割实部与虚部，planes[0]为实部，planes[1]为虚部
-            Cv2.Split(complexMatrix, out planes);
+            Cv2.Split(dftMatrix, out planes);
 
-            //将复数转为幅值，保存在planes[0]
-            Cv2.Magnitude(planes[0], planes[1], planes[0]);
-            Mat magnitudeMatrix = planes[0];
+            //将复数转为幅值
+            using Mat magnitudeMatrix = new Mat();
+            Cv2.Magnitude(planes[0], planes[1], magnitudeMatrix);
 
             //幅度太大，适用自然对数尺度替换线性尺度
-            magnitudeMatrix += Scalar.All(1);
-            Cv2.Log(magnitudeMatrix + Scalar.FromDouble(1), magnitudeMatrix);
+            using Mat gainedMatrix = magnitudeMatrix + Scalar.All(1);
+            using Mat loggedMatrix = new Mat();
+            Cv2.Log(gainedMatrix + Scalar.FromDouble(1), loggedMatrix);
 
             //行、列都为偶数，如果有奇数行或奇数列，进行频谱裁剪
-            magnitudeMatrix = magnitudeMatrix[new Rect(0, 0, magnitudeMatrix.Cols & -2, magnitudeMatrix.Rows & -2)];
+            using Mat clippedMatrix = loggedMatrix[new Rect(0, 0, loggedMatrix.Cols & -2, loggedMatrix.Rows & -2)];
 
             //迁移频域
-            magnitudeMatrix.ShiftDFT();
+            clippedMatrix.ShiftDFT();
 
-            //原幅度值仍更不便于显示，归一化后方便显示
-            Cv2.Normalize(magnitudeMatrix, magnitudeMatrix, 0, 1, NormTypes.MinMax);
+            //归一化
+            Mat result = new Mat();
+            Cv2.Normalize(clippedMatrix, result, 0, 1, NormTypes.MinMax);
 
-            return magnitudeMatrix;
+            //释放资源
+            foreach (Mat plane in planes)
+            {
+                plane.Dispose();
+            }
+
+            return result;
         }
         #endregion
 
@@ -183,29 +192,38 @@ namespace SD.OpenCV.Primitives.Extensions
             Cv2.Merge(planes, complexMatrix);
 
             //离散傅里叶变换
-            Cv2.Dft(complexMatrix, complexMatrix, DftFlags.ComplexOutput);
+            using Mat dftMatrix = new Mat();
+            Cv2.Dft(complexMatrix, dftMatrix, DftFlags.ComplexOutput);
 
             //分割实部与虚部，planes[0]为实部，planes[1]为虚部
-            Cv2.Split(complexMatrix, out planes);
+            Cv2.Split(dftMatrix, out planes);
 
-            //将复数转为相位值，保存在planes[0]
-            Cv2.Phase(planes[0], planes[1], planes[0]);
-            Mat phaseMatrix = planes[0];
+            //将复数转为相位值
+            using Mat phaseMatrix = new Mat();
+            Cv2.Phase(planes[0], planes[1], phaseMatrix);
 
             //适用自然对数尺度替换线性尺度
-            phaseMatrix += Scalar.All(1);
-            Cv2.Log(phaseMatrix + Scalar.FromDouble(1), phaseMatrix);
+            using Mat gainedMatrix = phaseMatrix + Scalar.All(1);
+            using Mat loggedMatrix = new Mat();
+            Cv2.Log(gainedMatrix + Scalar.FromDouble(1), loggedMatrix);
 
             //行、列都为偶数，如果有奇数行或奇数列，进行频谱裁剪
-            phaseMatrix = phaseMatrix[new Rect(0, 0, phaseMatrix.Cols & -2, phaseMatrix.Rows & -2)];
+            using Mat clippedMatrix = loggedMatrix[new Rect(0, 0, loggedMatrix.Cols & -2, loggedMatrix.Rows & -2)];
 
             //迁移频域
-            phaseMatrix.ShiftDFT();
+            clippedMatrix.ShiftDFT();
 
-            //归一化后方便显示
-            Cv2.Normalize(phaseMatrix, phaseMatrix, 0, 1, NormTypes.MinMax);
+            //归一化
+            Mat result = new Mat();
+            Cv2.Normalize(clippedMatrix, result, 0, 1, NormTypes.MinMax);
 
-            return phaseMatrix;
+            //释放资源
+            foreach (Mat plane in planes)
+            {
+                plane.Dispose();
+            }
+
+            return result;
         }
         #endregion
     }

@@ -20,14 +20,18 @@ namespace SD.OpenCV.Primitives.Extensions
         public static unsafe Point[] DetectHarris(this Mat matrix, int blockSize, int kernelSize, double k)
         {
             //计算角点矩阵
-            using Mat result = new Mat();
-            Cv2.CornerHarris(matrix, result, blockSize, kernelSize, k);
-            Cv2.Normalize(result, result, 0, 255, NormTypes.MinMax);
-            Cv2.ConvertScaleAbs(result, result);
+            using Mat corneredResult = new Mat();
+            Cv2.CornerHarris(matrix, corneredResult, blockSize, kernelSize, k);
+
+            using Mat normalizedResult = new Mat();
+            Cv2.Normalize(corneredResult, normalizedResult, 0, 255, NormTypes.MinMax);
+
+            using Mat scaledResult = new Mat();
+            Cv2.ConvertScaleAbs(normalizedResult, scaledResult);
 
             //整理角点
             ConcurrentBag<Point> points = new ConcurrentBag<Point>();
-            result.ForEachAsByte((valuePtr, positionPtr) =>
+            scaledResult.ForEachAsByte((valuePtr, positionPtr) =>
             {
                 int rowIndex = positionPtr[0];
                 int colIndex = positionPtr[1];
