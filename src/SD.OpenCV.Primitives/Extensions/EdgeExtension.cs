@@ -118,9 +118,11 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <remarks>卷积核尺寸必须为奇数</remarks>
         public static Mat ApplyLaplacian(this Mat matrix, int kernalSize = 3)
         {
+            using Mat laplacianImage = new Mat();
+            Cv2.Laplacian(matrix, laplacianImage, -1, kernalSize);
+
             Mat result = new Mat();
-            Cv2.Laplacian(matrix, result, -1, kernalSize);
-            Cv2.ConvertScaleAbs(result, result);
+            Cv2.ConvertScaleAbs(laplacianImage, result);
 
             return result;
         }

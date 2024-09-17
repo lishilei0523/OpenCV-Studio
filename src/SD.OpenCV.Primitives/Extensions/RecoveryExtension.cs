@@ -23,16 +23,16 @@ namespace SD.OpenCV.Primitives.Extensions
             matrices = matrices?.ToArray() ?? Array.Empty<Mat>();
             if (!matrices.Any())
             {
-                throw new ArgumentNullException(nameof(matrices), "要融合的图像不可为空！");
+                throw new ArgumentNullException(nameof(matrices), "要拼接的图像不可为空！");
             }
 
             #endregion
 
             using Stitcher stitcher = Stitcher.Create();
-            Mat stitchedResult = new Mat();
-            stitcher.Stitch(matrices, stitchedResult);
+            Mat result = new Mat();
+            stitcher.Stitch(matrices, result);
 
-            return stitchedResult;
+            return result;
         }
         #endregion
 
@@ -95,11 +95,19 @@ namespace SD.OpenCV.Primitives.Extensions
             #endregion
 
             using MergeMertens mergeMertens = MergeMertens.Create();
-            Mat mergedResult = new Mat();
-            mergeMertens.Process(matrices, mergedResult);
-            mergedResult *= 255;
 
-            return mergedResult;
+            //曝光融合
+            using Mat mergedResult = new Mat();
+            mergeMertens.Process(matrices, mergedResult);
+
+            //标准化
+            using Mat normalizedResult = mergedResult * 255;
+
+            //转换格式
+            Mat result = new Mat();
+            normalizedResult.ConvertTo(result, MatType.CV_8UC3);
+
+            return result;
         }
         #endregion
     }

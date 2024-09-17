@@ -22,9 +22,9 @@ namespace SD.OpenCV.Primitives.Extensions
             using Mat gaussMatrix = new Mat(matrixSize, MatType.CV_32FC3);
             using Mat gaussLogMatrix = new Mat(matrixSize, MatType.CV_32FC3);
             using Mat dstLogMatrix = new Mat(matrixSize, MatType.CV_32FC3);
-            Mat result = new Mat(matrixSize, MatType.CV_32FC3);
+            using Mat matrix32F = new Mat(matrixSize, MatType.CV_32FC3);
 
-            float minValue = 0.01f;
+            const float minValue = 0.01f;
             int kernelSize = (int)(sigma * 3 / 2) * 2 + 1;
 
             //求Log(S(x,y))
@@ -100,13 +100,14 @@ namespace SD.OpenCV.Primitives.Extensions
                 int rowIndex = positionPtr[0];
                 int colIndex = positionPtr[1];
                 Vec3f vector = *valuePtr;
-                result.At<Vec3f>(rowIndex, colIndex)[0] = 255 * (vector[0] - bgrMin[0]) / (bgrMax[0] - bgrMin[0]);
-                result.At<Vec3f>(rowIndex, colIndex)[1] = 255 * (vector[1] - bgrMin[1]) / (bgrMax[1] - bgrMin[1]);
-                result.At<Vec3f>(rowIndex, colIndex)[2] = 255 * (vector[2] - bgrMin[2]) / (bgrMax[2] - bgrMin[2]);
+                matrix32F.At<Vec3f>(rowIndex, colIndex)[0] = 255 * (vector[0] - bgrMin[0]) / (bgrMax[0] - bgrMin[0]);
+                matrix32F.At<Vec3f>(rowIndex, colIndex)[1] = 255 * (vector[1] - bgrMin[1]) / (bgrMax[1] - bgrMin[1]);
+                matrix32F.At<Vec3f>(rowIndex, colIndex)[2] = 255 * (vector[2] - bgrMin[2]) / (bgrMax[2] - bgrMin[2]);
             });
 
             //转回8UC3
-            result.ConvertTo(result, MatType.CV_8UC3);
+            Mat result = new Mat();
+            matrix32F.ConvertTo(result, MatType.CV_8UC3);
 
             return result;
         }
@@ -146,9 +147,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateIdealLPKernel(borderedMatrix.Size(), sigma);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -165,9 +168,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateIdealHPKernel(borderedMatrix.Size(), sigma);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -185,9 +190,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateIdealBPKernel(borderedMatrix.Size(), sigma, bandWidth);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -205,9 +212,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateIdealBRKernel(borderedMatrix.Size(), sigma, bandWidth);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -224,9 +233,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateGaussianLPKernel(borderedMatrix.Size(), sigma);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -243,9 +254,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateGaussianHPKernel(borderedMatrix.Size(), sigma);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -263,9 +276,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateGaussianBPKernel(borderedMatrix.Size(), sigma, bandWidth);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -283,9 +298,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateGaussianBRKernel(borderedMatrix.Size(), sigma, bandWidth);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -303,28 +320,30 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <returns>滤波图像矩阵</returns>
         public static Mat GaussianHomoBlur(this Mat matrix, float gammaH, float gammaL, float sigma, float slope)
         {
-            Mat homoMatrix = matrix.Clone();
-            homoMatrix.ConvertTo(homoMatrix, MatType.CV_32FC1);
+            using Mat homoMatrix = new Mat();
+            matrix.ConvertTo(homoMatrix, MatType.CV_32FC1);
 
             //对数化
-            homoMatrix += Scalar.All(1);
-            Cv2.Log(homoMatrix, homoMatrix);
+            using Mat gainedHomoMatrix = homoMatrix + Scalar.All(1);
+            using Mat loggedHomoMatrix = new Mat();
+            Cv2.Log(gainedHomoMatrix, loggedHomoMatrix);
 
             //频域滤波
-            using Mat borderedMatrix = homoMatrix.GenerateDFTBorderedMatrix();
+            using Mat borderedMatrix = loggedHomoMatrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateGaussianHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
 
             //指数化
-            Cv2.Exp(result, result);
-            result -= Scalar.All(1);
+            using Mat expedResult = new Mat();
+            Cv2.Exp(bluredResult, expedResult);
+            using Mat gainedResult = expedResult - Scalar.All(1);
 
-            //转换颜色通道
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            //剪裁
+            using Mat clippedResult = gainedResult[matrix.BoundingRect()];
 
-            //释放资源
-            homoMatrix.Dispose();
+            //转换格式
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -342,9 +361,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateButterworthLPKernel(borderedMatrix.Size(), sigma, n);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -362,9 +383,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateButterworthHPKernel(borderedMatrix.Size(), sigma, n);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -383,9 +406,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateButterworthBPKernel(borderedMatrix.Size(), sigma, bandWidth, n);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -404,9 +429,11 @@ namespace SD.OpenCV.Primitives.Extensions
         {
             using Mat borderedMatrix = matrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateButterworthBRKernel(borderedMatrix.Size(), sigma, bandWidth, n);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat clippedResult = bluredResult[matrix.BoundingRect()];
+
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }
@@ -424,28 +451,30 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <returns>滤波图像矩阵</returns>
         public static Mat ButterworthHomoBlur(this Mat matrix, float gammaH, float gammaL, float sigma, float slope)
         {
-            Mat homoMatrix = matrix.Clone();
-            homoMatrix.ConvertTo(homoMatrix, MatType.CV_32FC1);
+            using Mat homoMatrix = new Mat();
+            matrix.ConvertTo(homoMatrix, MatType.CV_32FC1);
 
             //对数化
-            homoMatrix += Scalar.All(1);
-            Cv2.Log(homoMatrix, homoMatrix);
+            using Mat gainedHomoMatrix = homoMatrix + Scalar.All(1);
+            using Mat loggedHomoMatrix = new Mat();
+            Cv2.Log(gainedHomoMatrix, loggedHomoMatrix);
 
             //频域滤波
             using Mat borderedMatrix = homoMatrix.GenerateDFTBorderedMatrix();
             using Mat kernelMatrix = GenerateButterworthHomoKernel(borderedMatrix.Size(), gammaH, gammaL, sigma, slope);
-            Mat result = borderedMatrix.FrequencyBlur(kernelMatrix);
+            using Mat bluredResult = borderedMatrix.FrequencyBlur(kernelMatrix);
 
             //指数化
-            Cv2.Exp(result, result);
-            result -= Scalar.All(1);
+            using Mat expedResult = new Mat();
+            Cv2.Exp(bluredResult, expedResult);
+            using Mat gainedResult = expedResult - Scalar.All(1);
 
-            //转换颜色通道
-            result = result[matrix.BoundingRect()];
-            result.ConvertTo(result, MatType.CV_8UC1);
+            //剪裁
+            using Mat clippedResult = gainedResult[matrix.BoundingRect()];
 
-            //释放资源
-            homoMatrix.Dispose();
+            //转换格式
+            Mat result = new Mat();
+            clippedResult.ConvertTo(result, MatType.CV_8UC1);
 
             return result;
         }

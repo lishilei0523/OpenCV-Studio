@@ -27,8 +27,8 @@ namespace SD.OpenCV.Primitives.Extensions
                 bins[index] = value >= byte.MaxValue ? byte.MaxValue : (byte)Math.Ceiling(value);
             }
 
-            int channelCount = result.Channels();
-            if (channelCount == 1)
+            int channelsCount = result.Channels();
+            if (channelsCount == 1)
             {
                 result.ForEachAsByte((valuePtr, positionPtr) =>
                 {
@@ -37,7 +37,7 @@ namespace SD.OpenCV.Primitives.Extensions
                     result.At<byte>(rowIndex, colIndex) = bins[*valuePtr];
                 });
             }
-            if (channelCount == 3)
+            if (channelsCount == 3)
             {
                 result.ForEachAsVec3b((valuePtr, positionPtr) =>
                 {
@@ -71,8 +71,8 @@ namespace SD.OpenCV.Primitives.Extensions
                 bins[index] = value >= byte.MaxValue ? byte.MaxValue : (byte)Math.Ceiling(value);
             }
 
-            int channelCount = result.Channels();
-            if (channelCount == 1)
+            int channelsCount = result.Channels();
+            if (channelsCount == 1)
             {
                 result.ForEachAsByte((valuePtr, positionPtr) =>
                 {
@@ -81,7 +81,7 @@ namespace SD.OpenCV.Primitives.Extensions
                     result.At<byte>(rowIndex, colIndex) = bins[*valuePtr];
                 });
             }
-            if (channelCount == 3)
+            if (channelsCount == 3)
             {
                 result.ForEachAsVec3b((valuePtr, positionPtr) =>
                 {
@@ -115,8 +115,8 @@ namespace SD.OpenCV.Primitives.Extensions
                 bins[index] = value >= byte.MaxValue ? byte.MaxValue : (byte)Math.Ceiling(value);
             }
 
-            int channelCount = result.Channels();
-            if (channelCount == 1)
+            int channelsCount = result.Channels();
+            if (channelsCount == 1)
             {
                 result.ForEachAsByte((valuePtr, positionPtr) =>
                 {
@@ -125,7 +125,7 @@ namespace SD.OpenCV.Primitives.Extensions
                     result.At<byte>(rowIndex, colIndex) = bins[*valuePtr];
                 });
             }
-            if (channelCount == 3)
+            if (channelsCount == 3)
             {
                 result.ForEachAsVec3b((valuePtr, positionPtr) =>
                 {
@@ -152,14 +152,15 @@ namespace SD.OpenCV.Primitives.Extensions
         public static Mat DistanceTrans(this Mat matrix, DistanceTypes distanceType = DistanceTypes.L2, DistanceTransformMasks distanceTransformMask = DistanceTransformMasks.Mask3)
         {
             //距离变换
-            Mat distanceMatrix = new Mat();
+            using Mat distanceMatrix = new Mat();
             Cv2.DistanceTransform(matrix, distanceMatrix, distanceType, distanceTransformMask);
 
             //转换格式
-            Mat result = distanceMatrix.ConvertScaleAbs();
+            using Mat matrix8U = distanceMatrix.ConvertScaleAbs();
 
             //归一化
-            Cv2.Normalize(result, result, 0, 255, NormTypes.MinMax);
+            Mat result = new Mat();
+            Cv2.Normalize(matrix8U, result, 0, 255, NormTypes.MinMax);
 
             return result;
         }
@@ -177,9 +178,14 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <returns>变换图像矩阵</returns>
         public static unsafe Mat ShadingTransform(this Mat matrix, Size kernelSize, byte gain = 60, byte noise = 0, byte offset = 140)
         {
-            //克隆前景图，转32F1
-            Mat foreMatrix = matrix.Clone();
-            foreMatrix.ConvertTo(foreMatrix, MatType.CV_32FC1);
+            //转灰度图
+            using Mat grayImage = matrix.Type() == MatType.CV_8UC1
+                ? matrix.Clone()
+                : matrix.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+            //转32FC1前景图
+            using Mat foreMatrix = new Mat();
+            grayImage.ConvertTo(foreMatrix, MatType.CV_32FC1);
 
             //滤波取背景图
             using Mat backMatrix = foreMatrix.GaussianBlur(kernelSize, 1);
@@ -201,11 +207,14 @@ namespace SD.OpenCV.Primitives.Extensions
                 }
             });
 
-            //再次滤波，转回8UC1
-            foreMatrix = foreMatrix.GaussianBlur(kernelSize, 1);
-            foreMatrix.ConvertTo(foreMatrix, MatType.CV_8UC1);
+            //再次滤波
+            using Mat bluredForeMatrix = foreMatrix.GaussianBlur(kernelSize, 1);
 
-            return foreMatrix;
+            //转回8UC1
+            Mat result = new Mat();
+            bluredForeMatrix.ConvertTo(result, MatType.CV_8UC1);
+
+            return result;
         }
         #endregion
     }

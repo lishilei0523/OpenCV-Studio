@@ -231,9 +231,10 @@ namespace SD.OpenCV.Primitives.Extensions
             using Mat mask = new Mat();
             Cv2.InRange(hsvMatrix, lowerScalar, upperScalar, mask);
 
-            Mat result = new Mat();
-            Cv2.BitwiseAnd(hsvMatrix, hsvMatrix, result, mask);
-            result = result.CvtColor(ColorConversionCodes.HSV2BGR);
+            using Mat hsvResult = new Mat();
+            Cv2.BitwiseAnd(hsvMatrix, hsvMatrix, hsvResult, mask);
+
+            Mat result = hsvResult.CvtColor(ColorConversionCodes.HSV2BGR);
 
             return result;
         }
@@ -316,7 +317,6 @@ namespace SD.OpenCV.Primitives.Extensions
             }
             else
             {
-                OpenCvSharp.ML.KNearest.Create();
                 throw new NotSupportedException($"不支持的像素格式！Channels: {channelsCount}");
             }
 

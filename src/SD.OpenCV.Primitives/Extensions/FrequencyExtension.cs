@@ -22,10 +22,11 @@ namespace SD.OpenCV.Primitives.Extensions
             Cv2.Merge(planes, complexMatrix);
 
             //离散傅里叶变换
-            Cv2.Dft(complexMatrix, complexMatrix, DftFlags.ComplexOutput);
+            using Mat dftMatrix = new Mat();
+            Cv2.Dft(complexMatrix, dftMatrix, DftFlags.ComplexOutput);
 
             //分割实部与虚部，planes[0]为实部，planes[1]为虚部
-            Cv2.Split(complexMatrix, out planes);
+            Cv2.Split(dftMatrix, out planes);
 
             //迁移频域
             planes[0].ShiftDFT();
@@ -34,7 +35,6 @@ namespace SD.OpenCV.Primitives.Extensions
             //滤波器函数与DFT结果的乘积
             using Mat blurReal = new Mat();
             using Mat blurImag = new Mat();
-            Mat blur = new Mat();
             Cv2.Multiply(planes[0], kernelMatrix, blurReal);  // 滤波（实部与滤波器模板对应元素相乘）
             Cv2.Multiply(planes[1], kernelMatrix, blurImag);  // 滤波（虚部与滤波器模板对应元素相乘）
             Mat[] blurs = { blurReal, blurImag };
@@ -44,16 +44,18 @@ namespace SD.OpenCV.Primitives.Extensions
             blurImag.ShiftDFT();
 
             //实部与虚部合并
+            using Mat blur = new Mat();
             Cv2.Merge(blurs, blur);
 
             //离散傅里叶逆变换
-            Cv2.Idft(blur, blur, DftFlags.ComplexOutput);
-            blur = blur / blur.Rows / blur.Cols;
+            using Mat idftMatrix = new Mat();
+            Cv2.Idft(blur, idftMatrix, DftFlags.ComplexOutput);
+            using Mat normalizedBlur = idftMatrix / idftMatrix.Rows / idftMatrix.Cols;
 
             //分离通道，主要获取通道
-            Cv2.Split(blur, out Mat[] blurPlanes);
+            Cv2.Split(normalizedBlur, out Mat[] blurPlanes);
 
-            blur.Dispose();
+            //释放资源
             blurPlanes[1].Dispose();
 
             return blurPlanes[0];
@@ -74,11 +76,13 @@ namespace SD.OpenCV.Primitives.Extensions
             int optimalWidth = Cv2.GetOptimalDFTSize(matrixSize.Width);    //获取DFT变换的最佳宽度
             int optimalHeight = Cv2.GetOptimalDFTSize(matrixSize.Height);  //获取DFT变换的最佳高度
 
-            Mat borderedMatrix = new Mat();
+            using Mat borderedMatrix = new Mat();
             Cv2.CopyMakeBorder(matrix, borderedMatrix, 0, optimalHeight - originalHeight, 0, optimalWidth - originalWidth, BorderTypes.Constant, Scalar.All(0));
-            borderedMatrix.ConvertTo(borderedMatrix, MatType.CV_32FC1);
 
-            return borderedMatrix;
+            Mat result = new Mat();
+            borderedMatrix.ConvertTo(result, MatType.CV_32FC1);
+
+            return result;
         }
         #endregion
 

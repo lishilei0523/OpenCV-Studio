@@ -91,7 +91,7 @@ namespace SD.OpenCV.Tests.TestCases
             byte norse = 0;
             byte offset = 140;
 
-            using Mat matrix = Cv2.ImRead("Content/Images/Deer.jpg", ImreadModes.Grayscale);
+            using Mat matrix = Cv2.ImRead("Content/Images/Lena.jpg");
             using Mat result = matrix.ShadingTransform(new Size(kernelSizeX, kernelSizeY), gain, norse, offset);
 
             Cv2.ImShow("OpenCV阴影变换-原图", matrix);

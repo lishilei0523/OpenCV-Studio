@@ -7,6 +7,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Models;
+using SD.OpenCV.Primitives.Extensions;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -133,14 +134,7 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             this.Busy();
 
             Mat[] images = this.BitmapSources.Where(x => x.IsChecked == true).Select(x => x.Model.ToMat()).ToArray();
-            using MergeMertens mergeMertens = MergeMertens.Create();
-            Mat mergedResult = new Mat();
-            await Task.Run(() => mergeMertens.Process(images, mergedResult));
-            mergedResult *= 255;
-
-            //转换格式
-            Mat mergedImage = new Mat();
-            mergedResult.ConvertTo(mergedImage, MatType.CV_8UC3);
+            using Mat mergedImage = await Task.Run(() => images.ExposureFusion());
 
             BitmapSource bitmapSource = mergedImage.ToBitmapSource();
             Wrap<BitmapSource> wrapModel = bitmapSource.Wrap();
@@ -152,8 +146,6 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
             {
                 image.Dispose();
             }
-            mergedResult.Dispose();
-            mergedImage.Dispose();
 
             this.Idle();
         }
