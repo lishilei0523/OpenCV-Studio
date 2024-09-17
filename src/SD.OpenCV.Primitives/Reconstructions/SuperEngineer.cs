@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using SD.OpenCV.Primitives.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,30 +54,29 @@ namespace SD.OpenCV.Primitives.Reconstructions
         /// </summary>
         /// <param name="image">图像</param>
         /// <returns>图像特征数组</returns>
-        public static float[] GetImageFeatures(this Mat image)
+        public static unsafe float[] GetImageFeatures(this Mat image)
         {
-            Mat image32FC1;
+            Mat image32F;
             if (image.Type() != MatType.CV_32FC1)
             {
-                image32FC1 = new Mat();
-                image.ConvertTo(image32FC1, MatType.CV_32FC1);
+                image32F = new Mat();
+                image.ConvertTo(image32F, MatType.CV_32FC1);
             }
             else
             {
-                image32FC1 = image.Clone();
+                image32F = image.Clone();
             }
 
-            IList<float> imageFeatures = new List<float>();
-            for (int rowIndex = 0; rowIndex < image.Rows; rowIndex++)
+            ConcurrentBag<float> imageFeatures = new ConcurrentBag<float>();
+            image32F.ForEachAsFloat((valuePtr, _) =>
             {
-                for (int colIndex = 0; colIndex < image.Cols; colIndex++)
-                {
-                    imageFeatures.Add(image32FC1.At<float>(rowIndex, colIndex) / 255.0f);
-                }
-            }
+                float value = *valuePtr;
+                float normalValue = value / 255.0f;
+                imageFeatures.Add(normalValue);
+            });
 
             //释放资源
-            image32FC1.Dispose();
+            image32F.Dispose();
 
             return imageFeatures.ToArray();
         }
