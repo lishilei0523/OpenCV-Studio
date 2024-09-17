@@ -68,12 +68,7 @@ namespace SD.OpenCV.Primitives.Reconstructions
             }
 
             ConcurrentBag<float> imageFeatures = new ConcurrentBag<float>();
-            image32F.ForEachAsFloat((valuePtr, _) =>
-            {
-                float value = *valuePtr;
-                float normalValue = value / 255.0f;
-                imageFeatures.Add(normalValue);
-            });
+            image32F.ForEachAsFloat((valuePtr, _) => imageFeatures.Add(*valuePtr / 255.0f));
 
             //释放资源
             image32F.Dispose();
