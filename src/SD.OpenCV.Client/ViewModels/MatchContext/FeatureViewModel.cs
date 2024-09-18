@@ -10,10 +10,12 @@ using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Client.ViewModels.GeometryContext;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
 using SD.OpenCV.Reconstructions;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -136,6 +138,13 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         /// </summary>
         [DependencyProperty]
         public int MatchedKeypointsCount { get; set; }
+        #endregion
+
+        #region 透视变换矩阵 —— Mat PerspectiveMatrix
+        /// <summary>
+        /// 透视变换矩阵
+        /// </summary>
+        public Mat PerspectiveMatrix { get; set; }
         #endregion
 
         #region 参考矩形 —— Rectangle SourceRectangle
@@ -283,6 +292,16 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             this.TargetKeypointsCount = this.MatchResult.TargetKeyPoints.Count;
             this.MatchedKeypointsCount = this.MatchResult.MatchedCount;
 
+            //解析匹配结果
+            Point2f[] matchedSourcePoints = this.MatchResult.GetMatchedSourcePoints();
+            Point2f[] matchedTargetPoints = this.MatchResult.GetMatchedTargetPoints();
+
+            //计算单应矩阵
+            if (matchedSourcePoints.Any() && matchedTargetPoints.Any())
+            {
+                this.PerspectiveMatrix = await Task.Run(() => Cv2.FindHomography(InputArray.Create(matchedTargetPoints), InputArray.Create(matchedSourcePoints), HomographyMethods.Ransac));
+            }
+
             //绘制目标矩形
             Rect boundingRect = await Task.Run(() => Cv2.BoundingRect(this.MatchResult.GetMatchedTargetPoints()));
             this.TargetRectangle.Visibility = Visibility.Visible;
@@ -313,14 +332,19 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         {
             #region # 验证
 
-            if (this.SourceImage == null)
+            if (this.TargetImage == null)
             {
-                MessageBox.Show("参考图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("目标图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.MatchResult == null)
             {
-                MessageBox.Show("未执行匹配，不可矫正位姿！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("未执行匹配，不可矫正图像！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.PerspectiveMatrix == null)
+            {
+                MessageBox.Show("透视矩阵未生成！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -328,12 +352,40 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
             this.Busy();
 
-            using Mat sourceImage = this.SourceImage.ToMat();
-            using Mat resultImage = await Task.Run(() => Reconstructor.RecoverImage(sourceImage, this.MatchResult));
+            using Mat targetImage = this.TargetImage.ToMat();
+            using Mat resultImage = new Mat();
+            await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, targetImage.Size()));
 
             //查看矫正结果
             ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(resultImage.ToBitmapSource(), "参考图像变换效果图");
+            viewModel.Load(resultImage.ToBitmapSource(), "目标图像变换效果图");
+            await this._windowManager.ShowWindowAsync(viewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 透视绘制 —— async void PerspectiveDraw()
+        /// <summary>
+        /// 透视绘制
+        /// </summary>
+        public async void PerspectiveDraw()
+        {
+            #region # 验证
+
+            if (this.PerspectiveMatrix == null)
+            {
+                MessageBox.Show("透视矩阵未生成！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            PerspectiveDrawViewModel viewModel = ResolveMediator.Resolve<PerspectiveDrawViewModel>();
+            Mat perspectiveMatrix = this.PerspectiveMatrix.Clone();
+            viewModel.Load(this.SourceImage, this.TargetImage, perspectiveMatrix);
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
@@ -550,6 +602,20 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             double leftMargin = canvas.GetRectifiedLeft(this.SourceRectangle);
             double topMargin = canvas.GetRectifiedTop(this.SourceRectangle);
             this.RebuildRectangle(this.SourceRectangle, leftMargin, topMargin);
+        }
+        #endregion
+
+        #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
+        /// <summary>
+        /// 页面失活事件
+        /// </summary>
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (close)
+            {
+                this.PerspectiveMatrix?.Dispose();
+            }
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
         #endregion
 

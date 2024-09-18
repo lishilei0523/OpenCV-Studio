@@ -44,6 +44,7 @@
                     <MenuItem Header="打开目标图像(_T)" cm:Message.Attach="OpenTargetImage()" />
                     <MenuItem Header="执行匹配(_M)" cm:Message.Attach="ExecuteMatch()" />
                     <MenuItem Header="矫正图像(_R)" cm:Message.Attach="RectifyImage()" />
+                    <MenuItem Header="透视绘制(_D)" cm:Message.Attach="PerspectiveDraw()" />
                 </Menu>
                 <WrapPanel Grid.Column="1" Margin="0,0,4,0" VerticalAlignment="Center">
                     <TextBlock Text="匹配阈值：" />
