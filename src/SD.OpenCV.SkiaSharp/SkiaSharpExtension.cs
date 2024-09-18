@@ -23,7 +23,7 @@ namespace SD.OpenCV.SkiaSharp
             SKColorType colorType;
             if (channelsCount == 1)
             {
-                cvtMat = matrix;
+                cvtMat = matrix.Clone();
                 colorType = SKColorType.Gray8;
             }
             else if (channelsCount == 3)
@@ -39,10 +39,7 @@ namespace SD.OpenCV.SkiaSharp
 
             SKBitmapReleaseDelegate releaseAction = (address, context) =>
             {
-                if (channelsCount == 3)
-                {
-                    cvtMat.Dispose();
-                }
+                cvtMat.Dispose();
             };
 
             SKImageInfo imageInfo = new SKImageInfo(matrix.Width, matrix.Height, colorType);
@@ -70,10 +67,9 @@ namespace SD.OpenCV.SkiaSharp
             }
             else if (bitmap.ColorType == SKColorType.Bgra8888)
             {
-                Mat matrix8UC4 = Mat.FromPixelData(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bitmap.GetPixels(), bitmap.RowBytes);
+                using Mat matrix8UC4 = Mat.FromPixelData(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bitmap.GetPixels(), bitmap.RowBytes);
                 matrix = new Mat();
                 Cv2.CvtColor(matrix8UC4, matrix, ColorConversionCodes.BGRA2BGR);
-                matrix8UC4.Dispose();
             }
             else
             {

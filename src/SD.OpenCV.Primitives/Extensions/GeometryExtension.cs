@@ -56,7 +56,8 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
         public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, InterpolationFlags mode = InterpolationFlags.Area)
         {
-            Mat scaledImage = new Mat();
+            using Mat scaledImage = new Mat();
+            Mat borderedImage = new Mat();
             if (matrix.Width > matrix.Height)
             {
                 int width = scaledSize;
@@ -65,7 +66,7 @@ namespace SD.OpenCV.Primitives.Extensions
                 Cv2.Resize(matrix, scaledImage, size, 0, 0, mode);
 
                 int surplusY = (width - height) / 2;
-                Cv2.CopyMakeBorder(scaledImage, scaledImage, surplusY, surplusY, 0, 0, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, surplusY, surplusY, 0, 0, BorderTypes.Constant);
             }
             else
             {
@@ -75,10 +76,10 @@ namespace SD.OpenCV.Primitives.Extensions
                 Cv2.Resize(matrix, scaledImage, size, 0, 0, mode);
 
                 int surplusX = (height - width) / 2;
-                Cv2.CopyMakeBorder(scaledImage, scaledImage, 0, 0, surplusX, surplusX, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, surplusX, surplusX, BorderTypes.Constant);
             }
 
-            return scaledImage;
+            return borderedImage;
         }
         #endregion
 
