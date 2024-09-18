@@ -172,7 +172,7 @@
                     <MenuItem Header="轮廓分割(_C)" cm:Message.Attach="ContourSegment()" />
                     <MenuItem Header="掩膜分割(_M)" cm:Message.Attach="MaskSegment()" />
                     <MenuItem Header="GrabCut分割(_G)" cm:Message.Attach="GrabCutSegment()" />
-                    <MenuItem Header="KMeans聚类分割(_K)" cm:Message.Attach="KMeansSegment()" />
+                    <MenuItem Header="K-Means聚类分割(_K)" cm:Message.Attach="KMeansSegment()" />
                     <MenuItem Header="图分割(_R)" cm:Message.Attach="GraphSegment()" />
                 </MenuItem>
                 <MenuItem Header="矫正(_R)">
