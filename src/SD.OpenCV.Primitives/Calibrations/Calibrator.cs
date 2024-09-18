@@ -546,8 +546,8 @@ namespace SD.OpenCV.Primitives.Calibrations
             {
                 double[] y1Array = { sourcePoints[i].X, sourcePoints[i].Y, 1 };
                 double[] y2Array = { targetPoints[i].X, targetPoints[i].Y, 1 };
-                Mat y1 = Mat.FromArray(y1Array);
-                Mat y2 = Mat.FromArray(y2Array);
+                using Mat y1 = Mat.FromArray(y1Array);
+                using Mat y2 = Mat.FromArray(y2Array);
 
                 double[,] txArray =
                 {
@@ -555,9 +555,9 @@ namespace SD.OpenCV.Primitives.Calibrations
                     {tMat.At<double>(2, 0), 0, -tMat.At<double>(0, 0)},
                     {-tMat.At<double>(1, 0), tMat.At<double>(0, 0), 0}
                 };
-                Mat txMat = Mat.FromArray(txArray);
+                using Mat txMat = Mat.FromArray(txArray);
 
-                Mat d = y2.T() * cameraMat.Inv().T() * txMat * rMat * cameraMat.Inv() * y1;
+                using Mat d = y2.T() * cameraMat.Inv().T() * txMat * rMat * cameraMat.Inv() * y1;
                 epipolarConstraints.Add(d.At<double>(0, 0));
             }
 
