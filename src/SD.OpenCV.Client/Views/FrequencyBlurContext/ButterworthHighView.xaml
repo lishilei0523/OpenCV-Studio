@@ -42,12 +42,13 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="滤波半径：">
                             <mah:NumericUpDown Value="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
-                                            Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="阶数：">
                             <mah:NumericUpDown Minimum="1" Maximum="100" 
-                                             Value="{Binding N, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Value="{Binding N, UpdateSourceTrigger=PropertyChanged}"
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

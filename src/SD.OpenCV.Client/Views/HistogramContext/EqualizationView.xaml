@@ -42,7 +42,8 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="裁剪限制：">
                             <mah:NumericUpDown Value="{Binding ClipLimit, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

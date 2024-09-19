@@ -51,19 +51,23 @@
                         </sd:FormItem>
                         <sd:FormItem Label="目标宽度：" Visibility="{Binding AbsoluteVisibility}">
                             <mah:NumericUpDown Value="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="目标高度：" Visibility="{Binding AbsoluteVisibility}">
                             <mah:NumericUpDown Value="{Binding Height, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="缩放率：" Visibility="{Binding RelativeVisibility}">
                             <mah:NumericUpDown Value="{Binding ScaleRatio, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="目标边长：" Visibility="{Binding AdaptiveVisibility}">
                             <mah:NumericUpDown Value="{Binding SideSize, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

@@ -42,7 +42,8 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="旋转角度：">
                             <Slider Minimum="-360" Maximum="360" TickFrequency="30" Value="{Binding Angle}"
-                                    Style="{StaticResource Slider.Styles.Fluent}" />
+                                    Style="{StaticResource Slider.Styles.Fluent}"
+                                    cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem>
                             <mah:NumericUpDown Minimum="-360" Maximum="360" Interval="1"

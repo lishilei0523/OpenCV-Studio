@@ -43,7 +43,8 @@
                         <sd:FormItem Label="滤波直径：">
                             <mah:NumericUpDown Minimum="1" Maximum="1000" 
                                                Value="{Binding Diameter, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="颜色标准差：">
                             <mah:NumericUpDown Minimum="1" Maximum="1000" 

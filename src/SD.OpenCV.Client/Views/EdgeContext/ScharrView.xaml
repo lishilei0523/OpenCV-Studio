@@ -42,15 +42,16 @@
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="X轴卷积权重：">
                             <mah:NumericUpDown Value="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
-                                              Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="Y轴卷积权重：">
                             <mah:NumericUpDown Value="{Binding Beta, UpdateSourceTrigger=PropertyChanged}"
-                                              Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
                         </sd:FormItem>
                         <sd:FormItem Label="伽马值：">
                             <mah:NumericUpDown Value="{Binding Gamma, UpdateSourceTrigger=PropertyChanged}"
-                                              Style="{StaticResource NumericUpDown.Styles.Fluent.Float}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent.Float}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

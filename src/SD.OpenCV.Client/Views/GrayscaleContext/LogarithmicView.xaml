@@ -41,7 +41,9 @@
                 <GroupBox Grid.Column="1" Header="灰度参数" Margin="2,4,4,4">
                     <StackPanel Grid.IsSharedSizeScope="True" Margin="5,20">
                         <sd:FormItem Label="伽马值：">
-                            <Slider Value="{Binding Gamma}" Style="{StaticResource Slider.Styles.Fluent}" />
+                            <Slider Value="{Binding Gamma}" 
+                                    Style="{StaticResource Slider.Styles.Fluent}"
+                                    cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem>
                             <mah:NumericUpDown Value="{Binding Gamma, UpdateSourceTrigger=PropertyChanged}"

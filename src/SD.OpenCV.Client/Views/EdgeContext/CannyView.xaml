@@ -63,7 +63,8 @@
                         <sd:FormItem Label="核矩阵尺寸：">
                             <mah:NumericUpDown Minimum="3" Maximum="7" Interval="2"
                                                Value="{Binding KernelSize, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="L2范式：">
                             <mah:ToggleSwitch IsOn="{Binding L2Gradient}" OnContent="启用" OffContent="停用" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />

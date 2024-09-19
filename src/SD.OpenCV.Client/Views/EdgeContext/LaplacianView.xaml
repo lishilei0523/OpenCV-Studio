@@ -43,7 +43,8 @@
                         <sd:FormItem Label="核矩阵尺寸：">
                             <mah:NumericUpDown Minimum="1" Maximum="100" Interval="2"
                                                Value="{Binding KernelSize, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

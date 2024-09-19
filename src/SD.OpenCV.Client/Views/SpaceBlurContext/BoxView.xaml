@@ -47,7 +47,8 @@
                         <sd:FormItem Label="核矩阵尺寸：">
                             <mah:NumericUpDown Minimum="1" Maximum="100"
                                                Value="{Binding KernelSize, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="是否归一化：">
                             <mah:ToggleSwitch IsOn="{Binding NeedToNormalize}" OnContent="是" OffContent="否" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
