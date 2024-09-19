@@ -256,11 +256,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 关闭图像 —— void CloseImage()
+        #region 关闭图像 —— async void CloseImage()
         /// <summary>
         /// 关闭图像
         /// </summary>
-        public void CloseImage()
+        public async void CloseImage()
         {
             #region # 验证
 
@@ -275,7 +275,14 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             MessageBoxResult result = MessageBox.Show("是否保存？", "提示", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                this.SaveImage();
+                this.Busy();
+
+                using Mat image = this.EffectiveImage.ToMat();
+                await Task.Run(() => image.SaveImage(this.FilePath));
+                await this.ReloadImage();
+
+                this.Idle();
+                this.ToastSuccess("保存成功！");
             }
             if (result == MessageBoxResult.Yes || result == MessageBoxResult.No)
             {
@@ -303,14 +310,18 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             #endregion
 
-            this.Busy();
+            MessageBoxResult result = MessageBox.Show("确定保存并覆盖源图像？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                this.Busy();
 
-            using Mat image = this.EffectiveImage.ToMat();
-            await Task.Run(() => image.SaveImage(this.FilePath));
-            await this.ReloadImage();
+                using Mat image = this.EffectiveImage.ToMat();
+                await Task.Run(() => image.SaveImage(this.FilePath));
+                await this.ReloadImage();
 
-            this.Idle();
-            this.ToastSuccess("保存成功！");
+                this.Idle();
+                this.ToastSuccess("保存成功！");
+            }
         }
         #endregion
 
