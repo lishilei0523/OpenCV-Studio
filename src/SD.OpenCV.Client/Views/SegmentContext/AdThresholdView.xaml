@@ -43,12 +43,14 @@
                         <sd:FormItem Label="最大值：">
                             <mah:NumericUpDown Minimum="0" Maximum="255"
                                                Value="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="块大小：">
-                            <mah:NumericUpDown Minimum="1" Maximum="99" Interval="2"
+                            <mah:NumericUpDown Minimum="3" Maximum="99" Interval="2"
                                                Value="{Binding BlockSize, UpdateSourceTrigger=PropertyChanged}"
-                                               Style="{StaticResource NumericUpDown.Styles.Fluent}" />
+                                               Style="{StaticResource NumericUpDown.Styles.Fluent}"
+                                               cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="常数C：">
                             <mah:NumericUpDown Minimum="0" Maximum="100" 
