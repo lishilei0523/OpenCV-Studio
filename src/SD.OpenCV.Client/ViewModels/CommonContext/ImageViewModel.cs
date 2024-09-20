@@ -85,6 +85,7 @@ namespace SD.OpenCV.Client.ViewModels.CommonContext
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
+                FileName = this.Title,
                 Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
                 AddExtension = true,
                 RestoreDirectory = true
