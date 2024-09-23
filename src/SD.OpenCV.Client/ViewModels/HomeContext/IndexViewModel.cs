@@ -3415,9 +3415,9 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region KMeans聚类分割 —— async void KMeansSegment()
+        #region K-Means聚类分割 —— async void KMeansSegment()
         /// <summary>
-        /// KMeans聚类分割
+        /// K-Means聚类分割
         /// </summary>
         public async void KMeansSegment()
         {
