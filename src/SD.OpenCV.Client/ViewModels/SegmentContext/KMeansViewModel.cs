@@ -13,7 +13,7 @@ using System.Windows;
 namespace SD.OpenCV.Client.ViewModels.SegmentContext
 {
     /// <summary>
-    /// KMeans聚类分割视图模型
+    /// K-Means聚类分割视图模型
     /// </summary>
     public class KMeansViewModel : PreviewViewModel
     {

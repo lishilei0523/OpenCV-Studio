@@ -240,9 +240,9 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
-        #region # KMeans聚类分割 —— static Mat KMeansSegment(this Mat matrix, int clustersCount...
+        #region # K-Means聚类分割 —— static Mat KMeansSegment(this Mat matrix, int clustersCount...
         /// <summary>
-        /// KMeans聚类分割
+        /// K-Means聚类分割
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="clustersCount">簇数量</param>
@@ -250,7 +250,7 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <param name="criteriaEpsilon">优化误差</param>
         /// <param name="attemptsCount">重复试验次数</param>
         /// <param name="kMeansFlag">初始中心类型</param>
-        /// <returns></returns>
+        /// <returns>分割结果图像矩阵</returns>
         public static unsafe Mat KMeansSegment(this Mat matrix, int clustersCount, int criteriaMaxCount = 10, double criteriaEpsilon = 0.1, int attemptsCount = 3, KMeansFlags kMeansFlag = KMeansFlags.PpCenters)
         {
             //定义颜色
