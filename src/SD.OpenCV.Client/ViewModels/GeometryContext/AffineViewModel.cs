@@ -276,7 +276,7 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
             await Task.Run(() => Cv2.WarpAffine(targetImage, resultImage, this.AffineMatrix, size));
 
             ImageCompareViewModel viewModel = ResolveMediator.Resolve<ImageCompareViewModel>();
-            viewModel.Load(this.SourceImage, resultImage.ToBitmapSource(), "变换效果图");
+            viewModel.Load(this.SourceImage, resultImage.ToBitmapSource(), "目标图像变换效果图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();

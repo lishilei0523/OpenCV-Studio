@@ -358,7 +358,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
             //查看矫正结果
             ImageCompareViewModel viewModel = ResolveMediator.Resolve<ImageCompareViewModel>();
-            viewModel.Load(this.SourceImage, resultImage.ToBitmapSource(), "变换效果图");
+            viewModel.Load(this.SourceImage, resultImage.ToBitmapSource(), "目标图像变换效果图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
