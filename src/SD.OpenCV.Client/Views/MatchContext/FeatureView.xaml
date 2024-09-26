@@ -42,6 +42,7 @@
                 <Menu Grid.Column="0" Margin="4,2">
                     <MenuItem Header="打开参考图像(_S)" cm:Message.Attach="OpenSourceImage()" />
                     <MenuItem Header="打开目标图像(_T)" cm:Message.Attach="OpenTargetImage()" />
+                    <MenuItem Header="对比预览(_P)" cm:Message.Attach="PreviewCompare()" />
                     <MenuItem Header="执行匹配(_M)" cm:Message.Attach="ExecuteMatch()" />
                     <MenuItem Header="矫正图像(_R)" cm:Message.Attach="RectifyImage()" />
                     <MenuItem Header="透视绘制(_D)" cm:Message.Attach="PerspectiveDraw()" />

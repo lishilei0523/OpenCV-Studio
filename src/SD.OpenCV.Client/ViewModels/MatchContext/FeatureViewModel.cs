@@ -249,6 +249,33 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         }
         #endregion
 
+        #region 对比预览 —— async void PreviewCompare()
+        /// <summary>
+        /// 对比预览
+        /// </summary>
+        public async void PreviewCompare()
+        {
+            #region # 验证
+
+            if (this.SourceImage == null)
+            {
+                MessageBox.Show("参考图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.TargetImage == null)
+            {
+                MessageBox.Show("目标图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            ImageCompareViewModel viewModel = ResolveMediator.Resolve<ImageCompareViewModel>();
+            viewModel.Load(this.SourceImage, this.TargetImage, "对比预览效果图");
+            await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
         #region 执行匹配 —— async void ExecuteMatch()
         /// <summary>
         /// 执行匹配
