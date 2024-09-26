@@ -357,8 +357,8 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             await Task.Run(() => Cv2.WarpPerspective(targetImage, resultImage, this.PerspectiveMatrix, targetImage.Size()));
 
             //查看矫正结果
-            ImageViewModel viewModel = ResolveMediator.Resolve<ImageViewModel>();
-            viewModel.Load(resultImage.ToBitmapSource(), "目标图像变换效果图");
+            ImageCompareViewModel viewModel = ResolveMediator.Resolve<ImageCompareViewModel>();
+            viewModel.Load(this.SourceImage, resultImage.ToBitmapSource(), "变换效果图");
             await this._windowManager.ShowWindowAsync(viewModel);
 
             this.Idle();
