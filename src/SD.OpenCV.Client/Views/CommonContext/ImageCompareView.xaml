@@ -19,12 +19,12 @@
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
-    <Grid Background="LightGray">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Style="{StaticResource Panel.Styles.Function.Border}">
+        <Border Grid.Row="0" BorderThickness="0,1,0,0" Style="{StaticResource Panel.Styles.Function.Border}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -33,21 +33,21 @@
                 <StackPanel Grid.Column="0" Grid.IsSharedSizeScope="True" Margin="8,4,4,4">
                     <sd:FormItem Label="参考图像透明度：" Margin="0">
                         <Slider Height="20" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.01" 
-                                Value="{Binding ElementName=ImageCompareViewer, Path=ImageSource1Opacity, Mode=TwoWay}"
+                                Value="{Binding ElementName=ImageViewer, Path=ImageSource1Opacity, Mode=TwoWay}"
                                 Style="{StaticResource Slider.Styles.Fluent}" />
                     </sd:FormItem>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Grid.IsSharedSizeScope="True" Margin="4,4,8,4">
                     <sd:FormItem Label="目标图像透明度：" Margin="0">
                         <Slider Height="20" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.01"
-                                Value="{Binding ElementName=ImageCompareViewer, Path=ImageSource2Opacity, Mode=TwoWay}"
+                                Value="{Binding ElementName=ImageViewer, Path=ImageSource2Opacity, Mode=TwoWay}"
                                 Style="{StaticResource Slider.Styles.Fluent}" />
                     </sd:FormItem>
                 </StackPanel>
             </Grid>
         </Border>
-        <sd:ImageCompareViewer Grid.Row="1" x:Name="ImageCompareViewer"
-                               ImageSource1="{Binding SourceImage}" 
-                               ImageSource2="{Binding TargetImage}"  />
+        <Grid Grid.Row="1" Background="LightGray">
+            <sd:ImageCompareViewer x:Name="ImageViewer" ImageSource1="{Binding SourceImage}" ImageSource2="{Binding TargetImage}" />
+        </Grid>
     </Grid>
 </mah:MetroWindow>
