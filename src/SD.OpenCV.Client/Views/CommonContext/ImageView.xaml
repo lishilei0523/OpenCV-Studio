@@ -4,8 +4,8 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  xmlns:cm="http://caliburnmicro.com"
+                 xmlns:sd="https://github.com/lishilei0523/SD.Framework"
                  mc:Ignorable="d"
                  Title="{Binding Title}" 
                  Width="1440" Height="900" FontSize="14"
@@ -18,7 +18,7 @@
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
-    <Grid Background="LightGray">
+    <Grid Background="{StaticResource Brushes.LinearGray}">
         <sd:ImageViewer ImageSource="{Binding Image}" />
     </Grid>
 </mah:MetroWindow>

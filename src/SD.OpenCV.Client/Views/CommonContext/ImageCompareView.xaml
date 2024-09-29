@@ -46,7 +46,7 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Grid Grid.Row="1" Background="LightGray">
+        <Grid Grid.Row="1" Background="{StaticResource Brushes.LinearGray}">
             <sd:ImageCompareViewer x:Name="ImageViewer" ImageSource1="{Binding SourceImage}" ImageSource2="{Binding TargetImage}" />
         </Grid>
     </Grid>
