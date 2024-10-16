@@ -177,7 +177,7 @@ namespace SD.OpenCV.Reconstructions
         public override void DetectAndCompute(InputArray image, InputArray mask, out KeyPoint[] keyPoints, OutputArray descriptors, bool useProvidedKeypoints = false)
         {
             //计算
-            this.ComputeAll(image.GetMat(), mask?.GetMat(), out long[] keyPointsArray, out int[] keyPointsDims, out float[] descriptorsArray, out int[] descriptorsDims, out keyPoints, out Mat descriptorsMat);
+            this.ComputeAll(image.GetMat(), mask?.GetMat(), out _, out _, out _, out _, out keyPoints, out Mat descriptorsMat);
 
             descriptorsMat.CopyTo(descriptors);
             descriptorsMat.Dispose();

@@ -99,7 +99,7 @@ namespace SD.OpenCV.Primitives.Calibrations
                 double[] tArray3x1 = { tVecs[i].Item0, tVecs[i].Item1, tVecs[i].Item2 };
 
                 //计算重投影误差
-                Cv2.ProjectPoints(patternPointsKV.Value, rArray3x1, tArray3x1, cameraArray3x3, distortionArray5x1, out Point2f[] imagePoints, out double[,] jacobian);
+                Cv2.ProjectPoints(patternPointsKV.Value, rArray3x1, tArray3x1, cameraArray3x3, distortionArray5x1, out Point2f[] imagePoints, out _);
                 using Mat cornerPointsMat = Mat.FromArray(cornerPointsKV.Value);
                 using Mat imagePointsMat = Mat.FromArray(imagePoints);
                 double unitError = Cv2.Norm(cornerPointsMat, imagePointsMat) / imagePoints.Length;
@@ -474,7 +474,9 @@ namespace SD.OpenCV.Primitives.Calibrations
             #endregion
 
             Mat result = new Mat();
-            Cv2.Undistort(image, result, InputArray.Create(cameraIntrinsics.IntrinsicMatrix), InputArray.Create(cameraIntrinsics.DistortionVector));
+            using InputArray cameraMatrix = InputArray.Create(cameraIntrinsics.IntrinsicMatrix);
+            using InputArray distCoeffs = InputArray.Create(cameraIntrinsics.DistortionVector);
+            Cv2.Undistort(image, result, cameraMatrix, distCoeffs);
 
             return result;
         }
@@ -514,8 +516,10 @@ namespace SD.OpenCV.Primitives.Calibrations
             using Mat map1 = new Mat();
             using Mat map2 = new Mat();
             using Mat r = new Mat();
+            using InputArray cameraMatrix = InputArray.Create(cameraIntrinsics.IntrinsicMatrix);
+            using InputArray distCoeffs = InputArray.Create(cameraIntrinsics.DistortionVector);
             Size imageSize = images.Values.First().Size();
-            Cv2.InitUndistortRectifyMap(InputArray.Create(cameraIntrinsics.IntrinsicMatrix), InputArray.Create(cameraIntrinsics.DistortionVector), r, InputArray.Create(cameraIntrinsics.IntrinsicMatrix), imageSize, MatType.CV_16SC2, map1, map2);
+            Cv2.InitUndistortRectifyMap(cameraMatrix, distCoeffs, r, cameraMatrix, imageSize, MatType.CV_16SC2, map1, map2);
 
             IDictionary<string, Mat> results = new Dictionary<string, Mat>();
             foreach (KeyValuePair<string, Mat> kv in images)
@@ -556,7 +560,6 @@ namespace SD.OpenCV.Primitives.Calibrations
                     {-tMat.At<double>(1, 0), tMat.At<double>(0, 0), 0}
                 };
                 using Mat txMat = Mat.FromArray(txArray);
-
                 using Mat d = y2.T() * cameraMat.Inv().T() * txMat * rMat * cameraMat.Inv() * y1;
                 epipolarConstraints.Add(d.At<double>(0, 0));
             }
@@ -592,7 +595,6 @@ namespace SD.OpenCV.Primitives.Calibrations
                     { -tMatrix[1, 0], tMatrix[0, 0], 0 }
                 };
                 Matrix<double> txMatrix = DenseMatrix.OfArray(txArray);
-
                 Vector<double> d = y2.ToRowMatrix() * cameraMatrix.Inverse().Transpose() * txMatrix * rMatrix * cameraMatrix.Inverse() * y1;
                 epipolarConstraints.Add(d.Single());
             }

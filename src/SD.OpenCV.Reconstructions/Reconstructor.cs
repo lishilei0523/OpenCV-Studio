@@ -199,7 +199,9 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using Mat homoMatrix = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
+            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
+            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+            using Mat homoMatrix = Cv2.FindHomography(srcPoints, dstPoints, HomographyMethods.Ransac);
 
             //透视变换源图像
             Mat result = new Mat();
@@ -223,7 +225,9 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using Mat homoMatrix = Cv2.FindHomography(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), HomographyMethods.Ransac);
+            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
+            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+            using Mat homoMatrix = Cv2.FindHomography(srcPoints, dstPoints, HomographyMethods.Ransac);
 
             //透视变换源图像
             Mat result = new Mat();
@@ -267,14 +271,17 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
+            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
+            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+
             //计算本征矩阵
             using Mat cameraMat = Mat.FromArray(cameraMatrix);
-            using Mat essentialMat = Cv2.FindEssentialMat(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat);
+            using Mat essentialMat = Cv2.FindEssentialMat(srcPoints, dstPoints, cameraMat);
 
             //计算RT矩阵
             using Mat rMat = new Mat();
             using Mat tMat = new Mat();
-            Cv2.RecoverPose(essentialMat, InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat, rMat, tMat);
+            Cv2.RecoverPose(essentialMat, srcPoints, dstPoints, cameraMat, rMat, tMat);
             double[,] rtArray4x4 =
             {
                 {rMat.At<double>(0, 0), rMat.At<double>(0, 1), rMat.At<double>(0, 2), tMat.At<double>(0, 0)},
@@ -314,14 +321,17 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
+            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
+            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+
             //计算本征矩阵
             using Mat cameraMat = Mat.FromArray(cameraMatrix);
-            using Mat essentialMat = Cv2.FindEssentialMat(InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat);
+            using Mat essentialMat = Cv2.FindEssentialMat(srcPoints, dstPoints, cameraMat);
 
             //计算RT矩阵
             using Mat rMat = new Mat();
             using Mat tMat = new Mat();
-            Cv2.RecoverPose(essentialMat, InputArray.Create(matchedSourcePoints), InputArray.Create(matchedTargetPoints), cameraMat, rMat, tMat);
+            Cv2.RecoverPose(essentialMat, srcPoints, dstPoints, cameraMat, rMat, tMat);
             double[,] rtArray4x4 =
             {
                 {rMat.At<double>(0, 0), rMat.At<double>(0, 1), rMat.At<double>(0, 2), tMat.At<double>(0, 0)},

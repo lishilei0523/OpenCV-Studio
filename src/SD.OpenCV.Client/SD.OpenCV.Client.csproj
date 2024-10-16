@@ -9,9 +9,9 @@
     <Company>SD</Company>
     <Description>SD.Framework OpenCV客户端</Description>
     <Copyright>Copyright © SD 2024</Copyright>
-    <Version>1.2.7</Version>
-    <AssemblyVersion>1.2.7</AssemblyVersion>
-    <FileVersion>1.2.7.0</FileVersion>
+    <Version>1.2.8</Version>
+    <AssemblyVersion>1.2.8</AssemblyVersion>
+    <FileVersion>1.2.8.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">

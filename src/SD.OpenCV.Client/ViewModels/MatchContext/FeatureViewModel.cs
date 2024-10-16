@@ -326,7 +326,9 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             //计算单应矩阵
             if (matchedSourcePoints.Any() && matchedTargetPoints.Any())
             {
-                this.PerspectiveMatrix = await Task.Run(() => Cv2.FindHomography(InputArray.Create(matchedTargetPoints), InputArray.Create(matchedSourcePoints), HomographyMethods.Ransac));
+                using InputArray srtPoints = InputArray.Create(matchedTargetPoints);
+                using InputArray dstPoints = InputArray.Create(matchedSourcePoints);
+                this.PerspectiveMatrix = await Task.Run(() => Cv2.FindHomography(srtPoints, dstPoints, HomographyMethods.Ransac));
             }
 
             //绘制目标矩形
