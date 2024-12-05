@@ -51,12 +51,13 @@ namespace SD.OpenCV.Primitives.Extensions
         /// </summary>
         /// <param name="matrix">图像矩阵</param>
         /// <param name="scaledSize">缩放尺寸</param>
+        /// <param name="paddingColor">边距颜色</param>
         /// <param name="mode">插值模式</param>
         /// <returns>缩放后图像矩阵</returns>
         /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
-        public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, InterpolationFlags mode = InterpolationFlags.Area)
+        public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, Scalar? paddingColor = null, InterpolationFlags mode = InterpolationFlags.Area)
         {
-            Mat resizedImage = matrix.ResizeAdaptively(scaledSize, out _, out _, out _, mode);
+            Mat resizedImage = matrix.ResizeAdaptively(scaledSize, out _, out _, out _, paddingColor, mode);
 
             return resizedImage;
         }
@@ -71,10 +72,11 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <param name="adaptiveSize">适应尺寸</param>
         /// <param name="paddingX">X轴内边距</param>
         /// <param name="paddingY">Y轴内边距</param>
+        /// <param name="paddingColor">边距颜色</param>
         /// <param name="mode">插值模式</param>
         /// <returns>缩放后图像矩阵</returns>
         /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
-        public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, out Size adaptiveSize, out int paddingX, out int paddingY, InterpolationFlags mode = InterpolationFlags.Area)
+        public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, out Size adaptiveSize, out int paddingX, out int paddingY, Scalar? paddingColor = null, InterpolationFlags mode = InterpolationFlags.Area)
         {
             Mat borderedImage = new Mat();
             if (matrix.Width > matrix.Height)
@@ -86,7 +88,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
                 paddingX = 0;
                 paddingY = (width - height) / 2;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant, paddingColor);
             }
             else
             {
@@ -97,7 +99,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
                 paddingX = (height - width) / 2;
                 paddingY = 0;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant, paddingColor);
             }
 
             return borderedImage;
@@ -114,9 +116,10 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <param name="adaptiveSize">适应尺寸</param>
         /// <param name="paddingX">X轴内边距</param>
         /// <param name="paddingY">Y轴内边距</param>
+        /// <param name="paddingColor">边距颜色</param>
         /// <param name="mode">插值模式</param>
         /// <returns>缩放后图像矩阵</returns>
-        public static Mat ResizeAdaptively(this Mat matrix, int targetWidth, int targetHeight, out Size adaptiveSize, out int paddingX, out int paddingY, InterpolationFlags mode = InterpolationFlags.Area)
+        public static Mat ResizeAdaptively(this Mat matrix, int targetWidth, int targetHeight, out Size adaptiveSize, out int paddingX, out int paddingY, Scalar? paddingColor = null, InterpolationFlags mode = InterpolationFlags.Area)
         {
             Mat borderedImage = new Mat();
 
@@ -137,7 +140,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
                 paddingX = (targetWidth - width) / 2;
                 paddingY = 0;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant, paddingColor);
             }
             else
             {
@@ -151,7 +154,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
                 paddingX = 0;
                 paddingY = (targetHeight - height) / 2;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant);
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant, paddingColor);
             }
 
             return borderedImage;

@@ -6,9 +6,9 @@
     <Company>SD</Company>
     <Description>SD.Framework OpenCV SkiaSharp扩展</Description>
     <Copyright>Copyright © SD 2024</Copyright>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
     <PackageReference Include="ScottPlot" Version="5.0.47" />
   </ItemGroup>
 
