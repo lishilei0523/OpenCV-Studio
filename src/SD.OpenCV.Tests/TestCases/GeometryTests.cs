@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenCvSharp;
 using SD.OpenCV.Primitives.Extensions;
+using System.Diagnostics;
 
 namespace SD.OpenCV.Tests.TestCases
 {
@@ -51,6 +52,25 @@ namespace SD.OpenCV.Tests.TestCases
         {
             using Mat matrix = Cv2.ImRead("Content/Images/China.jpg");
             using Mat result = matrix.ResizeAdaptively(512);
+
+            Cv2.ImShow("OpenCV自适应缩放-原图", matrix);
+            Cv2.ImShow("OpenCV自适应缩放-效果图", result);
+            Cv2.WaitKey();
+        }
+        #endregion
+
+        #region # 测试自适应缩放 —— void TestResizeAdaptively2()
+        /// <summary>
+        /// 测试自适应缩放
+        /// </summary>
+        [TestMethod]
+        public void TestResizeAdaptively2()
+        {
+            using Mat matrix = Cv2.ImRead("Content/Images/Earth.jpg");
+            using Mat result = matrix.ResizeAdaptively(1312, 800, out Size adaptiveSize, out int paddingX, out int paddingY);
+            Trace.WriteLine(adaptiveSize);
+            Trace.WriteLine(paddingX);
+            Trace.WriteLine(paddingY);
 
             Cv2.ImShow("OpenCV自适应缩放-原图", matrix);
             Cv2.ImShow("OpenCV自适应缩放-效果图", result);

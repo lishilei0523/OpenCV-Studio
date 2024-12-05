@@ -56,30 +56,9 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
         public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, InterpolationFlags mode = InterpolationFlags.Area)
         {
-            using Mat scaledImage = new Mat();
-            Mat borderedImage = new Mat();
-            if (matrix.Width > matrix.Height)
-            {
-                int width = scaledSize;
-                int height = (int)Math.Ceiling(scaledSize * 1.0 / matrix.Width * matrix.Height);
-                Size size = new Size(width, height);
-                Cv2.Resize(matrix, scaledImage, size, 0, 0, mode);
+            Mat resizedImage = matrix.ResizeAdaptively(scaledSize, out _, out _, out _, mode);
 
-                int paddingY = (width - height) / 2;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant);
-            }
-            else
-            {
-                int height = scaledSize;
-                int width = (int)Math.Ceiling(scaledSize * 1.0 / matrix.Height * matrix.Width);
-                Size size = new Size(width, height);
-                Cv2.Resize(matrix, scaledImage, size, 0, 0, mode);
-
-                int paddingX = (height - width) / 2;
-                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant);
-            }
-
-            return borderedImage;
+            return resizedImage;
         }
         #endregion
 
@@ -97,14 +76,13 @@ namespace SD.OpenCV.Primitives.Extensions
         /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
         public static Mat ResizeAdaptively(this Mat matrix, int scaledSize, out Size adaptiveSize, out int paddingX, out int paddingY, InterpolationFlags mode = InterpolationFlags.Area)
         {
-            using Mat scaledImage = new Mat();
             Mat borderedImage = new Mat();
             if (matrix.Width > matrix.Height)
             {
                 int width = scaledSize;
                 int height = (int)Math.Ceiling(scaledSize * 1.0 / matrix.Width * matrix.Height);
                 adaptiveSize = new Size(width, height);
-                Cv2.Resize(matrix, scaledImage, adaptiveSize, 0, 0, mode);
+                using Mat scaledImage = matrix.Resize(adaptiveSize, 0, 0, mode);
 
                 paddingX = 0;
                 paddingY = (width - height) / 2;
@@ -115,11 +93,65 @@ namespace SD.OpenCV.Primitives.Extensions
                 int height = scaledSize;
                 int width = (int)Math.Ceiling(scaledSize * 1.0 / matrix.Height * matrix.Width);
                 adaptiveSize = new Size(width, height);
-                Cv2.Resize(matrix, scaledImage, adaptiveSize, 0, 0, mode);
+                using Mat scaledImage = matrix.Resize(adaptiveSize, 0, 0, mode);
 
                 paddingX = (height - width) / 2;
                 paddingY = 0;
                 Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant);
+            }
+
+            return borderedImage;
+        }
+        #endregion
+
+        #region # 自适应缩放 —— static Mat ResizeAdaptively(this Mat matrix, int scaledSize...
+        /// <summary>
+        /// 自适应缩放
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="targetWidth">目标图像宽度</param>
+        /// <param name="targetHeight">目标图像高度</param>
+        /// <param name="adaptiveSize">适应尺寸</param>
+        /// <param name="paddingX">X轴内边距</param>
+        /// <param name="paddingY">Y轴内边距</param>
+        /// <param name="mode">插值模式</param>
+        /// <returns>缩放后图像矩阵</returns>
+        public static Mat ResizeAdaptively(this Mat matrix, int targetWidth, int targetHeight, out Size adaptiveSize, out int paddingX, out int paddingY, InterpolationFlags mode = InterpolationFlags.Area)
+        {
+            Mat borderedImage = new Mat();
+
+            int width = targetWidth;
+            int height = (int)Math.Ceiling(targetWidth * 1.0 / matrix.Width * matrix.Height);
+            if (height > targetHeight)
+            {
+                width = (int)Math.Ceiling(targetHeight * 1.0 / matrix.Height * matrix.Width);
+                height = targetHeight;
+
+                if (width % 2 != 0)
+                {
+                    width += 1;
+                }
+
+                adaptiveSize = new Size(width, height);
+                using Mat scaledImage = matrix.Resize(adaptiveSize, 0, 0, mode);
+
+                paddingX = (targetWidth - width) / 2;
+                paddingY = 0;
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, 0, 0, paddingX, paddingX, BorderTypes.Constant);
+            }
+            else
+            {
+                if (height % 2 != 0)
+                {
+                    height += 1;
+                }
+
+                adaptiveSize = new Size(width, height);
+                using Mat scaledImage = matrix.Resize(adaptiveSize, 0, 0, mode);
+
+                paddingX = 0;
+                paddingY = (targetHeight - height) / 2;
+                Cv2.CopyMakeBorder(scaledImage, borderedImage, paddingY, paddingY, 0, 0, BorderTypes.Constant);
             }
 
             return borderedImage;
@@ -316,64 +348,6 @@ namespace SD.OpenCV.Primitives.Extensions
             Point2d[] targetCoutour = Cv2.PerspectiveTransform(contourPoints, perspectiveMatrix);
 
             return targetCoutour;
-        }
-        #endregion
-
-        #region # 缩放关键点列表 —— static IList<KeyPoint> ScaleKeyPoints(this IEnumerable<KeyPoint>...
-        /// <summary>
-        /// 缩放关键点列表
-        /// </summary>
-        /// <param name="keyPoints">关键点列表</param>
-        /// <param name="imageWidth">原图像宽度</param>
-        /// <param name="imageHeight">原图像高度</param>
-        /// <param name="scaledSize">缩放尺寸</param>
-        /// <returns>缩放关键点列表</returns>
-        /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
-        public static IList<KeyPoint> ScaleKeyPoints(this IEnumerable<KeyPoint> keyPoints, int imageWidth,
-            int imageHeight, int scaledSize)
-        {
-            #region # 验证
-
-            keyPoints = keyPoints?.ToArray() ?? Array.Empty<KeyPoint>();
-            if (!keyPoints.Any())
-            {
-                return Array.Empty<KeyPoint>();
-            }
-
-            #endregion
-
-            int paddingX = 0;
-            int paddingY = 0;
-            if (imageWidth > imageHeight)
-            {
-                int width = scaledSize;
-                int height = (int)Math.Ceiling(scaledSize * 1.0 / imageWidth * imageHeight);
-                paddingY = (width - height) / 2;
-            }
-            else
-            {
-                int height = scaledSize;
-                int width = (int)Math.Ceiling(scaledSize * 1.0 / imageHeight * imageWidth);
-                paddingX = (height - width) / 2;
-            }
-
-            float scaleX = imageWidth * 1.0f / (scaledSize - paddingX * 2);
-            float scaleY = imageHeight * 1.0f / (scaledSize - paddingY * 2);
-
-            IList<KeyPoint> scaledKeyPoints = new List<KeyPoint>();
-            foreach (KeyPoint keyPoint in keyPoints)
-            {
-                Point2f scaledPoint = new Point2f(keyPoint.Pt.X, keyPoint.Pt.Y);
-                scaledPoint.X -= paddingX;
-                scaledPoint.Y -= paddingY;
-                scaledPoint.X *= scaleX;
-                scaledPoint.Y *= scaleY;
-
-                KeyPoint scaledKeyPoint = new KeyPoint(scaledPoint, 0);
-                scaledKeyPoints.Add(scaledKeyPoint);
-            }
-
-            return scaledKeyPoints;
         }
         #endregion
 
