@@ -50,8 +50,8 @@ namespace SD.OpenCV.Tests.TestCases
 
             //缩放图像
             int scaledSize = 512;
-            using Mat scaledImage1 = image1.ResizeAdaptively(scaledSize);
-            using Mat scaledImage2 = image2.ResizeAdaptively(scaledSize);
+            using Mat scaledImage1 = image1.ResizeAdaptively(scaledSize, out Size adaptiveSize1, out int paddingX1, out int paddingY1);
+            using Mat scaledImage2 = image2.ResizeAdaptively(scaledSize, out Size adaptiveSize2, out int paddingX2, out int paddingY2);
 
             //定义特征提取器与匹配器
             using SuperFeature feature = new SuperFeature();
@@ -67,8 +67,8 @@ namespace SD.OpenCV.Tests.TestCases
             Trace.WriteLine($"匹配关键点数量: {matches.Length}");
 
             //缩放关键点
-            ICollection<KeyPoint> scaledSrcKpts = srcKeyPoints.ScaleKeyPoints(image1.Width, image1.Height, scaledSize);
-            ICollection<KeyPoint> scaledTgtKpts = tgtKeyPoints.ScaleKeyPoints(image1.Width, image1.Height, scaledSize);
+            ICollection<KeyPoint> scaledSrcKpts = srcKeyPoints.ScaleKeyPoints(image1.Width, image1.Height, adaptiveSize1.Width, adaptiveSize1.Height, paddingX1, paddingY1);
+            ICollection<KeyPoint> scaledTgtKpts = tgtKeyPoints.ScaleKeyPoints(image1.Width, image1.Height, adaptiveSize2.Width, adaptiveSize2.Height, paddingX2, paddingY2);
 
             //绘制匹配结果、保存图片
             using Mat outImage = new Mat();

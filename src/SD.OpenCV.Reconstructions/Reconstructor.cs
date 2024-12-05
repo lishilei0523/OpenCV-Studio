@@ -150,8 +150,8 @@ namespace SD.OpenCV.Reconstructions
             #endregion
 
             //缩放图像
-            using Mat scaledSourceImage = sourceImage.ResizeAdaptively(scaledSize);
-            using Mat scaledReferenceImage = targetImage.ResizeAdaptively(scaledSize);
+            using Mat scaledSourceImage = sourceImage.ResizeAdaptively(scaledSize, out Size srcAdaptiveSize, out int srcPaddingX, out int srcPaddingY);
+            using Mat scaledReferenceImage = targetImage.ResizeAdaptively(scaledSize, out Size refAdaptiveSize, out int refPaddingX, out int refPaddingY);
 
             //推理匹配
             _Feature.ComputeAll(scaledSourceImage, null, out long[] sourceKptsArray, out int[] sourceKptsDims, out float[] sourceDescArray, out int[] sourceDescDims, out KeyPoint[] srcKeyPoints, out Mat srcDecriptors);
@@ -159,8 +159,8 @@ namespace SD.OpenCV.Reconstructions
             DMatch[] matches = _Matcher.Match(threshold, sourceKptsArray, sourceKptsDims, sourceDescArray, sourceDescDims, targetKptsArray, targetKptsDims, targetDescArray, targetDescDims);
 
             //关键点缩放
-            IList<KeyPoint> scaledSrcKpts = srcKeyPoints.ScaleKeyPoints(sourceImage.Width, sourceImage.Height, scaledSize);
-            IList<KeyPoint> scaledTgtKpts = tgtKeyPoints.ScaleKeyPoints(targetImage.Width, targetImage.Height, scaledSize);
+            IList<KeyPoint> scaledSrcKpts = srcKeyPoints.ScaleKeyPoints(sourceImage.Width, sourceImage.Height, srcAdaptiveSize.Width, srcAdaptiveSize.Height, srcPaddingX, srcPaddingY);
+            IList<KeyPoint> scaledTgtKpts = tgtKeyPoints.ScaleKeyPoints(targetImage.Width, targetImage.Height, refAdaptiveSize.Width, refAdaptiveSize.Height, refPaddingX, refPaddingY);
 
             //解析匹配结果
             MatchResult matchResult = matches.ResolveMatchResult(scaledSrcKpts, scaledTgtKpts);

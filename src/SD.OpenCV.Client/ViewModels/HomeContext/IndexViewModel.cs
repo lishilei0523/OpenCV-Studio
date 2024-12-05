@@ -40,6 +40,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Colors = System.Windows.Media.Colors;
+using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.HomeContext
 {
@@ -2890,11 +2891,11 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             const int scaledSize = 512;
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat scaledImage = image.ResizeAdaptively(scaledSize);
+            using Mat scaledImage = image.ResizeAdaptively(scaledSize, out Size adaptiveSize, out int paddingX, out int paddingY);
             using Mat descriptors = new Mat();
             KeyPoint[] keyPoints = { };
             await Task.Run(() => Reconstructor.Feature.DetectAndCompute(scaledImage, null, out keyPoints, descriptors));
-            IList<KeyPoint> scaledSrcKpts = keyPoints.ScaleKeyPoints(image.Width, image.Height, scaledSize);
+            IList<KeyPoint> scaledSrcKpts = keyPoints.ScaleKeyPoints(image.Width, image.Height, adaptiveSize.Width, adaptiveSize.Height, paddingX, paddingY);
 
             //绘制关键点
             await Task.Run(() => Cv2.DrawKeypoints(image, scaledSrcKpts, image, Scalar.Red));
