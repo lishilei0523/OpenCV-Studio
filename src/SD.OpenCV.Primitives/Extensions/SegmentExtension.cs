@@ -218,6 +218,100 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # 获取轮廓置信度 —— static float GetContourConfidence(this Mat matrix, Point[] contour)
+        /// <summary>
+        /// 获取轮廓置信度
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="contour">轮廓</param>
+        /// <returns>轮廓置信度</returns>
+        public static float GetContourConfidence(this Mat matrix, Point[] contour)
+        {
+            //获取轮廓点的外接矩形
+            Rect boundingBox = Cv2.BoundingRect(contour);
+            int xMin = Math.Max(boundingBox.X, 0);
+            int yMin = Math.Max(boundingBox.Y, 0);
+            int xMax = Math.Min(boundingBox.X + boundingBox.Width, matrix.Width - 1);
+            int yMax = Math.Min(boundingBox.Y + boundingBox.Height, matrix.Height - 1);
+
+            //填充外接矩形内，由轮廓点围成的多边形
+            Size roiSize = new Size(xMax - xMin + 1, yMax - yMin + 1);
+            Rect roiBox = new Rect(xMin, yMin, roiSize.Width, roiSize.Height);
+            using Mat roi = matrix[roiBox];
+            using Mat mask = Mat.Zeros(roiSize, MatType.CV_8UC1);
+            IEnumerable<Point> roiContour = contour.Select(point => new Point(point.X - xMin, point.Y - yMin));
+            Cv2.FillPoly(mask, new[] { roiContour }, new Scalar(1));
+
+            //计算填充多边形区域的均值 
+            Scalar mean = Cv2.Mean(roi, mask);
+            float confidence = (float)(mean.Val0 / 255.0f);
+
+            return confidence;
+        }
+        #endregion
+
+        #region # 扩张轮廓 —— static IList<Point2f> ExpandContour(this IList<Point2f> contour...
+        /// <summary>
+        /// 扩张轮廓
+        /// </summary>
+        /// <param name="contour">轮廓</param>
+        /// <param name="expandRatio">扩张率</param>
+        /// <returns>扩张后轮廓</returns>
+        public static IList<Point2f> ExpandContour(this IList<Point2f> contour, float expandRatio = 1.6f)
+        {
+            float area = (float)Cv2.ContourArea(contour);//轮廓面积
+            float length = (float)Cv2.ArcLength(contour, true);//轮廓周长
+            float distance = area * expandRatio / length;
+
+            IList<IList<Point2f>> lines = new List<IList<Point2f>>();
+            for (int index = 0; index < contour.Count; index++)
+            {
+                IList<Point2f> line = new List<Point2f>();
+                Point2f point1 = contour[index];
+                Point2f point2 = contour[(index - 1 + contour.Count) % contour.Count];
+                Point2f vec = point1 - point2;
+                float expandDis = (float)(distance / Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y));
+
+                Point2f rotateVec = new Point2f(vec.Y * expandDis, -vec.X * expandDis);
+                line.Add(new Point2f(point1.X + rotateVec.X, point1.Y + rotateVec.Y));
+                line.Add(new Point2f(point2.X + rotateVec.X, point2.Y + rotateVec.Y));
+                lines.Add(line);
+            }
+
+            IList<Point2f> expandedContour = new List<Point2f>();
+            for (int index = 0; index < lines.Count; index++)
+            {
+                Point2f a = lines[index][0];
+                Point2f b = lines[index][1];
+                Point2f c = lines[(index + 1) % lines.Count][0];
+                Point2f d = lines[(index + 1) % lines.Count][1];
+                Point2f v1 = b - a;
+                Point2f v2 = d - c;
+                float cosAngle = (float)((v1.X * v2.X + v1.Y * v2.Y) / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y) * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y)));
+
+                Point2f point = new Point2f();
+                if (Math.Abs(cosAngle) > 0.7)
+                {
+                    point.X = (b.X + c.X) * 0.5f;
+                    point.Y = (b.Y + c.Y) * 0.5f;
+                }
+                else
+                {
+                    float denom = a.X * (d.Y - c.Y) + b.X * (c.Y - d.Y) + d.X * (b.Y - a.Y) + c.X * (a.Y - b.Y);
+                    float num = a.X * (d.Y - c.Y) + c.X * (a.Y - d.Y) + d.X * (c.Y - a.Y);
+                    float s = num / denom;
+
+                    point.X = a.X + s * (b.X - a.X);
+                    point.Y = a.Y + s * (b.Y - a.Y);
+                }
+
+                expandedContour.Add(point);
+            }
+
+            return expandedContour;
+        }
+        #endregion
+
         #region # 颜色分割 —— static Mat ColorSegment(this Mat hsvMatrix, Scalar lowerScalar...
         /// <summary>
         /// 颜色分割

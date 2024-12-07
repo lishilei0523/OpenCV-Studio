@@ -118,24 +118,26 @@ namespace SD.OpenCV.Reconstructions
             Tensor<float> scores1Tensor = inferResults.Single(x => x.Name == "mscores1").AsTensor<float>();
 
             //解析推理结果
-            IList<long> matches0 = matches0Tensor.ToList();
-            IList<long> matches1 = matches1Tensor.ToList();
-            IList<float> scores0 = scores0Tensor.ToList();
-            IList<float> scores1 = scores1Tensor.ToList();
+            long[] matches0 = matches0Tensor.ToArray();
+            long[] matches1 = matches1Tensor.ToArray();
+            float[] scores0 = scores0Tensor.ToArray();
+            float[] scores1 = scores1Tensor.ToArray();
             ICollection<DMatch> matches = new HashSet<DMatch>();
-            for (int index = 0; index < matches0.Count; index++)
+            for (int match0Index = 0; match0Index < matches0.Length; match0Index++)
             {
-                if (matches0[index] > -1 && scores0[index] > threshold && matches1[(int)matches0[index]] == index)
+                int match1Index = (int)matches0[match0Index];
+                if (match1Index > -1 && matches1[match1Index] == match0Index)
                 {
-                    DMatch match = new DMatch(index, (int)matches0[index], 0);
+                    DMatch match = new DMatch(match0Index, match1Index, scores0[match0Index]);
                     matches.Add(match);
                 }
             }
-            for (int index = 0; index < matches1.Count; index++)
+            for (int match1Index = 0; match1Index < matches1.Length; match1Index++)
             {
-                if (matches1[index] > -1 && scores1[index] > threshold && matches0[(int)matches1[index]] == index)
+                int match0Index = (int)matches1[match1Index];
+                if (match0Index > -1 && matches0[match0Index] == match1Index)
                 {
-                    DMatch match = new DMatch((int)matches1[index], index, 0);
+                    DMatch match = new DMatch(match0Index, match1Index, scores1[match1Index]);
                     matches.Add(match);
                 }
             }

@@ -353,50 +353,5 @@ namespace SD.OpenCV.Primitives.Extensions
             return targetCoutour;
         }
         #endregion
-
-        #region # 缩放关键点列表 —— static IList<KeyPoint> ScaleKeyPoints(this IEnumerable<KeyPoint>...
-        /// <summary>
-        /// 缩放关键点列表
-        /// </summary>
-        /// <param name="keyPoints">关键点列表</param>
-        /// <param name="sourceWidth">原图像宽度</param>
-        /// <param name="sourceHeight">原图像高度</param>
-        /// <param name="scaledWidth">缩放图像宽度</param>
-        /// <param name="scaledHeight">缩放图像高度</param>
-        /// <param name="paddingX">X轴内边距</param>
-        /// <param name="paddingY">Y轴内边距</param>
-        /// <returns>缩放关键点列表</returns>
-        /// <remarks>缩放为正方形缩放，缩放尺寸为目标边长</remarks>
-        public static IList<KeyPoint> ScaleKeyPoints(this IEnumerable<KeyPoint> keyPoints, int sourceWidth,
-            int sourceHeight, int scaledWidth, int scaledHeight, int paddingX, int paddingY)
-        {
-            #region # 验证
-
-            keyPoints = keyPoints?.ToArray() ?? Array.Empty<KeyPoint>();
-            if (!keyPoints.Any())
-            {
-                return Array.Empty<KeyPoint>();
-            }
-
-            #endregion
-
-            float scaleX = sourceWidth * 1.0f / scaledWidth;
-            float scaleY = sourceHeight * 1.0f / scaledHeight;
-            IList<KeyPoint> scaledKeyPoints = new List<KeyPoint>();
-            foreach (KeyPoint keyPoint in keyPoints)
-            {
-                Point2f scaledPoint = new Point2f(keyPoint.Pt.X, keyPoint.Pt.Y);
-                scaledPoint.X -= paddingX;
-                scaledPoint.Y -= paddingY;
-                scaledPoint.X *= scaleX;
-                scaledPoint.Y *= scaleY;
-
-                KeyPoint scaledKeyPoint = new KeyPoint(scaledPoint, 0);
-                scaledKeyPoints.Add(scaledKeyPoint);
-            }
-
-            return scaledKeyPoints;
-        }
-        #endregion
     }
 }
