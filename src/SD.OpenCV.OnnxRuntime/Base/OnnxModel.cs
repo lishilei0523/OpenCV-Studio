@@ -111,7 +111,7 @@ namespace SD.OpenCV.OnnxRuntime.Base
         #endregion
 
 
-        //abstract
+        //Abstract
 
         #region # 处理推理输入 —— abstract List<NamedOnnxValue> ProcessInput(TInput input)
         /// <summary>
