@@ -150,12 +150,16 @@
                     <MenuItem Header="FAST关键点(_F)" cm:Message.Attach="DetectFAST()" />
                     <MenuItem Header="ORB关键点(_O)" cm:Message.Attach="DetectORB()" />
                     <MenuItem Header="Super关键点(_P)" cm:Message.Attach="DetectSuper()" />
+                    <MenuItem Header="Disk关键点(_D)" cm:Message.Attach="DetectDisk()" />
+                    <MenuItem Header="XFeat关键点(_X)" cm:Message.Attach="DetectXFeat()" />
                 </MenuItem>
                 <MenuItem Header="特征(_D)">
                     <MenuItem Header="SIFT特征(_S)" cm:Message.Attach="ComputeSIFT()" />
                     <MenuItem Header="SURF特征(_U)" cm:Message.Attach="ComputeSURF()" />
                     <MenuItem Header="ORB特征(_O)" cm:Message.Attach="ComputeORB()" />
                     <MenuItem Header="Super特征(_P)" cm:Message.Attach="ComputeSuper()" />
+                    <MenuItem Header="Disk特征(_D)" cm:Message.Attach="ComputeDisk()" />
+                    <MenuItem Header="XFeat特征(_X)" cm:Message.Attach="ComputeXFeat()" />
                 </MenuItem>
                 <MenuItem Header="绘制(_P)">
                     <MenuItem Header="绘制形状(_S)" cm:Message.Attach="DrawShapes()" />
@@ -177,6 +181,13 @@
                 <MenuItem Header="矫正(_R)">
                     <MenuItem Header="矫正污点(_S)" cm:Message.Attach="RectifyStains()" />
                     <MenuItem Header="矫正畸变(_D)" cm:Message.Attach="RectifyDistortions()" />
+                </MenuItem>
+                <MenuItem Header="DNN(_Z)">
+                    <MenuItem Header="ResNet(_R)" cm:Message.Attach="ResNet()" />
+                    <MenuItem Header="Faster R-CNN(_F)" cm:Message.Attach="FasterRcnn()" />
+                    <MenuItem Header="YOLO(_Y)" cm:Message.Attach="Yolo()" />
+                    <MenuItem Header="Paddle文本检测(_D)" cm:Message.Attach="PaddleDetect()" />
+                    <MenuItem Header="Paddle文本识别(_C)" cm:Message.Attach="PaddleRecognize()" />
                 </MenuItem>
             </Menu>
         </Border>
