@@ -2,7 +2,6 @@
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Models;
-using SD.OpenCV.Primitives.Reconstructions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,9 +133,8 @@ namespace SD.OpenCV.Reconstructions
         /// <param name="sourceImage">源图像</param>
         /// <param name="targetImage">目标图像</param>
         /// <param name="threshold">匹配阈值</param>
-        /// <param name="scaledSize">图像缩放尺寸</param>
         /// <returns>匹配结果</returns>
-        public static MatchResult Match(Mat sourceImage, Mat targetImage, float threshold = 0.9f, int scaledSize = 512)
+        public static MatchResult Match(Mat sourceImage, Mat targetImage, float threshold = 0.9f)
         {
             #region # 验证
 
@@ -160,12 +158,10 @@ namespace SD.OpenCV.Reconstructions
             Feature[] targetFeatures = _SuperPoint.Infer(targetImage, 0);
             DMatch[] matches = _LightGlue.Infer((sourceFeatures, targetFeatures), threshold);
 
-            //关键点缩放
-            IList<KeyPoint> scaledSrcKpts = sourceFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
-            IList<KeyPoint> scaledTgtKpts = targetFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
-
             //解析匹配结果
-            MatchResult matchResult = matches.ResolveMatchResult(scaledSrcKpts, scaledTgtKpts);
+            IList<KeyPoint> sourceKeyPoints = sourceFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
+            IList<KeyPoint> targetKeyPoints = targetFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
+            MatchResult matchResult = matches.ResolveMatchResult(sourceKeyPoints, targetKeyPoints);
 
             return matchResult;
         }
@@ -178,9 +174,8 @@ namespace SD.OpenCV.Reconstructions
         /// <param name="sourceImage">源图像</param>
         /// <param name="targetImage">目标图像</param>
         /// <param name="threshold">匹配阈值</param>
-        /// <param name="scaledSize">图像缩放尺寸</param>
         /// <returns>重建后源图像</returns>
-        public static Mat RecoverImage(Mat sourceImage, Mat targetImage, float threshold = 0.9f, int scaledSize = 512)
+        public static Mat RecoverImage(Mat sourceImage, Mat targetImage, float threshold = 0.9f)
         {
             #region # 验证
 
@@ -192,14 +187,14 @@ namespace SD.OpenCV.Reconstructions
             #endregion
 
             //解析匹配结果
-            MatchResult matchResult = Match(sourceImage, targetImage, threshold, scaledSize);
+            MatchResult matchResult = Match(sourceImage, targetImage, threshold);
             Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
-            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
-            using Mat homoMatrix = Cv2.FindHomography(srcPoints, dstPoints, HomographyMethods.Ransac);
+            using InputArray sourcePoints = InputArray.Create(matchedSourcePoints);
+            using InputArray targetPoints = InputArray.Create(matchedTargetPoints);
+            using Mat homoMatrix = Cv2.FindHomography(sourcePoints, targetPoints, HomographyMethods.Ransac);
 
             //透视变换源图像
             Mat result = new Mat();
@@ -223,9 +218,9 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
             //计算单应矩阵
-            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
-            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
-            using Mat homoMatrix = Cv2.FindHomography(srcPoints, dstPoints, HomographyMethods.Ransac);
+            using InputArray sourcePoints = InputArray.Create(matchedSourcePoints);
+            using InputArray targetPoints = InputArray.Create(matchedTargetPoints);
+            using Mat homoMatrix = Cv2.FindHomography(sourcePoints, targetPoints, HomographyMethods.Ransac);
 
             //透视变换源图像
             Mat result = new Mat();
@@ -243,9 +238,8 @@ namespace SD.OpenCV.Reconstructions
         /// <param name="targetImage">目标图像</param>
         /// <param name="cameraMatrix">相机内参矩阵</param>
         /// <param name="threshold">匹配阈值</param>
-        /// <param name="scaledSize">图像缩放尺寸</param>
         /// <returns>旋转平移矩阵: 4x4二维数组</returns>
-        public static double[,] RecoverPose(Mat sourceImage, Mat targetImage, double[,] cameraMatrix, float threshold = 0.9f, int scaledSize = 512)
+        public static double[,] RecoverPose(Mat sourceImage, Mat targetImage, double[,] cameraMatrix, float threshold = 0.9f)
         {
             #region # 验证
 
@@ -265,21 +259,21 @@ namespace SD.OpenCV.Reconstructions
             #endregion
 
             //解析匹配结果
-            MatchResult matchResult = Match(sourceImage, targetImage, threshold, scaledSize);
+            MatchResult matchResult = Match(sourceImage, targetImage, threshold);
             Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
-            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
-            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+            using InputArray sourcePoints = InputArray.Create(matchedSourcePoints);
+            using InputArray targetPoints = InputArray.Create(matchedTargetPoints);
 
             //计算本征矩阵
             using Mat cameraMat = Mat.FromArray(cameraMatrix);
-            using Mat essentialMat = Cv2.FindEssentialMat(srcPoints, dstPoints, cameraMat);
+            using Mat essentialMat = Cv2.FindEssentialMat(sourcePoints, targetPoints, cameraMat);
 
             //计算RT矩阵
             using Mat rMat = new Mat();
             using Mat tMat = new Mat();
-            Cv2.RecoverPose(essentialMat, srcPoints, dstPoints, cameraMat, rMat, tMat);
+            Cv2.RecoverPose(essentialMat, sourcePoints, targetPoints, cameraMat, rMat, tMat);
             double[,] rtArray4x4 =
             {
                 {rMat.At<double>(0, 0), rMat.At<double>(0, 1), rMat.At<double>(0, 2), tMat.At<double>(0, 0)},
@@ -319,17 +313,17 @@ namespace SD.OpenCV.Reconstructions
             Point2f[] matchedSourcePoints = matchResult.GetMatchedSourcePoints();
             Point2f[] matchedTargetPoints = matchResult.GetMatchedTargetPoints();
 
-            using InputArray srcPoints = InputArray.Create(matchedSourcePoints);
-            using InputArray dstPoints = InputArray.Create(matchedTargetPoints);
+            using InputArray sourcePoints = InputArray.Create(matchedSourcePoints);
+            using InputArray targetPoints = InputArray.Create(matchedTargetPoints);
 
             //计算本征矩阵
             using Mat cameraMat = Mat.FromArray(cameraMatrix);
-            using Mat essentialMat = Cv2.FindEssentialMat(srcPoints, dstPoints, cameraMat);
+            using Mat essentialMat = Cv2.FindEssentialMat(sourcePoints, targetPoints, cameraMat);
 
             //计算RT矩阵
             using Mat rMat = new Mat();
             using Mat tMat = new Mat();
-            Cv2.RecoverPose(essentialMat, srcPoints, dstPoints, cameraMat, rMat, tMat);
+            Cv2.RecoverPose(essentialMat, sourcePoints, targetPoints, cameraMat, rMat, tMat);
             double[,] rtArray4x4 =
             {
                 {rMat.At<double>(0, 0), rMat.At<double>(0, 1), rMat.At<double>(0, 2), tMat.At<double>(0, 0)},
@@ -341,6 +335,42 @@ namespace SD.OpenCV.Reconstructions
             return rtArray4x4;
         }
         #endregion 
+
+        #region 解析匹配结果 —— static MatchResult ResolveMatchResult(this DMatch[] matches...
+        /// <summary>
+        /// 解析匹配结果
+        /// </summary>
+        /// <param name="matches">OpenCV匹配结果集</param>
+        /// <param name="sourceKeyPoints">源关键点集</param>
+        /// <param name="targetKeyPoints">目标关键点集</param>
+        /// <returns>匹配结果</returns>
+        public static MatchResult ResolveMatchResult(this DMatch[] matches, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> targetKeyPoints)
+        {
+            #region # 验证
+
+            matches ??= Array.Empty<DMatch>();
+            sourceKeyPoints ??= new List<KeyPoint>();
+            targetKeyPoints ??= new List<KeyPoint>();
+            if (!matches.Any() || !sourceKeyPoints.Any() || !targetKeyPoints.Any())
+            {
+                return new MatchResult(0, matches, sourceKeyPoints, targetKeyPoints, new Dictionary<int, KeyPoint>(), new Dictionary<int, KeyPoint>());
+            }
+
+            #endregion
+
+            IDictionary<int, KeyPoint> matchedSourceKeyPoints = new Dictionary<int, KeyPoint>();
+            IDictionary<int, KeyPoint> matchedTargetKeyPoints = new Dictionary<int, KeyPoint>();
+            foreach (DMatch goodMatch in matches)
+            {
+                matchedSourceKeyPoints.Add(goodMatch.QueryIdx, sourceKeyPoints.ElementAt(goodMatch.QueryIdx));
+                matchedTargetKeyPoints.Add(goodMatch.TrainIdx, targetKeyPoints.ElementAt(goodMatch.TrainIdx));
+            }
+
+            MatchResult matchResult = new MatchResult(matches.Count(), matches, sourceKeyPoints, targetKeyPoints, matchedSourceKeyPoints, matchedTargetKeyPoints);
+
+            return matchResult;
+        }
+        #endregion
 
         #endregion
     }
