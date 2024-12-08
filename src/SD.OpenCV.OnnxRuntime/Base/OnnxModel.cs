@@ -27,7 +27,7 @@ namespace SD.OpenCV.OnnxRuntime.Base
         private readonly SessionOptions _sessionOptions;
 
         /// <summary>
-        /// 创建ResNet模型构造器
+        /// 创建ONNX模型构造器
         /// </summary>
         /// <param name="modelBytes">模型字节数组</param>
         /// <param name="sessionOptions">会话选项</param>
@@ -48,7 +48,17 @@ namespace SD.OpenCV.OnnxRuntime.Base
         /// </summary>
         public void StartSession()
         {
+            #region # 验证
+
+            if (this._session != null)
+            {
+                throw new InvalidOperationException("推理会话已启动！");
+            }
+
+            #endregion
+
             this._session = new InferenceSession(this._modelBytes, this._sessionOptions);
+
         }
         #endregion
 
@@ -65,7 +75,7 @@ namespace SD.OpenCV.OnnxRuntime.Base
 
             if (this._session == null)
             {
-                throw new InvalidOperationException("请先启动会话!");
+                throw new InvalidOperationException("推理会话未启动!");
             }
             if (input == null)
             {
@@ -96,6 +106,7 @@ namespace SD.OpenCV.OnnxRuntime.Base
         public void Dispose()
         {
             this._session?.Dispose();
+            this._session = null;
         }
         #endregion
 
