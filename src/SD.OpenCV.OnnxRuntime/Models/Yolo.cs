@@ -185,9 +185,9 @@ namespace SD.OpenCV.OnnxRuntime.Models
 
             //NMS
             CvDnn.NMSBoxes(detections.Select(x => x.Box), detections.Select(x => x.Confidence), ScoreThreshold, NmsThreshold, out int[] indices);
-            detections = detections.Where((_, index) => indices.Contains(index)).ToList();
+            Detection[] nmsDetections = detections.Where((_, index) => indices.Contains(index)).ToArray();
 
-            return detections.ToArray();
+            return nmsDetections;
         }
         #endregion
 
