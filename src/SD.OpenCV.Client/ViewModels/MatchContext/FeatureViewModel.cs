@@ -314,7 +314,9 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
             }
 
             //推理匹配
-            this.MatchResult = await Task.Run(() => Reconstructor.Match(template, targetImage, this.Threshold / 100.0f));
+            using Mat graySourceImage = template.Channels() == 3 ? template.CvtColor(ColorConversionCodes.BGR2GRAY) : template;
+            using Mat grayTargetImage = targetImage.Channels() == 3 ? targetImage.CvtColor(ColorConversionCodes.BGR2GRAY) : targetImage;
+            this.MatchResult = await Task.Run(() => Reconstructor.Match(graySourceImage, grayTargetImage, this.Threshold / 100.0f));
             this.SourceKeypointsCount = this.MatchResult.SourceKeyPoints.Count;
             this.TargetKeypointsCount = this.MatchResult.TargetKeyPoints.Count;
             this.MatchedKeypointsCount = this.MatchResult.MatchedCount;

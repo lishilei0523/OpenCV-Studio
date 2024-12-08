@@ -23,6 +23,7 @@ using SD.OpenCV.Client.ViewModels.RectifyContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.ShapeContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
+using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
@@ -33,6 +34,7 @@ using SkiaSharp.Views.WPF;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -2889,16 +2891,13 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            const int scaledSize = 512;
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat scaledImage = image.ResizeAdaptively(scaledSize, out Size adaptiveSize, out int paddingX, out int paddingY);
-            using Mat descriptors = new Mat();
-            KeyPoint[] keyPoints = { };
-            await Task.Run(() => Reconstructor.Feature.DetectAndCompute(scaledImage, null, out keyPoints, descriptors));
-            IList<KeyPoint> scaledSrcKpts = keyPoints.ScaleKeyPoints(image.Width, image.Height, adaptiveSize.Width, adaptiveSize.Height, paddingX, paddingY);
+            using Mat grayImage = image.Channels() == 3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            Feature[] features = await Task.Run(() => Reconstructor.SuperPoint.Infer(grayImage, 0));
+            IEnumerable<KeyPoint> keyPoints = features.Select(x => new KeyPoint(x.ScaledKeyPoint, 2));
 
             //绘制关键点
-            await Task.Run(() => Cv2.DrawKeypoints(image, scaledSrcKpts, image, Scalar.Red));
+            await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
             this.EffectiveImage = image.ToBitmapSource();
 
             this.Idle();
@@ -3055,11 +3054,19 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
-            const int scaledSize = 512;
             using Mat image = this.EffectiveImage.ToMat();
-            using Mat scaledImage = image.ResizeAdaptively(scaledSize);
+            using Mat grayImage = image.Channels() == 3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
+            Feature[] features = await Task.Run(() => Reconstructor.SuperPoint.Infer(grayImage, 0));
             using Mat descriptors = new Mat();
-            await Task.Run(() => Reconstructor.Feature.DetectAndCompute(scaledImage, null, out _, descriptors));
+            descriptors.Create(new Size(256, features.Length), MatType.CV_32FC1);
+            for (int rowIndex = 0; rowIndex < features.Length; rowIndex++)
+            {
+                Feature feature = features[rowIndex];
+                for (int colIndex = 0; colIndex < feature.Descriptor.Length; colIndex++)
+                {
+                    descriptors.At<float>(rowIndex, colIndex) = feature.Descriptor[colIndex];
+                }
+            }
 
             //绘制直方图
             using Plot plot = new Plot();

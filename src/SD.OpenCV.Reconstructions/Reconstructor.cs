@@ -1,9 +1,11 @@
 ﻿using OpenCvSharp;
-using SD.OpenCV.Primitives.Extensions;
+using SD.OpenCV.OnnxRuntime.Models;
+using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Models;
 using SD.OpenCV.Primitives.Reconstructions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SD.OpenCV.Reconstructions
 {
@@ -22,12 +24,12 @@ namespace SD.OpenCV.Reconstructions
         /// <summary>
         /// 特征提取器
         /// </summary>
-        private static SuperFeature _Feature;
+        private static SuperPoint _SuperPoint;
 
         /// <summary>
         /// 特征匹配器
         /// </summary>
-        private static SuperMatcher _Matcher;
+        private static SuperLightGlue _LightGlue;
 
         /// <summary>
         /// 静态构造器
@@ -35,8 +37,8 @@ namespace SD.OpenCV.Reconstructions
         static Reconstructor()
         {
             _Initialized = false;
-            _Feature = null;
-            _Matcher = null;
+            _SuperPoint = null;
+            _LightGlue = null;
         }
 
         #endregion
@@ -53,23 +55,23 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region 只读属性 - 特征提取器 —— static SuperFeature Feature
+        #region 只读属性 - 特征提取器 —— static SuperPoint SuperPoint
         /// <summary>
         /// 只读属性 - 特征提取器
         /// </summary>
-        public static SuperFeature Feature
+        public static SuperPoint SuperPoint
         {
-            get => _Feature;
+            get => _SuperPoint;
         }
         #endregion
 
-        #region 只读属性 - 特征匹配器 —— static SuperMatcher Matcher
+        #region 只读属性 - 特征匹配器 —— static SuperLightGlue LightGlue
         /// <summary>
         /// 只读属性 - 特征匹配器
         /// </summary>
-        public static SuperMatcher Matcher
+        public static SuperLightGlue LightGlue
         {
-            get => _Matcher;
+            get => _LightGlue;
         }
         #endregion
 
@@ -92,19 +94,23 @@ namespace SD.OpenCV.Reconstructions
 
             #endregion
 
-            _Feature = new SuperFeature();
-            _Matcher = new SuperMatcher();
+            const string superPointPath = "Content/superpoint.onnx";
+            const string superLightGlueOnnxPath = "Content/superpoint_lightglue.onnx";
+            _SuperPoint = new SuperPoint(superPointPath);
+            _LightGlue = new SuperLightGlue(superLightGlueOnnxPath);
+            _SuperPoint.StartSession();
+            _LightGlue.StartSession();
             _Initialized = true;
         }
         #endregion
 
-        #region 初始化 —— static void Initialize(SuperFeature feature, SuperMatcher matcher)
+        #region 初始化 —— static void Initialize(SuperPoint superPoint, SuperLightGlue lightGlue)
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="feature">特征提取器</param>
-        /// <param name="matcher">特征匹配器</param>
-        public static void Initialize(SuperFeature feature, SuperMatcher matcher)
+        /// <param name="superPoint">特征提取器</param>
+        /// <param name="lightGlue">特征匹配器</param>
+        public static void Initialize(SuperPoint superPoint, SuperLightGlue lightGlue)
         {
             #region # 验证
 
@@ -115,8 +121,8 @@ namespace SD.OpenCV.Reconstructions
 
             #endregion
 
-            _Feature = feature;
-            _Matcher = matcher;
+            _SuperPoint = superPoint;
+            _LightGlue = lightGlue;
             _Initialized = true;
         }
         #endregion
@@ -149,25 +155,17 @@ namespace SD.OpenCV.Reconstructions
 
             #endregion
 
-            //缩放图像
-            using Mat scaledSourceImage = sourceImage.ResizeAdaptively(scaledSize, out Size srcAdaptiveSize, out int srcPaddingX, out int srcPaddingY);
-            using Mat scaledReferenceImage = targetImage.ResizeAdaptively(scaledSize, out Size refAdaptiveSize, out int refPaddingX, out int refPaddingY);
-
             //推理匹配
-            _Feature.ComputeAll(scaledSourceImage, null, out long[] sourceKptsArray, out int[] sourceKptsDims, out float[] sourceDescArray, out int[] sourceDescDims, out KeyPoint[] srcKeyPoints, out Mat srcDecriptors);
-            _Feature.ComputeAll(scaledReferenceImage, null, out long[] targetKptsArray, out int[] targetKptsDims, out float[] targetDescArray, out int[] targetDescDims, out KeyPoint[] tgtKeyPoints, out Mat tgtDecriptors);
-            DMatch[] matches = _Matcher.Match(threshold, sourceKptsArray, sourceKptsDims, sourceDescArray, sourceDescDims, targetKptsArray, targetKptsDims, targetDescArray, targetDescDims);
+            Feature[] sourceFeatures = _SuperPoint.Infer(sourceImage, 0);
+            Feature[] targetFeatures = _SuperPoint.Infer(targetImage, 0);
+            DMatch[] matches = _LightGlue.Infer((sourceFeatures, targetFeatures), threshold);
 
             //关键点缩放
-            IList<KeyPoint> scaledSrcKpts = srcKeyPoints.ScaleKeyPoints(sourceImage.Width, sourceImage.Height, srcAdaptiveSize.Width, srcAdaptiveSize.Height, srcPaddingX, srcPaddingY);
-            IList<KeyPoint> scaledTgtKpts = tgtKeyPoints.ScaleKeyPoints(targetImage.Width, targetImage.Height, refAdaptiveSize.Width, refAdaptiveSize.Height, refPaddingX, refPaddingY);
+            IList<KeyPoint> scaledSrcKpts = sourceFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
+            IList<KeyPoint> scaledTgtKpts = targetFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();
 
             //解析匹配结果
             MatchResult matchResult = matches.ResolveMatchResult(scaledSrcKpts, scaledTgtKpts);
-
-            //释放资源
-            srcDecriptors.Dispose();
-            tgtDecriptors.Dispose();
 
             return matchResult;
         }

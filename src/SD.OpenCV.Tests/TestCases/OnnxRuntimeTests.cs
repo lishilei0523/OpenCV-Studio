@@ -156,9 +156,9 @@ namespace SD.OpenCV.Tests.TestCases
             using Mat image = Cv2.ImRead(imagePath, ImreadModes.Grayscale);
             using SuperPoint superPoint = new SuperPoint(modelPath);
             superPoint.StartSession();
-            IList<Feature> features = superPoint.Infer(image, 0);
+            Feature[] features = superPoint.Infer(image, 0);
 
-            Trace.WriteLine($"关键点数量: {features.Count}");
+            Trace.WriteLine($"关键点数量: {features.Length}");
             Trace.WriteLine($"------------------------------------");
 
             using Mat targetImage = Cv2.ImRead(imagePath);
@@ -168,7 +168,7 @@ namespace SD.OpenCV.Tests.TestCases
                 string point = $"({feature.ScaledKeyPoint.X},{feature.ScaledKeyPoint.Y})";
                 Trace.WriteLine($"{feature.Confidence:F2}: {point}");
 
-                //绘制矩形框
+                //绘制关键点
                 targetImage.Circle(feature.ScaledKeyPoint, 2, Scalar.Red);
             }
 
