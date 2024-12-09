@@ -157,6 +157,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.Yolo.StartSession());
 
                 this.Idle();
+                this.ToastSuccess("模型已成功加载！");
             }
         }
         #endregion
