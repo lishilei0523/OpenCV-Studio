@@ -1,13 +1,11 @@
 ﻿using OpenCvSharp;
-using System.Runtime.InteropServices;
 
 namespace SD.OpenCV.OnnxRuntime.Values
 {
     /// <summary>
     /// 检测结果
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly struct Detection
+    public struct Detection
     {
         /// <summary>
         /// 创建检测结果构造器
@@ -26,16 +24,16 @@ namespace SD.OpenCV.OnnxRuntime.Values
         /// <summary>
         /// 标签
         /// </summary>
-        public readonly string Label;
+        public string Label { get; private set; }
 
         /// <summary>
         /// 矩形框
         /// </summary>
-        public readonly Rect Box;
+        public Rect Box { get; private set; }
 
         /// <summary>
         /// 置信度
         /// </summary>
-        public readonly float Confidence;
+        public float Confidence { get; private set; }
     }
 }

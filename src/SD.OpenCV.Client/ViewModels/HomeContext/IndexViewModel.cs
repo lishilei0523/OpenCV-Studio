@@ -11,6 +11,7 @@ using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
+using SD.OpenCV.Client.ViewModels.DeepLearnContext;
 using SD.OpenCV.Client.ViewModels.DrawContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
@@ -462,6 +463,47 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         {
             HandEyeViewModel viewModel = ResolveMediator.Resolve<HandEyeViewModel>();
             await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
+        #region ResNet图像分类 —— async void ResNetClassify()
+        /// <summary>
+        /// ResNet图像分类
+        /// </summary>
+        public async void ResNetClassify()
+        {
+            ResNetViewModel viewModel = ResolveMediator.Resolve<ResNetViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
+        #region R-CNN目标检测 —— async void FasterRcnnDetect()
+        /// <summary>
+        /// R-CNN目标检测
+        /// </summary>
+        public async void FasterRcnnDetect()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region YOLO目标检测 —— async void YoloDetect()
+        /// <summary>
+        /// YOLO目标检测
+        /// </summary>
+        public async void YoloDetect()
+        {
+            //TODO 实现
+        }
+        #endregion
+
+        #region Paddle字符识别 —— async void PaddleOCR()
+        /// <summary>
+        /// Paddle字符识别
+        /// </summary>
+        public async void PaddleOCR()
+        {
+            //TODO 实现
         }
         #endregion
 
