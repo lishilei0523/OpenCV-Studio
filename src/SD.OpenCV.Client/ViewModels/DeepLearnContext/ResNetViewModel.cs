@@ -38,6 +38,13 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
         #region # 属性
 
+        #region ResNet模型 —— ResNet ResNet
+        /// <summary>
+        /// ResNet模型
+        /// </summary>
+        public ResNet ResNet { get; set; }
+        #endregion
+
         #region 目标图像 —— BitmapSource TargetImage
         /// <summary>
         /// 目标图像
@@ -46,16 +53,9 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public BitmapSource TargetImage { get; set; }
         #endregion
 
-        #region ResNet模型 —— ResNet ResNet
+        #region 分类阈值 —— float Threshold
         /// <summary>
-        /// ResNet模型
-        /// </summary>
-        public ResNet ResNet { get; set; }
-        #endregion
-
-        #region 匹配阈值 —— Rectangle Threshold
-        /// <summary>
-        /// 匹配阈值
+        /// 分类阈值
         /// </summary>
         [DependencyProperty]
         public float Threshold { get; set; }
@@ -91,30 +91,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
         //Actions
 
-        #region 打开目标图像 —— async void OpenTargetImage()
-        /// <summary>
-        /// 打开目标图像
-        /// </summary>
-        public async void OpenTargetImage()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
-                AddExtension = true,
-                RestoreDirectory = true
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                this.Busy();
-
-                using Mat image = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
-                this.TargetImage = image.ToBitmapSource();
-
-                this.Idle();
-            }
-        }
-        #endregion
-
         #region 打开ResNet模型 —— async void OpenResNetModel()
         /// <summary>
         /// 打开ResNet模型
@@ -145,6 +121,30 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         }
         #endregion
 
+        #region 打开目标图像 —— async void OpenTargetImage()
+        /// <summary>
+        /// 打开目标图像
+        /// </summary>
+        public async void OpenTargetImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                AddExtension = true,
+                RestoreDirectory = true
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.Busy();
+
+                using Mat image = await Task.Run(() => Cv2.ImRead(openFileDialog.FileName));
+                this.TargetImage = image.ToBitmapSource();
+
+                this.Idle();
+            }
+        }
+        #endregion
+
         #region 执行分类 —— async void ExecuteClassify()
         /// <summary>
         /// 执行分类
@@ -153,14 +153,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             #region # 验证
 
-            if (this.TargetImage == null)
-            {
-                MessageBox.Show("目标图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             if (this.ResNet == null)
             {
                 MessageBox.Show("ResNet模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (this.TargetImage == null)
+            {
+                MessageBox.Show("目标图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

@@ -101,7 +101,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         public bool RectangleChecked { get; set; }
         #endregion
 
-        #region 匹配阈值 —— Rectangle Threshold
+        #region 匹配阈值 —— float Threshold
         /// <summary>
         /// 匹配阈值
         /// </summary>
