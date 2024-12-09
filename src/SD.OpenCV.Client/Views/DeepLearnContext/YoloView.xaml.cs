@@ -1,11 +1,11 @@
 ﻿namespace SD.OpenCV.Client.Views.DeepLearnContext
 {
     /// <summary>
-    /// FasterRCNN视图
+    /// YOLO视图
     /// </summary>
-    public partial class FasterRcnnView
+    public partial class YoloView
     {
-        public FasterRcnnView()
+        public YoloView()
         {
             this.InitializeComponent();
         }
