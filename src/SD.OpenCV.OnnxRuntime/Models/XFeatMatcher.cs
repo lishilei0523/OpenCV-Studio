@@ -76,7 +76,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
         /// </summary>
         /// <param name="input">推理输入</param>
         /// <returns>ONNX键值列表</returns>
-        protected override unsafe List<NamedOnnxValue> ProcessInput((Feature[], Feature[]) input)
+        protected override List<NamedOnnxValue> ProcessInput((Feature[], Feature[]) input)
         {
             this._sourceFeatures = input.Item1;
             this._targetFeatures = input.Item2;

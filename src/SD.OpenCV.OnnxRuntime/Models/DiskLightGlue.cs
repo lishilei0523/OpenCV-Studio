@@ -66,7 +66,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
         /// </summary>
         /// <param name="input">推理输入</param>
         /// <returns>ONNX键值列表</returns>
-        protected override unsafe List<NamedOnnxValue> ProcessInput((Feature[], Feature[]) input)
+        protected override List<NamedOnnxValue> ProcessInput((Feature[], Feature[]) input)
         {
             DenseTensor<float> kpts0Tensor = new DenseTensor<float>([1, input.Item1.Length, 2]);
             DenseTensor<float> kpts1Tensor = new DenseTensor<float>([1, input.Item2.Length, 2]);
@@ -134,9 +134,12 @@ namespace SD.OpenCV.OnnxRuntime.Models
                 using Mat rowMat = matchMat[rowIndex, rowIndex + 1, 0, matchMat.Cols];
                 rowMat.GetArray(out int[] row);
 
-                float score = mscores0Tensor[rowIndex];
-                DMatch match = new DMatch(row[0], row[1], score);
-                dMatches.Add(match);
+                float confidence = mscores0Tensor[rowIndex];
+                if (confidence >= minConfidence)
+                {
+                    DMatch match = new DMatch(row[0], row[1], confidence);
+                    dMatches.Add(match);
+                }
             }
 
             return dMatches.ToArray();
