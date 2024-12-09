@@ -6,18 +6,20 @@
 #### 开发目的：
     1、探索OpenCV常用图像算法；
 
-    2、探索WPF Canvas及其与图像算法的结合应用；
+    2、探索深度学习模型OnnxRuntime部署；
 
-    3、探索MahApps.Metro的各种控件应用；
+    3、探索WPF Canvas及其与图像算法的结合应用；
 
-    4、封装使用较为复杂的OpenCV算法；
+    4、探索MahApps.Metro的各种控件应用；
+
+    5、封装使用较为复杂的OpenCV算法；
     
-    5、方便算法开发人员测试调试算法；
+    6、方便算法开发人员测试调试算法；
 
 #### 主要涉及技术：
-    UI部分：WPF、Canvas、FluentWPF、MahApps.Metro、Caliburn.Micro等；
+    UI部分：WPF、Canvas、MahApps.Metro、Caliburn.Micro、FluentWPF等；
 
-    算法部分：OpenCvSharp、SkiaSharp、Math.NET、ScottPlot、OnnxRuntime等；
+    算法部分：OpenCV、SkiaSharp、Math.NET、ScottPlot、OnnxRuntime等；
 
 #### 主要功能模块：
     预处理部分：
@@ -30,13 +32,16 @@
         阈值分割、颜色分割、形状分割、掩膜分割、GrabCut分割、K-Means聚类分割、图分割等；
 
     特征部分：
-        Harris、Shi-Tomasi、SIFT、SURF、FAST、ORB、直方图、频谱图等；
+        Harris、Shi-Tomasi、SIFT、SURF、FAST、ORB、SuperPoint、Disk、XFeat、直方图、频谱图等；
 
     匹配部分：
         模板匹配、特征匹配、霍夫变换、轮廓查找等；
 
     标定部分：
         单目标定、手眼标定、畸变矫正等；
+
+    深度学习部分：
+        ResNet图像分类、FasterRCNN目标检测、YOLO目标检测、PaddleOCR字符识别；
 
 ## 推荐
 
