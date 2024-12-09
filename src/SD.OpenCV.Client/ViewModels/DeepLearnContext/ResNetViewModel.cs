@@ -4,9 +4,12 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
+using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -61,12 +64,12 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public float Threshold { get; set; }
         #endregion
 
-        #region 预测结果列表 —— ObservableCollection<Prediction> Predictions
+        #region 分类结果列表 —— ObservableCollection<ImagePrediction> Predictions
         /// <summary>
-        /// 预测结果列表
+        /// 分类结果列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<Prediction> Predictions { get; set; }
+        public ObservableCollection<ImagePrediction> Predictions { get; set; }
         #endregion
 
         #endregion
@@ -118,7 +121,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.ResNet.StartSession());
 
                 this.Idle();
-                this.ToastSuccess("模型已成功加载！");
+                MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         #endregion
@@ -173,7 +176,10 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
             using Mat image = this.TargetImage.ToMat();
             Prediction[] predictions = await Task.Run(() => this.ResNet.Infer(image, this.Threshold / 100));
-            this.Predictions = new ObservableCollection<Prediction>(predictions);
+            IEnumerable<ImagePrediction> imagePredictions =
+                from prediction in predictions
+                select new ImagePrediction(prediction.Label, prediction.Confidence);
+            this.Predictions = new ObservableCollection<ImagePrediction>(imagePredictions);
 
             this.Idle();
         }

@@ -1,20 +1,16 @@
-﻿using System.Runtime.InteropServices;
-
-namespace SD.OpenCV.OnnxRuntime.Values
+﻿namespace SD.OpenCV.Client.Models
 {
     /// <summary>
-    /// 预测结果
+    /// 图像分类结果
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly struct Prediction
+    public class ImagePrediction
     {
         /// <summary>
-        /// 创建预测结果构造器
+        /// 创建图像分类结果构造器
         /// </summary>
         /// <param name="label">标签</param>
         /// <param name="confidence">置信度</param>
-        public Prediction(string label, float confidence)
-            : this()
+        public ImagePrediction(string label, float confidence)
         {
             this.Label = label;
             this.Confidence = confidence;
@@ -23,11 +19,11 @@ namespace SD.OpenCV.OnnxRuntime.Values
         /// <summary>
         /// 标签
         /// </summary>
-        public readonly string Label;
+        public string Label { get; private set; }
 
         /// <summary>
         /// 置信度
         /// </summary>
-        public readonly float Confidence;
+        public float Confidence { get; private set; }
     }
 }

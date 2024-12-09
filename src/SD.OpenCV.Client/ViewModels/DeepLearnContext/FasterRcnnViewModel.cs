@@ -2,18 +2,22 @@
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
+using SD.OpenCV.Client.Models;
 using SD.OpenCV.Client.Views.DeepLearnContext;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SourceChord.FluentWPF.Animations;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -79,20 +83,20 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public float Threshold { get; set; }
         #endregion
 
-        #region 已选择检测结果 —— Detection SelectedDetection
+        #region 已选择检测结果 —— ObjectDetection SelectedDetection
         /// <summary>
         /// 已选择检测结果
         /// </summary>
         [DependencyProperty]
-        public Detection SelectedDetection { get; set; }
+        public ObjectDetection SelectedDetection { get; set; }
         #endregion
 
-        #region 检测结果列表 —— ObservableCollection<Detection> Detections
+        #region 检测结果列表 —— ObservableCollection<ObjectDetection> Detections
         /// <summary>
         /// 检测结果列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<Detection> Detections { get; set; }
+        public ObservableCollection<ObjectDetection> Detections { get; set; }
         #endregion
 
         #region 形状集 —— ObservableCollection<Shape> Shapes
@@ -157,7 +161,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.FasterRcnn.StartSession());
 
                 this.Idle();
-                this.ToastSuccess("模型已成功加载！");
+                MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         #endregion
@@ -214,10 +218,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             this.Reset();
             using Mat image = this.TargetImage.ToMat();
             Detection[] detections = await Task.Run(() => this.FasterRcnn.Infer(image, this.Threshold / 100));
-            this.Detections = new ObservableCollection<Detection>(detections);
+            IEnumerable<ObjectDetection> objectDetections =
+                from detection in detections
+                let box = new RectangleL(detection.Box.X, detection.Box.Y, detection.Box.Width, detection.Box.Height)
+                select new ObjectDetection(detection.Label, box, detection.Confidence);
+            this.Detections = new ObservableCollection<ObjectDetection>(objectDetections);
 
             //绘制
-            foreach (Detection detection in this.Detections)
+            foreach (ObjectDetection detection in this.Detections)
             {
                 //绘制文本
                 TextVisual2D text = new TextVisual2D();
@@ -320,7 +328,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             if (this._canvas.Mode != CanvasMode.Draw)
             {
                 Shape shape = (Shape)sender;
-                Detection detection = (Detection)shape.Tag;
+                ObjectDetection detection = (ObjectDetection)shape.Tag;
                 this.SelectedDetection = null;
                 this.SelectedDetection = detection;
             }
