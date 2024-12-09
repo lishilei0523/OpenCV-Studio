@@ -505,7 +505,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void PaddleOCR()
         {
-            //TODO 实现
+            PaddleViewModel viewModel = ResolveMediator.Resolve<PaddleViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 
