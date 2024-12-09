@@ -21,14 +21,14 @@ namespace SD.OpenCV.Reconstructions
         private static bool _Initialized;
 
         /// <summary>
-        /// 特征提取器
+        /// SuperPoint提取器
         /// </summary>
         private static SuperPoint _SuperPoint;
 
         /// <summary>
-        /// 特征匹配器
+        /// SuperPoint匹配器
         /// </summary>
-        private static SuperLightGlue _LightGlue;
+        private static SuperLightGlue _SuperLightGlue;
 
         /// <summary>
         /// 静态构造器
@@ -37,7 +37,7 @@ namespace SD.OpenCV.Reconstructions
         {
             _Initialized = false;
             _SuperPoint = null;
-            _LightGlue = null;
+            _SuperLightGlue = null;
         }
 
         #endregion
@@ -54,23 +54,13 @@ namespace SD.OpenCV.Reconstructions
         }
         #endregion
 
-        #region 只读属性 - 特征提取器 —— static SuperPoint SuperPoint
+        #region 只读属性 - SuperPoint提取器 —— static SuperPoint SuperPoint
         /// <summary>
-        /// 只读属性 - 特征提取器
+        /// 只读属性 - SuperPoint提取器
         /// </summary>
         public static SuperPoint SuperPoint
         {
             get => _SuperPoint;
-        }
-        #endregion
-
-        #region 只读属性 - 特征匹配器 —— static SuperLightGlue LightGlue
-        /// <summary>
-        /// 只读属性 - 特征匹配器
-        /// </summary>
-        public static SuperLightGlue LightGlue
-        {
-            get => _LightGlue;
         }
         #endregion
 
@@ -96,20 +86,20 @@ namespace SD.OpenCV.Reconstructions
             const string superPointPath = "Content/superpoint.onnx";
             const string superLightGlueOnnxPath = "Content/superpoint_lightglue.onnx";
             _SuperPoint = new SuperPoint(superPointPath);
-            _LightGlue = new SuperLightGlue(superLightGlueOnnxPath);
+            _SuperLightGlue = new SuperLightGlue(superLightGlueOnnxPath);
             _SuperPoint.StartSession();
-            _LightGlue.StartSession();
+            _SuperLightGlue.StartSession();
             _Initialized = true;
         }
         #endregion
 
-        #region 初始化 —— static void Initialize(SuperPoint superPoint, SuperLightGlue lightGlue)
+        #region 初始化 —— static void Initialize(SuperPoint superPoint, SuperLightGlue...
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="superPoint">特征提取器</param>
-        /// <param name="lightGlue">特征匹配器</param>
-        public static void Initialize(SuperPoint superPoint, SuperLightGlue lightGlue)
+        /// <param name="superPoint">SuperPoint提取器</param>
+        /// <param name="superLightGlue">SuperPoint匹配器</param>
+        public static void Initialize(SuperPoint superPoint, SuperLightGlue superLightGlue)
         {
             #region # 验证
 
@@ -121,7 +111,7 @@ namespace SD.OpenCV.Reconstructions
             #endregion
 
             _SuperPoint = superPoint;
-            _LightGlue = lightGlue;
+            _SuperLightGlue = superLightGlue;
             _Initialized = true;
         }
         #endregion
@@ -156,7 +146,7 @@ namespace SD.OpenCV.Reconstructions
             //推理匹配
             Feature[] sourceFeatures = _SuperPoint.Infer(sourceImage, 0);
             Feature[] targetFeatures = _SuperPoint.Infer(targetImage, 0);
-            DMatch[] matches = _LightGlue.Infer((sourceFeatures, targetFeatures), threshold);
+            DMatch[] matches = _SuperLightGlue.Infer((sourceFeatures, targetFeatures), threshold);
 
             //解析匹配结果
             IList<KeyPoint> sourceKeyPoints = sourceFeatures.Select(x => new KeyPoint(x.ScaledKeyPoint, 2)).ToList();

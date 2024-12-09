@@ -23,6 +23,7 @@ using SD.OpenCV.Client.ViewModels.RectifyContext;
 using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.ShapeContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
+using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
@@ -2891,9 +2892,84 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
+            //检测关键点
             using Mat image = this.EffectiveImage.ToMat();
             using Mat grayImage = image.Channels() == 3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
             Feature[] features = await Task.Run(() => Reconstructor.SuperPoint.Infer(grayImage, 0));
+            IEnumerable<KeyPoint> keyPoints = features.Select(x => new KeyPoint(x.ScaledKeyPoint, 2));
+
+            //绘制关键点
+            await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+            this.EffectiveImage = image.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测Disk关键点 —— async void DetectDisk()
+        /// <summary>
+        /// 检测Disk关键点
+        /// </summary>
+        public async void DetectDisk()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            //初始化模型
+            const string diskPath = "Content/disk.onnx";
+            using DiskPoint diskPoint = await Task.Run(() => new DiskPoint(diskPath));
+            await Task.Run(() => diskPoint.StartSession());
+
+            //检测关键点
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat colorImage = image.Channels() == 3 ? image : image.CvtColor(ColorConversionCodes.GRAY2BGR);
+            Feature[] features = await Task.Run(() => diskPoint.Infer(colorImage, 0));
+            IEnumerable<KeyPoint> keyPoints = features.Select(x => new KeyPoint(x.ScaledKeyPoint, 2));
+
+            //绘制关键点
+            await Task.Run(() => Cv2.DrawKeypoints(image, keyPoints, image, Scalar.Red));
+            this.EffectiveImage = image.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 检测XFeat关键点 —— async void DetectXFeat()
+        /// <summary>
+        /// 检测XFeat关键点
+        /// </summary>
+        public async void DetectXFeat()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            //初始化模型
+            const string xFeatPath = "Content/xfeat.onnx";
+            using XFeatPoint xFeatPoint = await Task.Run(() => new XFeatPoint(xFeatPath));
+            await Task.Run(() => xFeatPoint.StartSession());
+
+            //检测关键点
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat colorImage = image.Channels() == 3 ? image : image.CvtColor(ColorConversionCodes.GRAY2BGR);
+            Feature[] features = await Task.Run(() => xFeatPoint.Infer(colorImage, 0));
             IEnumerable<KeyPoint> keyPoints = features.Select(x => new KeyPoint(x.ScaledKeyPoint, 2));
 
             //绘制关键点
@@ -3054,6 +3130,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             this.Busy();
 
+            //计算特征
             using Mat image = this.EffectiveImage.ToMat();
             using Mat grayImage = image.Channels() == 3 ? image.CvtColor(ColorConversionCodes.BGR2GRAY) : image;
             Feature[] features = await Task.Run(() => Reconstructor.SuperPoint.Infer(grayImage, 0));
@@ -3076,6 +3153,110 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
             ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
             imageViewModel.Load(bitmapSource, "Super特征直方图");
+            await this._windowManager.ShowWindowAsync(imageViewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 计算Disk特征 —— async void ComputeDisk()
+        /// <summary>
+        /// 计算Disk特征
+        /// </summary>
+        public async void ComputeDisk()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            //初始化模型
+            const string diskPath = "Content/disk.onnx";
+            using DiskPoint diskPoint = await Task.Run(() => new DiskPoint(diskPath));
+            await Task.Run(() => diskPoint.StartSession());
+
+            //计算特征
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat colorImage = image.Channels() == 3 ? image : image.CvtColor(ColorConversionCodes.GRAY2BGR);
+            Feature[] features = await Task.Run(() => diskPoint.Infer(colorImage, 0));
+            using Mat descriptors = new Mat();
+            descriptors.Create(new Size(128, features.Length), MatType.CV_32FC1);
+            for (int rowIndex = 0; rowIndex < features.Length; rowIndex++)
+            {
+                Feature feature = features[rowIndex];
+                for (int colIndex = 0; colIndex < feature.Descriptor.Length; colIndex++)
+                {
+                    descriptors.At<float>(rowIndex, colIndex) = feature.Descriptor[colIndex];
+                }
+            }
+
+            //绘制直方图
+            using Plot plot = new Plot();
+            await Task.Run(() => plot.AddDescriptors(descriptors));
+            using SKImage skImage = await Task.Run(() => plot.GetSKImage(1440, 870));
+            BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+            ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+            imageViewModel.Load(bitmapSource, "Disk特征直方图");
+            await this._windowManager.ShowWindowAsync(imageViewModel);
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 计算XFeat特征 —— async void ComputeXFeat()
+        /// <summary>
+        /// 计算XFeat特征
+        /// </summary>
+        public async void ComputeXFeat()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            //初始化模型
+            const string xFeatPath = "Content/xfeat.onnx";
+            using XFeatPoint xFeatPoint = await Task.Run(() => new XFeatPoint(xFeatPath));
+            await Task.Run(() => xFeatPoint.StartSession());
+
+            //计算特征
+            using Mat image = this.EffectiveImage.ToMat();
+            using Mat colorImage = image.Channels() == 3 ? image : image.CvtColor(ColorConversionCodes.GRAY2BGR);
+            Feature[] features = await Task.Run(() => xFeatPoint.Infer(colorImage, 0));
+            using Mat descriptors = new Mat();
+            descriptors.Create(new Size(64, features.Length), MatType.CV_32FC1);
+            for (int rowIndex = 0; rowIndex < features.Length; rowIndex++)
+            {
+                Feature feature = features[rowIndex];
+                for (int colIndex = 0; colIndex < feature.Descriptor.Length; colIndex++)
+                {
+                    descriptors.At<float>(rowIndex, colIndex) = feature.Descriptor[colIndex];
+                }
+            }
+
+            //绘制直方图
+            using Plot plot = new Plot();
+            await Task.Run(() => plot.AddDescriptors(descriptors));
+            using SKImage skImage = await Task.Run(() => plot.GetSKImage(1440, 870));
+            BitmapSource bitmapSource = skImage.ToWriteableBitmap();
+
+            ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
+            imageViewModel.Load(bitmapSource, "XFeat特征直方图");
             await this._windowManager.ShowWindowAsync(imageViewModel);
 
             this.Idle();
