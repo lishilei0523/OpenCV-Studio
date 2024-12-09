@@ -483,7 +483,8 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void FasterRcnnDetect()
         {
-            //TODO 实现
+            FasterRcnnViewModel viewModel = ResolveMediator.Resolve<FasterRcnnViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion
 

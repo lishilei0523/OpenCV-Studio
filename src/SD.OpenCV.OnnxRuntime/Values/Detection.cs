@@ -5,7 +5,7 @@ namespace SD.OpenCV.OnnxRuntime.Values
     /// <summary>
     /// 检测结果
     /// </summary>
-    public struct Detection
+    public class Detection
     {
         /// <summary>
         /// 创建检测结果构造器
@@ -14,7 +14,6 @@ namespace SD.OpenCV.OnnxRuntime.Values
         /// <param name="box">矩形框</param>
         /// <param name="confidence">置信度</param>
         public Detection(string label, Rect box, float confidence)
-            : this()
         {
             this.Label = label;
             this.Box = box;
@@ -35,5 +34,18 @@ namespace SD.OpenCV.OnnxRuntime.Values
         /// 置信度
         /// </summary>
         public float Confidence { get; private set; }
+
+        /// <summary>
+        /// 标记
+        /// </summary>
+        public object Tag { get; set; }
+
+        /// <summary>
+        /// 矩形框文本
+        /// </summary>
+        public string BoxText
+        {
+            get => $"({this.Box.X},{this.Box.Y})|{this.Box.Width}*{this.Box.Height}";
+        }
     }
 }

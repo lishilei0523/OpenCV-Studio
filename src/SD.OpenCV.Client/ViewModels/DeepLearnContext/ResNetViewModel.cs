@@ -91,14 +91,15 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
         //Actions
 
-        #region 打开ResNet模型 —— async void OpenResNetModel()
+        #region 打开模型 —— async void OpenModel()
         /// <summary>
-        /// 打开ResNet模型
+        /// 打开模型
         /// </summary>
-        public async void OpenResNetModel()
+        public async void OpenModel()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
+                Title = "请选择ResNet模型",
                 Filter = "(*.onnx)|*.onnx",
                 AddExtension = true,
                 RestoreDirectory = true
@@ -121,14 +122,15 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         }
         #endregion
 
-        #region 打开目标图像 —— async void OpenTargetImage()
+        #region 打开图像 —— async void OpenImage()
         /// <summary>
-        /// 打开目标图像
+        /// 打开图像
         /// </summary>
-        public async void OpenTargetImage()
+        public async void OpenImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
+                Title = "请选择目标图像",
                 Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
                 AddExtension = true,
                 RestoreDirectory = true
