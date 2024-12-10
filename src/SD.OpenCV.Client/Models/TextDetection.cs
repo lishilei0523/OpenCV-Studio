@@ -45,7 +45,7 @@ namespace SD.OpenCV.Client.Models
         /// </summary>
         public string BoxText
         {
-            get => this.Box.ToString();
+            get => $"({this.Box.X},{this.Box.Y})|{this.Box.Width}*{this.Box.Height}";
         }
     }
 }
