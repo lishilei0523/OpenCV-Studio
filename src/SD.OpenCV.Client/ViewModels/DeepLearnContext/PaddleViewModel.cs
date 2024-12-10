@@ -274,7 +274,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 Rect boundingBox = Cv2.BoundingRect(contour.Points);
                 Rect correctBox = image.CorrectRectangle(boundingBox);
                 TextDetection detection = new TextDetection(text, correctBox, contour.Confidence);
-                this.Detections.Add(detection);
 
                 //绘制文本
                 TextVisual2D textVisual2D = new TextVisual2D();
@@ -296,25 +295,10 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 };
                 rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
-                //重新计算矩形边界
-                double rectangleX = rectangle.Location.X < 0 ? 0 : rectangle.Location.X;
-                double rectangleY = rectangle.Location.Y < 0 ? 0 : rectangle.Location.Y;
-                double rectangleWidth = rectangle.Size.Width;
-                double rectangleHeight = rectangle.Size.Height;
-                if (rectangle.Location.X + rectangleWidth > image.Width)
-                {
-                    rectangleWidth = image.Width - rectangle.Location.X;
-                }
-                if (rectangle.Location.Y + rectangleHeight > image.Height)
-                {
-                    rectangleHeight = image.Height - rectangle.Location.Y;
-                }
-                rectangle.Location = new Point(rectangleX, rectangleY);
-                rectangle.Size = new Size(rectangleWidth, rectangleHeight);
-
                 detection.Tag = rectangle;
                 this._canvas.Children.Add(textVisual2D);
                 this._canvas.Children.Add(rectangle);
+                this.Detections.Add(detection);
                 this.Shapes.Add(textVisual2D);
                 this.Shapes.Add(rectangle);
             }
