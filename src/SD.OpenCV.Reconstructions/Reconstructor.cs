@@ -84,9 +84,9 @@ namespace SD.OpenCV.Reconstructions
             #endregion
 
             const string superPointPath = "Content/Models/superpoint.onnx";
-            const string superLightGlueOnnxPath = "Content/Models/superpoint_lightglue.onnx";
+            const string superLightGluePath = "Content/Models/superpoint_lightglue.onnx";
             _SuperPoint = new SuperPoint(superPointPath);
-            _SuperLightGlue = new SuperLightGlue(superLightGlueOnnxPath);
+            _SuperLightGlue = new SuperLightGlue(superLightGluePath);
             _SuperPoint.StartSession();
             _SuperLightGlue.StartSession();
             _Initialized = true;
@@ -356,7 +356,7 @@ namespace SD.OpenCV.Reconstructions
                 matchedTargetKeyPoints.Add(goodMatch.TrainIdx, targetKeyPoints.ElementAt(goodMatch.TrainIdx));
             }
 
-            MatchResult matchResult = new MatchResult(matches.Count(), matches, sourceKeyPoints, targetKeyPoints, matchedSourceKeyPoints, matchedTargetKeyPoints);
+            MatchResult matchResult = new MatchResult(matches.Length, matches, sourceKeyPoints, targetKeyPoints, matchedSourceKeyPoints, matchedTargetKeyPoints);
 
             return matchResult;
         }
