@@ -178,7 +178,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
         /// <returns>标签列表</returns>
         private string[] GetLabels()
         {
-            string[] lines = File.ReadAllLines("Assets/Labels/faster_rcnn_labels.txt");
+            string[] lines = File.ReadAllLines("Content/Labels/faster_rcnn_labels.txt");
             string[] labels = new string[lines.Length];
             for (int index = 0; index < lines.Length; index++)
             {

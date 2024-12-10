@@ -2970,7 +2970,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             //初始化模型
-            const string diskPath = "Content/disk.onnx";
+            const string diskPath = "Content/Models/disk.onnx";
             using DiskPoint diskPoint = await Task.Run(() => new DiskPoint(diskPath));
             await Task.Run(() => diskPoint.StartSession());
 
@@ -3007,7 +3007,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             //初始化模型
-            const string xFeatPath = "Content/xfeat.onnx";
+            const string xFeatPath = "Content/Models/xfeat.onnx";
             using XFeatPoint xFeatPoint = await Task.Run(() => new XFeatPoint(xFeatPath));
             await Task.Run(() => xFeatPoint.StartSession());
 
@@ -3223,7 +3223,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             //初始化模型
-            const string diskPath = "Content/disk.onnx";
+            const string diskPath = "Content/Models/disk.onnx";
             using DiskPoint diskPoint = await Task.Run(() => new DiskPoint(diskPath));
             await Task.Run(() => diskPoint.StartSession());
 
@@ -3275,7 +3275,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             //初始化模型
-            const string xFeatPath = "Content/xfeat.onnx";
+            const string xFeatPath = "Content/Models/xfeat.onnx";
             using XFeatPoint xFeatPoint = await Task.Run(() => new XFeatPoint(xFeatPath));
             await Task.Run(() => xFeatPoint.StartSession());
 

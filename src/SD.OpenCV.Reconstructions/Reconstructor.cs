@@ -83,8 +83,8 @@ namespace SD.OpenCV.Reconstructions
 
             #endregion
 
-            const string superPointPath = "Content/superpoint.onnx";
-            const string superLightGlueOnnxPath = "Content/superpoint_lightglue.onnx";
+            const string superPointPath = "Content/Models/superpoint.onnx";
+            const string superLightGlueOnnxPath = "Content/Models/superpoint_lightglue.onnx";
             _SuperPoint = new SuperPoint(superPointPath);
             _SuperLightGlue = new SuperLightGlue(superLightGlueOnnxPath);
             _SuperPoint.StartSession();
