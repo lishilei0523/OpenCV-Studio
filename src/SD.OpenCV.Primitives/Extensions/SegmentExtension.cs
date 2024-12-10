@@ -312,6 +312,32 @@ namespace SD.OpenCV.Primitives.Extensions
         }
         #endregion
 
+        #region # 修正矩形 —— static Rect CorrectRectangle(this Mat matrix, Rect rectangle)
+        /// <summary>
+        /// 修正矩形
+        /// </summary>
+        /// <param name="matrix">图像矩阵</param>
+        /// <param name="rectangle">矩形</param>
+        /// <returns>修正后矩形</returns>
+        public static Rect CorrectRectangle(this Mat matrix, Rect rectangle)
+        {
+            float xMin = rectangle.X;
+            float yMin = rectangle.Y;
+            float xMax = xMin + rectangle.Width;
+            float yMax = yMin + rectangle.Height;
+            float correctXMin = xMin < 0 ? 0 : xMin;
+            float correctYMin = yMin < 0 ? 0 : yMin;
+            float correctXMax = xMax > matrix.Width ? matrix.Width : xMax;
+            float correctYMax = yMax > matrix.Height ? matrix.Height : yMax;
+
+            Point location = new Point(correctXMin, correctYMin);
+            Size size = new Size(correctXMax - correctXMin, correctYMax - correctYMin);
+            Rect correctRect = new Rect(location, size);
+
+            return correctRect;
+        }
+        #endregion
+
         #region # 颜色分割 —— static Mat ColorSegment(this Mat hsvMatrix, Scalar lowerScalar...
         /// <summary>
         /// 颜色分割

@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
-using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
@@ -272,9 +271,9 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 string text = await Task.Run(() => this.Recognizer.Infer(roi));
 
                 //整理检测结果
-                Rect boundingRect = Cv2.BoundingRect(contour.Points);
-                RectangleL box = new RectangleL(boundingRect.X, boundingRect.Y, boundingRect.Width, boundingRect.Height);
-                TextDetection detection = new TextDetection(text, box, contour.Confidence);
+                Rect boundingBox = Cv2.BoundingRect(contour.Points);
+                Rect correctBox = image.CorrectRectangle(boundingBox);
+                TextDetection detection = new TextDetection(text, correctBox, contour.Confidence);
                 this.Detections.Add(detection);
 
                 //绘制文本

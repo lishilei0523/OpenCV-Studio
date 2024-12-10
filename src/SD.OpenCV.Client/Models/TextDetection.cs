@@ -1,4 +1,4 @@
-﻿using SD.Infrastructure.Shapes;
+﻿using OpenCvSharp;
 
 namespace SD.OpenCV.Client.Models
 {
@@ -13,7 +13,7 @@ namespace SD.OpenCV.Client.Models
         /// <param name="text">文本</param>
         /// <param name="box">矩形框</param>
         /// <param name="confidence">置信度</param>
-        public TextDetection(string text, RectangleL box, float confidence)
+        public TextDetection(string text, Rect box, float confidence)
         {
             this.Text = text;
             this.Box = box;
@@ -28,7 +28,7 @@ namespace SD.OpenCV.Client.Models
         /// <summary>
         /// 矩形框
         /// </summary>
-        public RectangleL Box { get; private set; }
+        public Rect Box { get; private set; }
 
         /// <summary>
         /// 置信度

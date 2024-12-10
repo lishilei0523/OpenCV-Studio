@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
-using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.Infrastructure.WPF.CustomControls;
@@ -13,6 +12,7 @@ using SD.OpenCV.Client.Models;
 using SD.OpenCV.Client.Views.DeepLearnContext;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.Primitives.Extensions;
 using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
@@ -220,7 +220,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             Detection[] detections = await Task.Run(() => this.Yolo.Infer(image, this.Threshold / 100));
             IEnumerable<ObjectDetection> objectDetections =
                 from detection in detections
-                let box = new RectangleL(detection.Box.X, detection.Box.Y, detection.Box.Width, detection.Box.Height)
+                let box = image.CorrectRectangle(detection.Box)
                 select new ObjectDetection(detection.Label, box, detection.Confidence);
             this.Detections = new ObservableCollection<ObjectDetection>(objectDetections);
 
@@ -246,22 +246,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                     Tag = detection
                 };
                 rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
-
-                //重新计算矩形边界
-                double rectangleX = rectangle.Location.X < 0 ? 0 : rectangle.Location.X;
-                double rectangleY = rectangle.Location.Y < 0 ? 0 : rectangle.Location.Y;
-                double rectangleWidth = rectangle.Size.Width;
-                double rectangleHeight = rectangle.Size.Height;
-                if (rectangle.Location.X + rectangleWidth > image.Width)
-                {
-                    rectangleWidth = image.Width - rectangle.Location.X;
-                }
-                if (rectangle.Location.Y + rectangleHeight > image.Height)
-                {
-                    rectangleHeight = image.Height - rectangle.Location.Y;
-                }
-                rectangle.Location = new Point(rectangleX, rectangleY);
-                rectangle.Size = new Size(rectangleWidth, rectangleHeight);
 
                 detection.Tag = rectangle;
                 this._canvas.Children.Add(text);

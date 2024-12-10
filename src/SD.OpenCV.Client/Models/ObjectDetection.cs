@@ -1,4 +1,4 @@
-﻿using SD.Infrastructure.Shapes;
+﻿using OpenCvSharp;
 
 namespace SD.OpenCV.Client.Models
 {
@@ -13,7 +13,7 @@ namespace SD.OpenCV.Client.Models
         /// <param name="label">标签</param>
         /// <param name="box">矩形框</param>
         /// <param name="confidence">置信度</param>
-        public ObjectDetection(string label, RectangleL box, float confidence)
+        public ObjectDetection(string label, Rect box, float confidence)
         {
             this.Label = label;
             this.Box = box;
@@ -28,7 +28,7 @@ namespace SD.OpenCV.Client.Models
         /// <summary>
         /// 矩形框
         /// </summary>
-        public RectangleL Box { get; private set; }
+        public Rect Box { get; private set; }
 
         /// <summary>
         /// 置信度
