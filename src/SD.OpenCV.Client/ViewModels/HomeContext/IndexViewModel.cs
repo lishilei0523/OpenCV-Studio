@@ -5,7 +5,6 @@ using OpenCvSharp.Features2D;
 using OpenCvSharp.WpfExtensions;
 using OpenCvSharp.XFeatures2D;
 using ScottPlot;
-using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
@@ -31,6 +30,7 @@ using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;
 using SD.OpenCV.Reconstructions;
 using SD.OpenCV.SkiaSharp;
+using SD.Toolkits.Serialization;
 using SkiaSharp;
 using SkiaSharp.Views.WPF;
 using System.Collections.Generic;
@@ -3779,7 +3779,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
                 this.Busy();
 
                 string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
-                CameraIntrinsics cameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
+                CameraIntrinsics cameraIntrinsics = binaryText.AsBase64StringTo<CameraIntrinsics>();
                 using Mat image = this.EffectiveImage.ToMat();
                 using Mat rectifiedImage = await Task.Run(() => image.RectifyDistortions(cameraIntrinsics));
                 this.EffectiveImage = rectifiedImage.ToBitmapSource();

@@ -4,7 +4,6 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
-using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
@@ -12,6 +11,7 @@ using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Models;
 using SD.Toolkits.Mathematics.Extensions;
 using SD.Toolkits.Mathematics.Models;
+using SD.Toolkits.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -332,7 +332,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
                 this.Busy();
 
                 string binaryText = await Task.Run(() => File.ReadAllText(openFileDialog.FileName));
-                this.CameraIntrinsics = binaryText.AsBinaryTo<CameraIntrinsics>();
+                this.CameraIntrinsics = binaryText.AsBase64StringTo<CameraIntrinsics>();
                 this.CalibratedReprojectionError = this.CameraIntrinsics.CalibratedReprojectionError.ToString("F9");
                 this.ReprojectionError = this.CameraIntrinsics.ReprojectionError.ToString("F9");
                 this.DistortionVector = DenseVector.OfArray(this.CameraIntrinsics.DistortionVector).ToVectorString("F10");
@@ -550,7 +550,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                string binaryText = this.HandEyeMatrix.ToBinaryString();
+                string binaryText = this.HandEyeMatrix.ToBase64String();
                 await Task.Run(() => File.WriteAllText(saveFileDialog.FileName, binaryText));
             }
 

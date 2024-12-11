@@ -4,12 +4,12 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Win32;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
-using SD.Common;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Models;
+using SD.Toolkits.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -367,7 +367,7 @@ namespace SD.OpenCV.Client.ViewModels.CalibrationContext
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                string binaryText = this.CameraIntrinsics.ToBinaryString();
+                string binaryText = this.CameraIntrinsics.ToBase64String();
                 await Task.Run(() => File.WriteAllText(saveFileDialog.FileName, binaryText));
             }
 
