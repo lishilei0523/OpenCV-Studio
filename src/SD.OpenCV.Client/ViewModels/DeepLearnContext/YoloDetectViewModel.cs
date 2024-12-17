@@ -4,12 +4,10 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.Models;
-using SD.OpenCV.Client.Views.DeepLearnContext;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Extensions;
@@ -39,11 +37,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         #region # 字段及构造器
 
         /// <summary>
-        /// 画布
-        /// </summary>
-        private CanvasEx _canvas;
-
-        /// <summary>
         /// 窗体管理器
         /// </summary>
         private readonly IWindowManager _windowManager;
@@ -59,6 +52,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         #endregion
 
         #region # 属性
+
+        #region Canvas模式 —— CanvasMode CanvasMode
+        /// <summary>
+        /// Canvas模式
+        /// </summary>
+        [DependencyProperty]
+        public CanvasMode CanvasMode { get; set; }
+        #endregion
 
         #region YOLO目标检测模型 —— YoloDetector YoloDetector
         /// <summary>
@@ -120,12 +121,9 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
+            this.CanvasMode = CanvasMode.Scale;
             this.Threshold = 50f;
             this.Shapes = new ObservableCollection<Shape>();
-
-            //获取CanvasEx对象
-            YoloDetectView view = (YoloDetectView)this.GetView();
-            this._canvas = view.CanvasEx;
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -234,7 +232,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 text.Fill = new SolidColorBrush(Colors.Yellow);
                 text.X = detection.Box.X;
                 text.Y = detection.Box.Y - text.FontSize - 2;
-                text.RenderTransform = this._canvas.MatrixTransform;
 
                 //绘制矩形
                 RectangleVisual2D rectangle = new RectangleVisual2D
@@ -242,14 +239,11 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                     StrokeThickness = 1,
                     Location = new Point(detection.Box.X, detection.Box.Y),
                     Size = new Size(detection.Box.Width, detection.Box.Height),
-                    RenderTransform = this._canvas.MatrixTransform,
                     Tag = detection
                 };
                 rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
                 detection.Tag = rectangle;
-                this._canvas.Children.Add(text);
-                this._canvas.Children.Add(rectangle);
                 this.Shapes.Add(text);
                 this.Shapes.Add(rectangle);
             }
@@ -264,10 +258,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// </summary>
         public void Reset()
         {
-            foreach (Shape shape in this.Shapes)
-            {
-                this._canvas.Children.Remove(shape);
-            }
             this.Detections?.Clear();
             this.Shapes.Clear();
         }
@@ -309,13 +299,10 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// </summary>
         private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
         {
-            if (this._canvas.Mode != CanvasMode.Draw)
-            {
-                Shape shape = (Shape)sender;
-                ObjectDetection detection = (ObjectDetection)shape.Tag;
-                this.SelectedDetection = null;
-                this.SelectedDetection = detection;
-            }
+            Shape shape = (Shape)sender;
+            ObjectDetection detection = (ObjectDetection)shape.Tag;
+            this.SelectedDetection = null;
+            this.SelectedDetection = detection;
         }
         #endregion
 

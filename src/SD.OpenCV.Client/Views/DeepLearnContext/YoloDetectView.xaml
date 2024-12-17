@@ -57,7 +57,7 @@
                     <ColumnDefinition Width="300" />
                 </Grid.ColumnDefinitions>
                 <GroupBox Grid.Column="0" Header="目标图像" Margin="4,4,2,4" Background="LightGray">
-                    <sd:CanvasEx x:Name="CanvasEx" Mode="Scale">
+                    <sd:CanvasEx Mode="{Binding CanvasMode}" ItemsSource="{Binding Shapes}">
                         <sd:CanvasEx.BackgroundImage>
                             <Image Source="{Binding TargetImage}" />
                         </sd:CanvasEx.BackgroundImage>
