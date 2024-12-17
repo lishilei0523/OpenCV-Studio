@@ -494,7 +494,7 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         /// </summary>
         public async void YoloDetect()
         {
-            YoloViewModel viewModel = ResolveMediator.Resolve<YoloViewModel>();
+            YoloDetectViewModel viewModel = ResolveMediator.Resolve<YoloDetectViewModel>();
             await this._windowManager.ShowWindowAsync(viewModel);
         }
         #endregion

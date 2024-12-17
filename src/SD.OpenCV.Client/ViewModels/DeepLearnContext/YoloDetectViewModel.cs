@@ -32,9 +32,9 @@ using Size = System.Windows.Size;
 namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 {
     /// <summary>
-    /// YOLO视图模型
+    /// YOLO目标检测视图模型
     /// </summary>
-    public class YoloViewModel : ScreenBase
+    public class YoloDetectViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -51,7 +51,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public YoloViewModel(IWindowManager windowManager)
+        public YoloDetectViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -60,11 +60,11 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
         #region # 属性
 
-        #region YOLO模型 —— Yolo Yolo
+        #region YOLO目标检测模型 —— YoloDetector YoloDetector
         /// <summary>
-        /// YOLO模型
+        /// YOLO目标检测模型
         /// </summary>
-        public Yolo Yolo { get; set; }
+        public YoloDetector YoloDetector { get; set; }
         #endregion
 
         #region 目标图像 —— BitmapSource TargetImage
@@ -124,7 +124,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             this.Shapes = new ObservableCollection<Shape>();
 
             //获取CanvasEx对象
-            YoloView view = (YoloView)this.GetView();
+            YoloDetectView view = (YoloDetectView)this.GetView();
             this._canvas = view.CanvasEx;
 
             return base.OnInitializeAsync(cancellationToken);
@@ -151,14 +151,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             {
                 this.Busy();
 
-                if (this.Yolo != null)
+                if (this.YoloDetector != null)
                 {
-                    this.Yolo.Dispose();
-                    this.Yolo = null;
+                    this.YoloDetector.Dispose();
+                    this.YoloDetector = null;
                 }
 
-                this.Yolo = await Task.Run(() => new Yolo(openFileDialog.FileName));
-                await Task.Run(() => this.Yolo.StartSession());
+                this.YoloDetector = await Task.Run(() => new YoloDetector(openFileDialog.FileName));
+                await Task.Run(() => this.YoloDetector.StartSession());
 
                 this.Idle();
                 MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -200,7 +200,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             #region # 验证
 
-            if (this.Yolo == null)
+            if (this.YoloDetector == null)
             {
                 MessageBox.Show("YOLO模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -217,7 +217,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
             this.Reset();
             using Mat image = this.TargetImage.ToMat();
-            Detection[] detections = await Task.Run(() => this.Yolo.Infer(image, this.Threshold / 100));
+            Detection[] detections = await Task.Run(() => this.YoloDetector.Infer(image, this.Threshold / 100));
             IEnumerable<ObjectDetection> objectDetections =
                 from detection in detections
                 let box = image.CorrectRectangle(detection.Box)
@@ -327,8 +327,8 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             if (close)
             {
-                this.Yolo?.Dispose();
-                this.Yolo = null;
+                this.YoloDetector?.Dispose();
+                this.YoloDetector = null;
             }
             return base.OnDeactivateAsync(close, cancellationToken);
         }

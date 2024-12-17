@@ -105,20 +105,20 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
-        #region # 测试YOLO —— void TestYolo()
+        #region # 测试YOLO目标检测 —— void TestYoloDetector()
         /// <summary>
-        /// 测试YOLO
+        /// 测试YOLO目标检测
         /// </summary>
         [TestMethod]
-        public void TestYolo()
+        public void TestYoloDetector()
         {
             const string modelPath = @"F:\Files\Models\YOLOv11-ONNX\yolo11n.onnx";
             const string imagePath = "Content/Images/scene1.jpg";
 
             using Mat image = Cv2.ImRead(imagePath);
-            using Yolo yolo = new Yolo(modelPath);
-            yolo.StartSession();
-            Detection[] detections = yolo.Infer(image);
+            using YoloDetector yoloDetector = new YoloDetector(modelPath);
+            yoloDetector.StartSession();
+            Detection[] detections = yoloDetector.Infer(image);
 
             using Mat targetImage = image.Clone();
             foreach (Detection detection in detections)

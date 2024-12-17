@@ -13,9 +13,9 @@ using System.Linq;
 namespace SD.OpenCV.OnnxRuntime.Models
 {
     /// <summary>
-    /// YOLO模型
+    /// YOLO目标检测模型
     /// </summary>
-    public class Yolo : OnnxModel<Mat, Detection[]>
+    public class YoloDetector : OnnxModel<Mat, Detection[]>
     {
         #region # 字段及构造器
 
@@ -55,42 +55,42 @@ namespace SD.OpenCV.OnnxRuntime.Models
         private int _paddingY;
 
         /// <summary>
-        /// 创建YOLO模型构造器
+        /// 创建YOLO目标检测模型构造器
         /// </summary>
         /// <param name="modelPath">模型路径</param>
-        public Yolo(string modelPath)
+        public YoloDetector(string modelPath)
             : this(modelPath, new SessionOptions())
         {
 
         }
 
         /// <summary>
-        /// 创建YOLO模型构造器
+        /// 创建YOLO目标检测模型构造器
         /// </summary>
         /// <param name="modelBytes">模型字节数组</param>
-        public Yolo(byte[] modelBytes)
+        public YoloDetector(byte[] modelBytes)
             : this(modelBytes, new SessionOptions())
         {
 
         }
 
         /// <summary>
-        /// 创建YOLO模型构造器
+        /// 创建YOLO目标检测模型构造器
         /// </summary>
         /// <param name="modelPath">模型路径</param>
         /// <param name="sessionOptions">会话选项</param>
-        public Yolo(string modelPath, SessionOptions sessionOptions)
+        public YoloDetector(string modelPath, SessionOptions sessionOptions)
             : this(File.ReadAllBytes(modelPath), sessionOptions)
         {
 
         }
 
         /// <summary>
-        /// 创建YOLO模型构造器
+        /// 创建YOLO目标检测模型构造器
         /// </summary>
         /// <param name="modelBytes">模型字节数组</param>
         /// <param name="sessionOptions">会话选项</param>
-        public Yolo(byte[] modelBytes, SessionOptions sessionOptions)
+        public YoloDetector(byte[] modelBytes, SessionOptions sessionOptions)
             : base(modelBytes, sessionOptions)
         {
 
