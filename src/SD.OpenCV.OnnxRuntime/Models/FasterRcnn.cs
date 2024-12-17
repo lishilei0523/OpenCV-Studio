@@ -4,6 +4,7 @@ using OpenCvSharp;
 using SD.OpenCV.OnnxRuntime.Base;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -178,11 +179,10 @@ namespace SD.OpenCV.OnnxRuntime.Models
         /// <returns>标签列表</returns>
         private string[] GetLabels()
         {
-            string[] lines = File.ReadAllLines("Content/Labels/faster_rcnn_labels.txt");
-            string[] labels = new string[lines.Length];
-            for (int index = 0; index < lines.Length; index++)
+            string[] labels = AppDomain.CurrentDomain.GetData(typeof(FasterRcnn).FullName!) as string[];
+            if (labels == null)
             {
-                labels[index] = lines[index];
+                labels = File.ReadAllLines("Content/Labels/faster_rcnn_labels.txt");
             }
 
             return labels;

@@ -157,11 +157,10 @@ namespace SD.OpenCV.OnnxRuntime.Models
         /// <returns>标签列表</returns>
         private string[] GetLabels()
         {
-            string[] lines = File.ReadAllLines("Content/Labels/paddle_ocr_labels.txt");
-            string[] labels = new string[lines.Length];
-            for (int index = 0; index < lines.Length; index++)
+            string[] labels = AppDomain.CurrentDomain.GetData(typeof(PaddleRecognizer).FullName!) as string[];
+            if (labels == null)
             {
-                labels[index] = lines[index];
+                labels = File.ReadAllLines("Content/Labels/paddle_ocr_labels.txt");
             }
 
             return labels;

@@ -143,6 +143,42 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
+        #region # 测试YOLO图像分割 —— void TestYoloSegmenter()
+        /// <summary>
+        /// 测试YOLO图像分割
+        /// </summary>
+        [TestMethod]
+        public void TestYoloSegmenter()
+        {
+            const string modelPath = @"F:\Files\Models\YOLOv11-ONNX\yolo11n-seg.onnx";
+            const string imagePath = "Content/Images/children.jpg";
+
+            using Mat image = Cv2.ImRead(imagePath);
+            using YoloSegmenter yoloSegmenter = new YoloSegmenter(modelPath);
+            yoloSegmenter.StartSession();
+            Segmentation[] segmentations = yoloSegmenter.Infer(image);
+
+            using Mat targetImage = image.Clone();
+            foreach (Segmentation segmentation in segmentations)
+            {
+                //打印结果
+                string box = $"({segmentation.Box.Location.X},{segmentation.Box.Location.Y})|{segmentation.Box.Width}*{segmentation.Box.Height}";
+                Trace.WriteLine($"{segmentation.Label}: {segmentation.Confidence:F2}, Box: {box}");
+
+                //绘制轮廓
+                targetImage.DrawContours([segmentation.Contour], -1, Scalar.Red);
+
+                //绘制文本
+                string labelConfidence = $"{segmentation.Label}: {segmentation.Confidence:F2}";
+                targetImage.PutText(labelConfidence, segmentation.Box.Location, HersheyFonts.HersheyPlain, 1, Scalar.Yellow);
+            }
+
+            Cv2.ImShow("原图", image);
+            Cv2.ImShow("效果图", targetImage);
+            Cv2.WaitKey();
+        }
+        #endregion
+
         #region # 测试SuperPoint —— void TestSuperPoint()
         /// <summary>
         /// 测试SuperPoint
