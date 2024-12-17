@@ -25,14 +25,13 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
-using Size = System.Windows.Size;
 
 namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 {
     /// <summary>
-    /// YOLO目标检测视图模型
+    /// YOLO图像分割视图模型
     /// </summary>
-    public class YoloDetectViewModel : ScreenBase
+    public class YoloSegmentViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -44,7 +43,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public YoloDetectViewModel(IWindowManager windowManager)
+        public YoloSegmentViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -61,11 +60,11 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public CanvasMode CanvasMode { get; set; }
         #endregion
 
-        #region YOLO目标检测模型 —— YoloDetector YoloDetector
+        #region YOLO图像分割模型 —— YoloSegmenter YoloSegmenter
         /// <summary>
-        /// YOLO目标检测模型
+        /// YOLO图像分割模型
         /// </summary>
-        public YoloDetector YoloDetector { get; set; }
+        public YoloSegmenter YoloSegmenter { get; set; }
         #endregion
 
         #region 目标图像 —— BitmapSource TargetImage
@@ -76,28 +75,28 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public BitmapSource TargetImage { get; set; }
         #endregion
 
-        #region 检测阈值 —— float Threshold
+        #region 分割阈值 —— float Threshold
         /// <summary>
-        /// 检测阈值
+        /// 分割阈值
         /// </summary>
         [DependencyProperty]
         public float Threshold { get; set; }
         #endregion
 
-        #region 已选择检测结果 —— ObjectDetection SelectedDetection
+        #region 已选择分割结果 —— ImageSegmentation SelectedSegmentation
         /// <summary>
-        /// 已选择检测结果
+        /// 已选择分割结果
         /// </summary>
         [DependencyProperty]
-        public ObjectDetection SelectedDetection { get; set; }
+        public ImageSegmentation SelectedSegmentation { get; set; }
         #endregion
 
-        #region 检测结果列表 —— ObservableCollection<ObjectDetection> Detections
+        #region 分割结果列表 —— ObservableCollection<ImageSegmentation> Segmentations
         /// <summary>
-        /// 检测结果列表
+        /// 分割结果列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<ObjectDetection> Detections { get; set; }
+        public ObservableCollection<ImageSegmentation> Segmentations { get; set; }
         #endregion
 
         #region 形状集 —— ObservableCollection<Shape> Shapes
@@ -140,7 +139,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Title = "请选择YOLO目标检测模型",
+                Title = "请选择YOLO图像分割模型",
                 Filter = "(*.onnx)|*.onnx",
                 AddExtension = true,
                 RestoreDirectory = true
@@ -149,14 +148,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             {
                 this.Busy();
 
-                if (this.YoloDetector != null)
+                if (this.YoloSegmenter != null)
                 {
-                    this.YoloDetector.Dispose();
-                    this.YoloDetector = null;
+                    this.YoloSegmenter.Dispose();
+                    this.YoloSegmenter = null;
                 }
 
-                this.YoloDetector = await Task.Run(() => new YoloDetector(openFileDialog.FileName));
-                await Task.Run(() => this.YoloDetector.StartSession());
+                this.YoloSegmenter = await Task.Run(() => new YoloSegmenter(openFileDialog.FileName));
+                await Task.Run(() => this.YoloSegmenter.StartSession());
 
                 this.Idle();
                 MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -190,17 +189,17 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         }
         #endregion
 
-        #region 执行检测 —— async void ExecuteDetect()
+        #region 执行分割 —— async void ExecuteSegment()
         /// <summary>
-        /// 执行检测
+        /// 执行分割
         /// </summary>
-        public async void ExecuteDetect()
+        public async void ExecuteSegment()
         {
             #region # 验证
 
-            if (this.YoloDetector == null)
+            if (this.YoloSegmenter == null)
             {
-                MessageBox.Show("YOLO目标检测模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("YOLO图像分割模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.TargetImage == null)
@@ -215,37 +214,43 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
             this.Reset();
             using Mat image = this.TargetImage.ToMat();
-            Detection[] detections = await Task.Run(() => this.YoloDetector.Infer(image, this.Threshold / 100));
-            IEnumerable<ObjectDetection> objectDetections =
-                from detection in detections
-                let box = image.CorrectRectangle(detection.Box)
-                select new ObjectDetection(detection.Label, box, detection.Confidence);
-            this.Detections = new ObservableCollection<ObjectDetection>(objectDetections);
+            Segmentation[] segmentations = await Task.Run(() => this.YoloSegmenter.Infer(image, this.Threshold / 100));
+            IEnumerable<ImageSegmentation> imageSegmentations =
+                from segmentation in segmentations
+                let box = image.CorrectRectangle(segmentation.Box)
+                select new ImageSegmentation(segmentation.Label, box, segmentation.Contour, segmentation.Confidence);
+            this.Segmentations = new ObservableCollection<ImageSegmentation>(imageSegmentations);
 
             //绘制
-            foreach (ObjectDetection detection in this.Detections)
+            foreach (ImageSegmentation segmentation in this.Segmentations)
             {
                 //绘制文本
                 TextVisual2D text = new TextVisual2D();
-                text.Text = $"{detection.Label}: {detection.Confidence:F2}";
+                text.Text = $"{segmentation.Label}: {segmentation.Confidence:F2}";
                 text.FontSize = 12;
                 text.Fill = new SolidColorBrush(Colors.Yellow);
-                text.X = detection.Box.X;
-                text.Y = detection.Box.Y - text.FontSize - 2;
+                text.X = segmentation.Box.X;
+                text.Y = segmentation.Box.Y - text.FontSize - 2;
 
-                //绘制矩形
-                RectangleVisual2D rectangle = new RectangleVisual2D
+                //绘制轮廓
+                IEnumerable<Point> points =
+                    from point in segmentation.Contour
+                    select new Point(point.X, point.Y);
+                PointCollection pointCollection = new PointCollection(points);
+                Polygon polygon = new Polygon
                 {
+                    Fill = new SolidColorBrush(Colors.Red),
+                    Opacity = 0.4,
+                    Stroke = new SolidColorBrush(Colors.Red),
                     StrokeThickness = 1,
-                    Location = new Point(detection.Box.X, detection.Box.Y),
-                    Size = new Size(detection.Box.Width, detection.Box.Height),
-                    Tag = detection
+                    Points = pointCollection,
+                    Tag = segmentation
                 };
-                rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+                polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
-                detection.Tag = rectangle;
+                segmentation.Tag = polygon;
                 this.Shapes.Add(text);
-                this.Shapes.Add(rectangle);
+                this.Shapes.Add(polygon);
             }
 
             this.Idle();
@@ -258,7 +263,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// </summary>
         public void Reset()
         {
-            this.Detections?.Clear();
+            this.Segmentations?.Clear();
             this.Shapes.Clear();
         }
         #endregion
@@ -272,20 +277,20 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// </summary>
         public void OnShapeSelect()
         {
-            if (this.SelectedDetection != null)
+            if (this.SelectedSegmentation != null)
             {
-                Shape shape = (Shape)this.SelectedDetection.Tag;
-                if (shape.Stroke is SolidColorBrush brush)
+                Shape shape = (Shape)this.SelectedSegmentation.Tag;
+                if (shape.Fill is SolidColorBrush brush)
                 {
                     BrushAnimation brushAnimation = new BrushAnimation
                     {
                         From = new SolidColorBrush(brush.Color.Invert()),
-                        To = shape.Stroke,
+                        To = shape.Fill,
                         Duration = new Duration(TimeSpan.FromSeconds(2))
                     };
                     Storyboard storyboard = new Storyboard();
                     Storyboard.SetTarget(brushAnimation, shape);
-                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
+                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.FillProperty));
                     storyboard.Children.Add(brushAnimation);
                     storyboard.Begin();
                 }
@@ -300,9 +305,9 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
         {
             Shape shape = (Shape)sender;
-            ObjectDetection detection = (ObjectDetection)shape.Tag;
-            this.SelectedDetection = null;
-            this.SelectedDetection = detection;
+            ImageSegmentation segmentation = (ImageSegmentation)shape.Tag;
+            this.SelectedSegmentation = null;
+            this.SelectedSegmentation = segmentation;
         }
         #endregion
 
@@ -314,8 +319,8 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             if (close)
             {
-                this.YoloDetector?.Dispose();
-                this.YoloDetector = null;
+                this.YoloSegmenter?.Dispose();
+                this.YoloSegmenter = null;
             }
             return base.OnDeactivateAsync(close, cancellationToken);
         }

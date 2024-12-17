@@ -53,6 +53,7 @@
                     <MenuItem Header="ResNet图像分类(_C)" cm:Message.Attach="ResNetClassify()" />
                     <MenuItem Header="R-CNN目标检测(_R)" cm:Message.Attach="FasterRcnnDetect()" />
                     <MenuItem Header="YOLO目标检测(_Y)" cm:Message.Attach="YoloDetect()" />
+                    <MenuItem Header="YOLO图像分割(_S)" cm:Message.Attach="YoloSegment()" />
                     <MenuItem Header="Paddle字符识别(_P)" cm:Message.Attach="PaddleOCR()" />
                 </MenuItem>
                 <MenuItem Header="颜色空间(_C)">

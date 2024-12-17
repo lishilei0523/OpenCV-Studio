@@ -499,6 +499,17 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region YOLO图像分割 —— async void YoloSegment()
+        /// <summary>
+        /// YOLO图像分割
+        /// </summary>
+        public async void YoloSegment()
+        {
+            YoloSegmentViewModel viewModel = ResolveMediator.Resolve<YoloSegmentViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
         #region Paddle字符识别 —— async void PaddleOCR()
         /// <summary>
         /// Paddle字符识别
