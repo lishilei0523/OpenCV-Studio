@@ -153,10 +153,10 @@ namespace SD.OpenCV.OnnxRuntime.Models
             float scaleY = this._sourceSize.Height * 1.0f / this._adaptiveSize.Height;
 
             //定义Sigmoid函数
-            Func<float, float> sigmoid = a =>
+            Func<float, float> sigmoid = x =>
             {
-                float b = 1.0f / (1.0f + (float)Math.Exp(-a));
-                return b;
+                float y = 1.0f / (1.0f + (float)Math.Exp(-x));
+                return y;
             };
 
             //解析目标检测部分
@@ -207,9 +207,9 @@ namespace SD.OpenCV.OnnxRuntime.Models
 
                 //分割结果
                 using Mat originalMask = masks[index] * reshapedSegMat;
-                for (int col = 0; col < originalMask.Cols; col++)
+                for (int colIndex = 0; colIndex < originalMask.Cols; colIndex++)
                 {
-                    originalMask.At<float>(0, col) = sigmoid(originalMask.At<float>(0, col));
+                    originalMask.At<float>(0, colIndex) = sigmoid(originalMask.At<float>(0, colIndex));
                 }
                 using Mat reshapedMask = originalMask.Reshape(1, 160);
 
