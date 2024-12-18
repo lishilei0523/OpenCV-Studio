@@ -151,6 +151,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
             //计算缩放系数
             float scaleX = this._sourceSize.Width * 1.0f / this._adaptiveSize.Width;
             float scaleY = this._sourceSize.Height * 1.0f / this._adaptiveSize.Height;
+            float scaleMask = SideSize * 1.0f / results1.Dimensions[2];
 
             //定义Sigmoid函数
             Func<float, float> sigmoid = x =>
@@ -164,20 +165,19 @@ namespace SD.OpenCV.OnnxRuntime.Models
             using Mat reshapedDetMat = detMat.Reshape(1, results0.Dimensions[1]);
             using Mat transposedDetMat = reshapedDetMat.Transpose();
             IList<Detection> detections = new List<Detection>();
-            IList<Mat> masks = new List<Mat>();
+            IList<Mat> partialMasks = new List<Mat>();
             for (int rowIndex = 0; rowIndex < transposedDetMat.Rows; rowIndex++)
             {
                 using Mat rowMat = transposedDetMat[rowIndex, rowIndex + 1, 0, transposedDetMat.Cols];
                 rowMat.GetArray(out float[] row);
 
                 float[] boxArray = new float[4];
-                float[] confidencesArray = new float[80];
+                float[] confidencesArray = new float[labels.Length];
                 Array.Copy(row, 0, boxArray, 0, boxArray.Length);
                 Array.Copy(row, 4, confidencesArray, 0, confidencesArray.Length);
                 float maxConfidence = confidencesArray.Max();//获取置信度最大值
                 if (maxConfidence >= minConfidence)
                 {
-                    Mat mask = transposedDetMat.Row(rowIndex).ColRange(84, transposedDetMat.Cols);
                     float centerX = (boxArray[0] - this._paddingX) * scaleX;
                     float centerY = (boxArray[1] - this._paddingY) * scaleY;
                     float width = boxArray[2] * scaleX;
@@ -190,7 +190,9 @@ namespace SD.OpenCV.OnnxRuntime.Models
 
                     Detection detection = new Detection(labels[maxConfidenceIndex], new Rect(location, size), maxConfidence);
                     detections.Add(detection);
-                    masks.Add(mask);
+
+                    Mat partialMask = transposedDetMat.Row(rowIndex).ColRange(labels.Length + 4, transposedDetMat.Cols);
+                    partialMasks.Add(partialMask);
                 }
             }
 
@@ -205,49 +207,45 @@ namespace SD.OpenCV.OnnxRuntime.Models
             {
                 Detection detection = detections[index];
 
-                //分割结果
-                using Mat originalMask = masks[index] * reshapedSegMat;
-                for (int colIndex = 0; colIndex < originalMask.Cols; colIndex++)
+                //计算分割结果
+                using Mat mask = partialMasks[index] * reshapedSegMat;
+                mask.ForEachAsFloat((valuePtr, positionPtr) =>
                 {
-                    originalMask.At<float>(0, colIndex) = sigmoid(originalMask.At<float>(0, colIndex));
-                }
-                using Mat reshapedMask = originalMask.Reshape(1, 160);
+                    int rowIndex = positionPtr[0];
+                    int colIndex = positionPtr[1];
+                    float pixel = *valuePtr;
+                    mask.At<float>(rowIndex, colIndex) = sigmoid(pixel);
+                });
+                using Mat reshapedMask = mask.Reshape(1, results1.Dimensions[2]);
 
-                //裁剪分割区域
+                //裁剪掩膜
                 int boxXMin = Math.Max(0, detection.Box.X);
                 int boxYMin = Math.Max(0, detection.Box.Y);
                 int boxXMax = Math.Max(0, detection.Box.BottomRight.X);
                 int boxYMax = Math.Max(0, detection.Box.BottomRight.Y);
-                int maskXMin = (int)Math.Ceiling((boxXMin * 1.0f / scaleX + this._paddingX) * 0.25f);
-                int maskXMax = (int)Math.Ceiling((boxXMax * 1.0f / scaleX + this._paddingX) * 0.25f);
-                int maskYMin = (int)Math.Ceiling((boxYMin * 1.0f / scaleY + this._paddingY) * 0.25f);
-                int maskYMax = (int)Math.Ceiling((boxYMax * 1.0f / scaleY + this._paddingY) * 0.25f);
+                int maskXMin = (int)Math.Floor((boxXMin * 1.0f / scaleX + this._paddingX) / scaleMask);
+                int maskYMin = (int)Math.Floor((boxYMin * 1.0f / scaleY + this._paddingY) / scaleMask);
+                int maskXMax = (int)Math.Floor((boxXMax * 1.0f / scaleX + this._paddingX) / scaleMask);
+                int maskYMax = (int)Math.Floor((boxYMax * 1.0f / scaleY + this._paddingY) / scaleMask);
                 using Mat rangedMask = new Mat(reshapedMask, new Range(maskYMin, maskYMax), new Range(maskXMin, maskXMax));
 
-                //将分割区域转换到检测框大小
+                //调整掩膜到检测框尺寸
                 using Mat resizedMask = rangedMask.Resize(detection.Box.Size);
 
-                //二值化分割区域
+                //二值化掩膜
                 resizedMask.ForEachAsFloat((valuePtr, positionPtr) =>
                 {
                     int rowIndex = positionPtr[0];
                     int colIndex = positionPtr[1];
                     float pixel = *valuePtr;
-                    if (pixel > 0.5)
-                    {
-                        resizedMask.At<float>(rowIndex, colIndex) = 255f;
-                    }
-                    else
-                    {
-                        resizedMask.At<float>(rowIndex, colIndex) = 0f;
-                    }
+                    resizedMask.At<float>(rowIndex, colIndex) = pixel > 0.5f ? 255f : 0f;
                 });
 
-                //格式转换
+                //转换8UC1格式
                 using Mat byteMask = new Mat();
                 resizedMask.ConvertTo(byteMask, MatType.CV_8UC1);
 
-                //修整box
+                //修整Box
                 if ((boxXMin + byteMask.Width) >= this._sourceSize.Width)
                 {
                     boxXMax = this._sourceSize.Width - 1;
@@ -256,12 +254,12 @@ namespace SD.OpenCV.OnnxRuntime.Models
                 {
                     boxYMax = this._sourceSize.Height - 1;
                 }
-                Rect reBox = new Rect(boxXMin, boxYMin, boxXMax - boxXMin, boxYMax - boxYMin);
+                Rect correctBox = new Rect(boxXMin, boxYMin, boxXMax - boxXMin, boxYMax - boxYMin);
 
-                //获取分割区域
+                //生成最终掩膜
                 using Mat canvas = Mat.Zeros(this._sourceSize, MatType.CV_8UC1);
-                using Mat canvasRoi = new Mat(canvas, reBox);
-                using Mat rangedByteMask = new Mat(byteMask, new Range(0, reBox.Height), new Range(0, reBox.Width));
+                using Mat canvasRoi = new Mat(canvas, correctBox);
+                using Mat rangedByteMask = new Mat(byteMask, new Range(0, correctBox.Height), new Range(0, correctBox.Width));
                 rangedByteMask.CopyTo(canvasRoi);
 
                 //查找轮廓
@@ -269,15 +267,15 @@ namespace SD.OpenCV.OnnxRuntime.Models
                 if (contours.Any())
                 {
                     Point[] contour = contours.OrderByDescending(contour => Cv2.ArcLength(contour, false)).First();
-                    Segmentation segmentation = new Segmentation(detection.Label, reBox, contour, detection.Confidence);
+                    Segmentation segmentation = new Segmentation(detection.Label, correctBox, contour, detection.Confidence);
                     segmentations.Add(segmentation);
                 }
             }
 
             //释放资源
-            foreach (Mat mask in masks)
+            foreach (Mat partialMask in partialMasks)
             {
-                mask.Dispose();
+                partialMask.Dispose();
             }
 
             return segmentations.ToArray();
