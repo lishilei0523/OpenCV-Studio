@@ -29,6 +29,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
         public ResNet(string modelPath)
             : this(modelPath, new SessionOptions())
         {
+
         }
 
         /// <summary>
