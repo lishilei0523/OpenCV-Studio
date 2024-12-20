@@ -225,26 +225,17 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             //绘制
             foreach (ObjectDetection detection in this.Detections)
             {
-                //绘制文本
-                TextVisual2D text = new TextVisual2D();
-                text.Text = $"{detection.Label}: {detection.Confidence:F2}";
-                text.FontSize = 12;
-                text.Fill = new SolidColorBrush(Colors.Yellow);
-                text.X = detection.Box.X;
-                text.Y = detection.Box.Y - text.FontSize - 2;
-
                 //绘制矩形
                 RectangleVisual2D rectangle = new RectangleVisual2D
                 {
-                    StrokeThickness = 1,
                     Location = new Point(detection.Box.X, detection.Box.Y),
                     Size = new Size(detection.Box.Width, detection.Box.Height),
+                    Label = $"{detection.Label}: {detection.Confidence:F2}",
                     Tag = detection
                 };
                 rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
                 detection.Tag = rectangle;
-                this.Shapes.Add(text);
                 this.Shapes.Add(rectangle);
             }
 

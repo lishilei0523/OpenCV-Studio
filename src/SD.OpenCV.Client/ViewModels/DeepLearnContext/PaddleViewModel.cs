@@ -273,27 +273,20 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 Rect correctBox = image.CorrectRectangle(boundingBox);
                 TextDetection detection = new TextDetection(text, correctBox, contour.Confidence);
 
-                //绘制文本
-                TextVisual2D textVisual2D = new TextVisual2D();
-                textVisual2D.Text = $"{detection.Text}: {detection.Confidence:F2}";
-                textVisual2D.FontSize = 12;
-                textVisual2D.Fill = new SolidColorBrush(Colors.Yellow);
-                textVisual2D.X = detection.Box.X;
-                textVisual2D.Y = detection.Box.Y - textVisual2D.FontSize - 2;
-
                 //绘制矩形
                 RectangleVisual2D rectangle = new RectangleVisual2D
                 {
                     StrokeThickness = 1,
                     Location = new Point(detection.Box.X, detection.Box.Y),
                     Size = new Size(detection.Box.Width, detection.Box.Height),
+                    Label = $"{detection.Text}: {detection.Confidence:F2}",
+                    FontSize = 12,
                     Tag = detection
                 };
                 rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
                 detection.Tag = rectangle;
                 this.Detections.Add(detection);
-                this.Shapes.Add(textVisual2D);
                 this.Shapes.Add(rectangle);
             }
 

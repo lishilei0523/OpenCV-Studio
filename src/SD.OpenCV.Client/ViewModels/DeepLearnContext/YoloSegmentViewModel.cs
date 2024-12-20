@@ -25,6 +25,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 {
@@ -224,13 +225,15 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             //绘制
             foreach (ImageSegmentation segmentation in this.Segmentations)
             {
-                //绘制文本
-                TextVisual2D text = new TextVisual2D();
-                text.Text = $"{segmentation.Label}: {segmentation.Confidence:F2}";
-                text.FontSize = 12;
-                text.Fill = new SolidColorBrush(Colors.Yellow);
-                text.X = segmentation.Box.X;
-                text.Y = segmentation.Box.Y - text.FontSize - 2;
+                //绘制矩形
+                RectangleVisual2D rectangle = new RectangleVisual2D
+                {
+                    Location = new Point(segmentation.Box.X, segmentation.Box.Y),
+                    Size = new Size(segmentation.Box.Width, segmentation.Box.Height),
+                    Label = $"{segmentation.Label}: {segmentation.Confidence:F2}",
+                    Tag = segmentation
+                };
+                rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
                 //绘制轮廓
                 IEnumerable<Point> points =
@@ -241,15 +244,13 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 {
                     Fill = new SolidColorBrush(Colors.Red),
                     Opacity = 0.4,
-                    Stroke = new SolidColorBrush(Colors.Red),
-                    StrokeThickness = 1,
                     Points = pointCollection,
                     Tag = segmentation
                 };
                 polygon.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
                 segmentation.Tag = polygon;
-                this.Shapes.Add(text);
+                this.Shapes.Add(rectangle);
                 this.Shapes.Add(polygon);
             }
 
