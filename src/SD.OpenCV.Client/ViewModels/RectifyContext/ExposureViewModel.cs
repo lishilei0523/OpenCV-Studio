@@ -81,7 +81,7 @@ namespace SD.OpenCV.Client.ViewModels.RectifyContext
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                Filter = "图片文件(*.jpg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
                 Multiselect = true,
                 AddExtension = true,
                 RestoreDirectory = true

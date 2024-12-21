@@ -135,7 +135,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Title = "请选择目标图像",
-                Filter = "(*.jpg)|*.jpg|(*.png)|*.png|(*.bmp)|*.bmp",
+                Filter = "图片文件(*.jpg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
                 AddExtension = true,
                 RestoreDirectory = true
             };
