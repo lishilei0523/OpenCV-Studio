@@ -41,7 +41,7 @@
         单目标定、手眼标定、畸变矫正等；
 
     深度学习部分：
-        ResNet图像分类、FasterRCNN目标检测、YOLO目标检测、YOLO图像分割、PaddleOCR字符识别；
+        ResNet图像分类、FasterRCNN目标检测、YOLO目标检测、YOLO定向目标检测、YOLO图像分割、PaddleOCR字符识别；
 
 ## 推荐
 
