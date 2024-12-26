@@ -179,6 +179,42 @@ namespace SD.OpenCV.Tests.TestCases
         }
         #endregion
 
+        #region # 测试YOLO定向目标检测 —— void TestYoloObbDetector()
+        /// <summary>
+        /// 测试YOLO定向目标检测
+        /// </summary>
+        [TestMethod]
+        public void TestYoloObbDetector()
+        {
+            const string modelPath = @"F:\Files\Models\YOLOv11-ONNX\yolo11s-obb.onnx";
+            const string imagePath = "Content/Images/P0009.jpg";
+
+            using Mat image = Cv2.ImRead(imagePath);
+            using YoloObbDetector yoloObbDetector = new YoloObbDetector(modelPath);
+            yoloObbDetector.StartSession();
+            ObbDetection[] detections = yoloObbDetector.Infer(image, 0);
+
+            using Mat targetImage = image.Clone();
+            foreach (ObbDetection detection in detections)
+            {
+                //打印结果
+                string box = $"({detection.RotatedBox.Center.X},{detection.RotatedBox.Center.Y})|{detection.RotatedBox.Size.Width}*{detection.RotatedBox.Size.Height}|{detection.RotatedBox.Angle:F3}";
+                Trace.WriteLine($"{detection.Label}: {detection.Confidence:F2}, Box: {box}");
+
+                //绘制旋转矩形框
+                targetImage.DrawContours([detection.RotatedBox.Points().Select(x => x.ToPoint())], -1, Scalar.Red, 2);
+
+                //绘制文本
+                string labelConfidence = $"{detection.Label}: {detection.Confidence:F2}";
+                targetImage.PutText(labelConfidence, detection.RotatedBox.Center.ToPoint(), HersheyFonts.HersheyPlain, 1, Scalar.Yellow);
+            }
+
+            Cv2.ImShow("原图", image);
+            Cv2.ImShow("效果图", targetImage);
+            Cv2.WaitKey();
+        }
+        #endregion
+
         #region # 测试SuperPoint —— void TestSuperPoint()
         /// <summary>
         /// 测试SuperPoint
