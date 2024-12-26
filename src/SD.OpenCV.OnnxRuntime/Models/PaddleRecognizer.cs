@@ -150,12 +150,12 @@ namespace SD.OpenCV.OnnxRuntime.Models
         }
         #endregion
 
-        #region # 获取标签列表 —— string[] GetLabels()
+        #region # 获取标签列表 —— virtual string[] GetLabels()
         /// <summary>
         /// 获取标签列表
         /// </summary>
         /// <returns>标签列表</returns>
-        private string[] GetLabels()
+        protected virtual string[] GetLabels()
         {
             string[] labels = AppDomain.CurrentDomain.GetData(typeof(PaddleRecognizer).FullName!) as string[];
             if (labels == null)
