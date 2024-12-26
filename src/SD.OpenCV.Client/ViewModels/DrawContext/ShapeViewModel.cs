@@ -232,6 +232,15 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
                     await Task.Run(() => image.Rectangle(rect, borderColor, this.BorderThickness));
                 }
+                if (shapeL is RotatedRectangleL rotatedRectangleL)
+                {
+                    Point[] contour = new Point[4];
+                    contour[0] = new Point(rotatedRectangleL.TopLeft.X, rotatedRectangleL.TopLeft.Y);
+                    contour[1] = new Point(rotatedRectangleL.TopRight.X, rotatedRectangleL.TopRight.Y);
+                    contour[2] = new Point(rotatedRectangleL.BottomRight.X, rotatedRectangleL.BottomRight.Y);
+                    contour[3] = new Point(rotatedRectangleL.BottomLeft.X, rotatedRectangleL.BottomLeft.Y);
+                    await Task.Run(() => image.DrawContours(new[] { contour }, -1, borderColor, this.BorderThickness));
+                }
                 if (shapeL is CircleL circleL)
                 {
                     await Task.Run(() => image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, this.BorderThickness));
