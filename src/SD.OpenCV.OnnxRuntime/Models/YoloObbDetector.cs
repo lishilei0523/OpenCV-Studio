@@ -153,7 +153,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
 
             //解析推理结果
             using Mat mat = Mat.FromArray<float>(results0);
-            using Mat reshapedMat = mat.Reshape(1, labels.Length + 5);//20 = cx,cy,w,h,classes_count,angle
+            using Mat reshapedMat = mat.Reshape(1, results0.Dimensions[1]);//20 = cx,cy,w,h,classes_count,angle
             using Mat transposedMat = reshapedMat.Transpose();
             IList<ObbDetection> detections = new List<ObbDetection>();
             for (int rowIndex = 0; rowIndex < transposedMat.Rows; rowIndex++)
@@ -161,7 +161,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
                 using Mat rowMat = transposedMat[rowIndex, rowIndex + 1, 0, transposedMat.Cols];
                 rowMat.GetArray(out float[] row);
                 float[] boxArray = new float[4];
-                float[] confidencesArray = new float[labels.Length];
+                float[] confidencesArray = new float[results0.Dimensions[1] - 5];//20减去box与angle
                 Array.Copy(row, 0, boxArray, 0, boxArray.Length);
                 Array.Copy(row, 4, confidencesArray, 0, confidencesArray.Length);
 

@@ -153,7 +153,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
 
             //解析推理结果
             using Mat mat = Mat.FromArray<float>(results0);
-            using Mat reshapedMat = mat.Reshape(1, labels.Length + 4);//84 = Box[cx,cy,w,h] + classes_count
+            using Mat reshapedMat = mat.Reshape(1, results0.Dimensions[1]);//84 = Box[cx,cy,w,h] + classes_count
             using Mat transposedMat = reshapedMat.Transpose();
             IList<Detection> detections = new List<Detection>();
             for (int rowIndex = 0; rowIndex < transposedMat.Rows; rowIndex++)
@@ -162,7 +162,7 @@ namespace SD.OpenCV.OnnxRuntime.Models
                 rowMat.GetArray(out float[] row);
 
                 float[] boxArray = new float[4];
-                float[] confidencesArray = new float[labels.Length];
+                float[] confidencesArray = new float[results0.Dimensions[1] - 4];//84减去box
                 Array.Copy(row, 0, boxArray, 0, boxArray.Length);
                 Array.Copy(row, 4, confidencesArray, 0, confidencesArray.Length);
                 float maxConfidence = confidencesArray.Max();//获取置信度最大值
