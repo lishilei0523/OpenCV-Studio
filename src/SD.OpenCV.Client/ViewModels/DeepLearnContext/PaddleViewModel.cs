@@ -4,23 +4,18 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Extensions;
-using SourceChord.FluentWPF.Animations;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
@@ -52,14 +47,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         #endregion
 
         #region # 属性
-
-        #region Canvas模式 —— CanvasMode CanvasMode
-        /// <summary>
-        /// Canvas模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode CanvasMode { get; set; }
-        #endregion
 
         #region Paddle文本检测模型 —— PaddleDetector Detector
         /// <summary>
@@ -128,7 +115,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.CanvasMode = CanvasMode.Scale;
             this.Threshold = 50f;
             this.Detections = new ObservableCollection<TextDetection>();
             this.Shapes = new ObservableCollection<Shape>();
@@ -317,20 +303,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             if (this.SelectedDetection != null)
             {
                 Shape shape = (Shape)this.SelectedDetection.Tag;
-                if (shape.Stroke is SolidColorBrush brush)
-                {
-                    BrushAnimation brushAnimation = new BrushAnimation
-                    {
-                        From = new SolidColorBrush(brush.Color.Invert()),
-                        To = shape.Stroke,
-                        Duration = new Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard storyboard = new Storyboard();
-                    Storyboard.SetTarget(brushAnimation, shape);
-                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
-                    storyboard.Children.Add(brushAnimation);
-                    storyboard.Begin();
-                }
+                shape?.BlinkStroke();
             }
         }
         #endregion

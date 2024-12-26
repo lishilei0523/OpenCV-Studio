@@ -293,7 +293,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             if (this.SelectedShapeL != null)
             {
                 Shape shape = (Shape)this.SelectedShapeL.Tag;
-                shape.Blink();
+                shape.BlinkStroke();
             }
         }
         #endregion
@@ -304,10 +304,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void OnShapeMouseLeftDown(ShapeEventArgs eventArgs)
         {
+            ShapeL shapeL = (ShapeL)eventArgs.Shape.Tag;
             if (this.CanvasMode != CanvasMode.Draw)
             {
                 this.SelectedShapeL = null;
-                this.SelectedShapeL = eventArgs.ShapeL;
+                this.SelectedShapeL = shapeL;
             }
         }
         #endregion

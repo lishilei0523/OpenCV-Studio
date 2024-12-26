@@ -510,6 +510,17 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
+        #region YOLO定向目标检测 —— async void YoloObbDetect()
+        /// <summary>
+        /// YOLO定向目标检测
+        /// </summary>
+        public async void YoloObbDetect()
+        {
+            YoloObbDetectViewModel viewModel = ResolveMediator.Resolve<YoloObbDetectViewModel>();
+            await this._windowManager.ShowWindowAsync(viewModel);
+        }
+        #endregion
+
         #region Paddle字符识别 —— async void PaddleOCR()
         /// <summary>
         /// Paddle字符识别

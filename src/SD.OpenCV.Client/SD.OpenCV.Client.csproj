@@ -9,9 +9,9 @@
     <Company>SD</Company>
     <Description>SD.Framework OpenCV客户端</Description>
     <Copyright>Copyright © SD 2024</Copyright>
-    <Version>1.4.2</Version>
-    <AssemblyVersion>1.4.2</AssemblyVersion>
-    <FileVersion>1.4.2.0</FileVersion>
+    <Version>1.4.3</Version>
+    <AssemblyVersion>1.4.3</AssemblyVersion>
+    <FileVersion>1.4.3.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
@@ -49,7 +49,7 @@
     <PackageReference Include="SD.Toolkits.Serialization" Version="1.0.0" />
     <PackageReference Include="SD.IOC.Core" Version="1.3.2" />
     <PackageReference Include="SD.Infrastructure" Version="3.8.1" />
-    <PackageReference Include="SD.Infrastructure.WPF" Version="1.7.9" />
+    <PackageReference Include="SD.Infrastructure.WPF" Version="1.7.10" />
     <PackageReference Include="SD.Infrastructure.WPF.Caliburn" Version="1.3.0" />
   </ItemGroup>
 

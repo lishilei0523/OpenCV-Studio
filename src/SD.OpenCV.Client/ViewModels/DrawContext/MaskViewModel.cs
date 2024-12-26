@@ -8,15 +8,12 @@ using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Models;
 using SD.OpenCV.Client.ViewModels.CommonContext;
-using SourceChord.FluentWPF.Animations;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Point = OpenCvSharp.Point;
 using Rect = OpenCvSharp.Rect;
@@ -267,20 +264,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             if (this.SelectedShapeL != null)
             {
                 Shape shape = (Shape)this.SelectedShapeL.Tag;
-                if (shape.Stroke is SolidColorBrush brush)
-                {
-                    BrushAnimation brushAnimation = new BrushAnimation
-                    {
-                        From = new SolidColorBrush(brush.Color.Invert()),
-                        To = shape.Stroke,
-                        Duration = new Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard storyboard = new Storyboard();
-                    Storyboard.SetTarget(brushAnimation, shape);
-                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
-                    storyboard.Children.Add(brushAnimation);
-                    storyboard.Begin();
-                }
+                shape?.BlinkStroke();
             }
         }
         #endregion
@@ -291,10 +275,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         public void OnShapeMouseLeftDown(ShapeEventArgs eventArgs)
         {
+            ShapeL shapeL = (ShapeL)eventArgs.Shape.Tag;
             if (this.CanvasMode != CanvasMode.Draw)
             {
                 this.SelectedShapeL = null;
-                this.SelectedShapeL = eventArgs.ShapeL;
+                this.SelectedShapeL = shapeL;
             }
         }
         #endregion

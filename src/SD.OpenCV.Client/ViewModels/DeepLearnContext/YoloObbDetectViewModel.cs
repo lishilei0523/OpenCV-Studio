@@ -4,13 +4,11 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
-using SD.OpenCV.Primitives.Extensions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,9 +24,9 @@ using Size = System.Windows.Size;
 namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 {
     /// <summary>
-    /// YOLO目标检测视图模型
+    /// YOLO定向目标检测视图模型
     /// </summary>
-    public class YoloDetectViewModel : ScreenBase
+    public class YoloObbDetectViewModel : ScreenBase
     {
         #region # 字段及构造器
 
@@ -40,7 +38,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public YoloDetectViewModel(IWindowManager windowManager)
+        public YoloObbDetectViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -49,19 +47,11 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
         #region # 属性
 
-        #region Canvas模式 —— CanvasMode CanvasMode
+        #region YOLO定向目标检测模型 —— YoloObbDetector YoloObbDetector
         /// <summary>
-        /// Canvas模式
+        /// YOLO定向目标检测模型
         /// </summary>
-        [DependencyProperty]
-        public CanvasMode CanvasMode { get; set; }
-        #endregion
-
-        #region YOLO目标检测模型 —— YoloDetector YoloDetector
-        /// <summary>
-        /// YOLO目标检测模型
-        /// </summary>
-        public YoloDetector YoloDetector { get; set; }
+        public YoloObbDetector YoloObbDetector { get; set; }
         #endregion
 
         #region 目标图像 —— BitmapSource TargetImage
@@ -80,20 +70,20 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         public float Threshold { get; set; }
         #endregion
 
-        #region 已选择检测结果 —— ObjectDetection SelectedDetection
+        #region 已选择检测结果 —— ObjectObbDetection SelectedDetection
         /// <summary>
         /// 已选择检测结果
         /// </summary>
         [DependencyProperty]
-        public ObjectDetection SelectedDetection { get; set; }
+        public ObjectObbDetection SelectedDetection { get; set; }
         #endregion
 
-        #region 检测结果列表 —— ObservableCollection<ObjectDetection> Detections
+        #region 检测结果列表 —— ObservableCollection<ObjectObbDetection> Detections
         /// <summary>
         /// 检测结果列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<ObjectDetection> Detections { get; set; }
+        public ObservableCollection<ObjectObbDetection> Detections { get; set; }
         #endregion
 
         #region 形状集 —— ObservableCollection<Shape> Shapes
@@ -117,7 +107,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.CanvasMode = CanvasMode.Scale;
             this.Threshold = 50f;
             this.Shapes = new ObservableCollection<Shape>();
 
@@ -136,7 +125,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Title = "请选择YOLO目标检测模型",
+                Title = "请选择YOLO定向目标检测模型",
                 Filter = "(*.onnx)|*.onnx",
                 AddExtension = true,
                 RestoreDirectory = true
@@ -145,14 +134,14 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             {
                 this.Busy();
 
-                if (this.YoloDetector != null)
+                if (this.YoloObbDetector != null)
                 {
-                    this.YoloDetector.Dispose();
-                    this.YoloDetector = null;
+                    this.YoloObbDetector.Dispose();
+                    this.YoloObbDetector = null;
                 }
 
-                this.YoloDetector = await Task.Run(() => new YoloDetector(openFileDialog.FileName));
-                await Task.Run(() => this.YoloDetector.StartSession());
+                this.YoloObbDetector = await Task.Run(() => new YoloObbDetector(openFileDialog.FileName));
+                await Task.Run(() => this.YoloObbDetector.StartSession());
 
                 this.Idle();
                 MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -194,9 +183,9 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             #region # 验证
 
-            if (this.YoloDetector == null)
+            if (this.YoloObbDetector == null)
             {
-                MessageBox.Show("YOLO目标检测模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("YOLO定向目标检测模型未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (this.TargetImage == null)
@@ -211,28 +200,28 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
 
             this.Reset();
             using Mat image = this.TargetImage.ToMat();
-            Detection[] detections = await Task.Run(() => this.YoloDetector.Infer(image, this.Threshold / 100));
-            IEnumerable<ObjectDetection> objectDetections =
+            ObbDetection[] detections = await Task.Run(() => this.YoloObbDetector.Infer(image, this.Threshold / 100));
+            IEnumerable<ObjectObbDetection> objectObbDetections =
                 from detection in detections
-                let box = image.CorrectRectangle(detection.Box)
-                select new ObjectDetection(detection.Label, box, detection.Confidence);
-            this.Detections = new ObservableCollection<ObjectDetection>(objectDetections);
+                select new ObjectObbDetection(detection.Label, detection.RotatedBox, detection.Confidence);
+            this.Detections = new ObservableCollection<ObjectObbDetection>(objectObbDetections);
 
             //绘制
-            foreach (ObjectDetection detection in this.Detections)
+            foreach (ObjectObbDetection detection in this.Detections)
             {
-                //绘制矩形
-                RectangleVisual2D rectangle = new RectangleVisual2D
+                //绘制旋转矩形
+                RotatedRectangleVisual2D rotatedRectangle = new RotatedRectangleVisual2D
                 {
-                    Location = new Point(detection.Box.X, detection.Box.Y),
-                    Size = new Size(detection.Box.Width, detection.Box.Height),
+                    Center = new Point(detection.RotatedBox.Center.X, detection.RotatedBox.Center.Y),
+                    Size = new Size(detection.RotatedBox.Size.Width, detection.RotatedBox.Size.Height),
+                    Angle = detection.RotatedBox.Angle,
                     Label = $"{detection.Label}: {detection.Confidence:F2}",
-                    Tag = detection
+                    ShowCenter = false
                 };
-                rectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+                rotatedRectangle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
 
-                detection.Tag = rectangle;
-                this.Shapes.Add(rectangle);
+                detection.Tag = rotatedRectangle;
+                this.Shapes.Add(rotatedRectangle);
             }
 
             this.Idle();
@@ -271,10 +260,10 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         /// <summary>
         /// 形状鼠标左击事件
         /// </summary>
-        private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
+        private void OnShapeMouseLeftDown(object sender, MouseEventArgs eventArgs)
         {
             Shape shape = (Shape)sender;
-            ObjectDetection detection = (ObjectDetection)shape.Tag;
+            ObjectObbDetection detection = (ObjectObbDetection)shape.Tag;
             this.SelectedDetection = null;
             this.SelectedDetection = detection;
         }
@@ -288,8 +277,8 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         {
             if (close)
             {
-                this.YoloDetector?.Dispose();
-                this.YoloDetector = null;
+                this.YoloObbDetector?.Dispose();
+                this.YoloObbDetector = null;
             }
             return base.OnDeactivateAsync(close, cancellationToken);
         }

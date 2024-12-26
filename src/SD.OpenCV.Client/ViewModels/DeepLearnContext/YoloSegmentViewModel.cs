@@ -4,15 +4,12 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
 using SD.OpenCV.OnnxRuntime.Values;
 using SD.OpenCV.Primitives.Extensions;
-using SourceChord.FluentWPF.Animations;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,7 +18,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
@@ -52,14 +48,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         #endregion
 
         #region # 属性
-
-        #region Canvas模式 —— CanvasMode CanvasMode
-        /// <summary>
-        /// Canvas模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode CanvasMode { get; set; }
-        #endregion
 
         #region YOLO图像分割模型 —— YoloSegmenter YoloSegmenter
         /// <summary>
@@ -121,7 +109,6 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.CanvasMode = CanvasMode.Scale;
             this.Threshold = 50f;
             this.Shapes = new ObservableCollection<Shape>();
 
@@ -281,20 +268,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
             if (this.SelectedSegmentation != null)
             {
                 Shape shape = (Shape)this.SelectedSegmentation.Tag;
-                if (shape.Fill is SolidColorBrush brush)
-                {
-                    BrushAnimation brushAnimation = new BrushAnimation
-                    {
-                        From = new SolidColorBrush(brush.Color.Invert()),
-                        To = shape.Fill,
-                        Duration = new Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard storyboard = new Storyboard();
-                    Storyboard.SetTarget(brushAnimation, shape);
-                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.FillProperty));
-                    storyboard.Children.Add(brushAnimation);
-                    storyboard.Begin();
-                }
+                shape?.BlinkFill();
             }
         }
         #endregion
