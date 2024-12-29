@@ -101,10 +101,9 @@
                             <sd:CanvasEx.BackgroundImage>
                                 <Image Source="{Binding TargetImage}" />
                             </sd:CanvasEx.BackgroundImage>
-                            <sd:RectangleVisual2D Fill="Transparent" Stroke="Red" StrokeThickness="2"
-                                              Visibility="{Binding TargetRectangle.Visibility}"
-                                              Location="{Binding TargetRectangle.Location}"
-                                              Size="{Binding TargetRectangle.Size}" />
+                            <sd:RectangleVisual2D Location="{Binding TargetRectangle.Location}"
+                                                  Size="{Binding TargetRectangle.Size}"
+                                                  Visibility="{Binding TargetRectangle.Visibility}" />
                         </sd:CanvasEx>
                     </GroupBox>
                 </Grid>
