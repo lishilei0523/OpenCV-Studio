@@ -18,16 +18,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 using Point = OpenCvSharp.Point;
 using Rect = OpenCvSharp.Rect;
 
-namespace SD.OpenCV.Client.ViewModels.DrawContext
+namespace SD.OpenCV.Client.ViewModels.CanvasContext
 {
     /// <summary>
-    /// 绘制形状视图模型
+    /// Canvas视图模型
     /// </summary>
-    public class ShapeViewModel : PreviewViewModel
+    public class CanvasViewModel : PreviewViewModel
     {
         #region # 字段及构造器
 
@@ -39,7 +41,7 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// <summary>
         /// 依赖注入构造器
         /// </summary>
-        public ShapeViewModel(IWindowManager windowManager)
+        public CanvasViewModel(IWindowManager windowManager)
         {
             this._windowManager = windowManager;
         }
@@ -47,6 +49,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         #endregion
 
         #region # 属性
+
+        #region 图像路径 —— string ImagePath
+        /// <summary>
+        /// 图像路径
+        /// </summary>
+        public string ImagePath { get; set; }
+        #endregion
 
         #region 边框颜色 —— Color BorderColor
         /// <summary>
@@ -161,6 +170,18 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this.ShapeLs = new ObservableCollection<ShapeL>();
 
             return base.OnInitializeAsync(cancellationToken);
+        }
+        #endregion
+
+        #region 加载 —— void Load(string imagePath, BitmapSource bitmapSource)
+        /// <summary>
+        /// 加载
+        /// </summary>
+        public void Load(string imagePath, BitmapSource bitmapSource)
+        {
+            this.ImagePath = imagePath;
+            this.BitmapSource = bitmapSource;
+            this.Image = bitmapSource.ToMat();
         }
         #endregion
 
@@ -313,37 +334,9 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             this.Busy();
 
-            const int thickness = -1;
             using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
-            foreach (ShapeL shapeL in this.ShapeLs)
-            {
-                if (shapeL is RectangleL rectangleL)
-                {
-                    Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
-                    await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
-                }
-                if (shapeL is CircleL circleL)
-                {
-                    await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
-                }
-                if (shapeL is EllipseL ellipseL)
-                {
-                    Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
-                    Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
-                    RotatedRect rect = new RotatedRect(center, size, 0);
-                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
-                }
-                if (shapeL is PolygonL polygonL)
-                {
-                    Point[] contour = new Point[polygonL.Points.Count];
-                    for (int index = 0; index < contour.Length; index++)
-                    {
-                        PointL pointL = polygonL.Points.ElementAt(index);
-                        contour[index] = new Point(pointL.X, pointL.Y);
-                    }
-                    await Task.Run(() => mask.DrawContours(new[] { contour }, -1, Scalar.White, thickness));
-                }
-            }
+            await this.DrawMask(mask, this.ShapeLs);
+
             this.BitmapSource = mask.ToBitmapSource();
 
             this.Idle();
@@ -371,37 +364,8 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
 
             #endregion
 
-            const int thickness = -1;
             using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
-            foreach (ShapeL shapeL in this.ShapeLs)
-            {
-                if (shapeL is RectangleL rectangleL)
-                {
-                    Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
-                    await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
-                }
-                if (shapeL is CircleL circleL)
-                {
-                    await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
-                }
-                if (shapeL is EllipseL ellipseL)
-                {
-                    Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
-                    Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
-                    RotatedRect rect = new RotatedRect(center, size, 0);
-                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
-                }
-                if (shapeL is PolygonL polygonL)
-                {
-                    Point[] contour = new Point[polygonL.Points.Count];
-                    for (int index = 0; index < polygonL.Points.Count; index++)
-                    {
-                        PointL pointL = polygonL.Points.ElementAt(index);
-                        contour[index] = new Point(pointL.X, pointL.Y);
-                    }
-                    await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
-                }
-            }
+            await this.DrawMask(mask, this.ShapeLs);
 
             //提取有效区域
             using Mat result = new Mat();
@@ -527,11 +491,13 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
                     }
                 }
 
+                string imageName = Path.GetFileNameWithoutExtension(this.ImagePath);
+                string imageExtension = Path.GetExtension(this.ImagePath);
                 for (int index = 0; index < results.Count; index++)
                 {
-                    using Mat result = results[index];
+                    string imagePartPath = $@"{folderDialog.FileName}\{imageName}-{index + 1}{imageExtension}";
 
-                    string imagePartPath = $@"{folderDialog.FileName}\{index + 1}.jpg";
+                    using Mat result = results[index];
                     await Task.Run(() => result.SaveImage(imagePartPath));
                 }
 
@@ -582,6 +548,59 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             System.Windows.Point rectifiedPosition = canvas.RectifiedMousePosition!.Value;
             this.MousePositionX = (int)Math.Ceiling(rectifiedPosition.X);
             this.MousePositionY = (int)Math.Ceiling(rectifiedPosition.Y);
+        }
+        #endregion
+
+
+        //Private
+
+        #region 绘制掩膜 —— async Task DrawMask(Mat mask, IList<ShapeL> shapeLs)
+        /// <summary>
+        /// 绘制掩膜
+        /// </summary>
+        /// <param name="mask">掩膜</param>
+        /// <param name="shapeLs">形状列表</param>
+        private async Task DrawMask(Mat mask, IList<ShapeL> shapeLs)
+        {
+            const int thickness = -1;
+            foreach (ShapeL shapeL in this.ShapeLs)
+            {
+                if (shapeL is RectangleL rectangleL)
+                {
+                    Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
+                    await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
+                }
+                if (shapeL is RotatedRectangleL rotatedRectangleL)
+                {
+                    Point[] contour = new Point[4];
+                    contour[0] = new Point(rotatedRectangleL.TopLeft.X, rotatedRectangleL.TopLeft.Y);
+                    contour[1] = new Point(rotatedRectangleL.TopRight.X, rotatedRectangleL.TopRight.Y);
+                    contour[2] = new Point(rotatedRectangleL.BottomRight.X, rotatedRectangleL.BottomRight.Y);
+                    contour[3] = new Point(rotatedRectangleL.BottomLeft.X, rotatedRectangleL.BottomLeft.Y);
+                    await Task.Run(() => mask.DrawContours(new[] { contour }, -1, Scalar.White, thickness));
+                }
+                if (shapeL is CircleL circleL)
+                {
+                    await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
+                }
+                if (shapeL is EllipseL ellipseL)
+                {
+                    Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
+                    Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
+                    RotatedRect rect = new RotatedRect(center, size, 0);
+                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
+                }
+                if (shapeL is PolygonL polygonL)
+                {
+                    Point[] contour = new Point[polygonL.Points.Count];
+                    for (int index = 0; index < contour.Length; index++)
+                    {
+                        PointL pointL = polygonL.Points.ElementAt(index);
+                        contour[index] = new Point(pointL.X, pointL.Y);
+                    }
+                    await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
+                }
+            }
         }
         #endregion
 

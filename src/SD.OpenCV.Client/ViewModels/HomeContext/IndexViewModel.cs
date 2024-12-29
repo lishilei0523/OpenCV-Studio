@@ -9,9 +9,9 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CalibrationContext;
+using SD.OpenCV.Client.ViewModels.CanvasContext;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using SD.OpenCV.Client.ViewModels.DeepLearnContext;
-using SD.OpenCV.Client.ViewModels.DrawContext;
 using SD.OpenCV.Client.ViewModels.EdgeContext;
 using SD.OpenCV.Client.ViewModels.FrequencyBlurContext;
 using SD.OpenCV.Client.ViewModels.GeometryContext;
@@ -368,6 +368,36 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
 
 
         //工具
+
+        #region Canvas —— async void Canvas()
+        /// <summary>
+        /// Canvas
+        /// </summary>
+        public async void Canvas()
+        {
+            #region # 验证
+
+            if (this.EffectiveImage == null)
+            {
+                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            CanvasViewModel viewModel = ResolveMediator.Resolve<CanvasViewModel>();
+            viewModel.Load(this.FilePath, this.EffectiveImage);
+            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
+            if (result == true)
+            {
+                this.EffectiveImage = viewModel.BitmapSource;
+            }
+
+            this.Idle();
+        }
+        #endregion
 
         #region 仿射变换 —— async void AffineTransform()
         /// <summary>
@@ -3325,39 +3355,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             ImageViewModel imageViewModel = ResolveMediator.Resolve<ImageViewModel>();
             imageViewModel.Load(bitmapSource, "XFeat特征直方图");
             await this._windowManager.ShowWindowAsync(imageViewModel);
-
-            this.Idle();
-        }
-        #endregion
-
-
-        //绘制
-
-        #region 绘制形状 —— async void DrawShapes()
-        /// <summary>
-        /// 绘制形状
-        /// </summary>
-        public async void DrawShapes()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            ShapeViewModel viewModel = ResolveMediator.Resolve<ShapeViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
 
             this.Idle();
         }

@@ -43,6 +43,7 @@
                     <MenuItem Header="另存为(_A)" cm:Message.Attach="SaveAsImage()" />
                 </MenuItem>
                 <MenuItem Header="工具(_T)">
+                    <MenuItem Header="Canvas(_C)" cm:Message.Attach="Canvas()" />
                     <MenuItem Header="仿射变换(_A)" cm:Message.Attach="AffineTransform()" />
                     <MenuItem Header="透视变换(_P)" cm:Message.Attach="PerspectiveTransform()" />
                     <MenuItem Header="模板匹配(_T)" cm:Message.Attach="TemplateMatch()" />
@@ -50,7 +51,7 @@
                     <MenuItem Header="曝光融合(_E)" cm:Message.Attach="ExposureFusion()" />
                     <MenuItem Header="单目标定(_M)" cm:Message.Attach="MonoCalibrate()" />
                     <MenuItem Header="手眼标定(_H)" cm:Message.Attach="CalibrateHandEye()" />
-                    <MenuItem Header="ResNet图像分类(_C)" cm:Message.Attach="ResNetClassify()" />
+                    <MenuItem Header="ResNet图像分类(_L)" cm:Message.Attach="ResNetClassify()" />
                     <MenuItem Header="R-CNN目标检测(_R)" cm:Message.Attach="FasterRcnnDetect()" />
                     <MenuItem Header="YOLO目标检测(_Y)" cm:Message.Attach="YoloDetect()" />
                     <MenuItem Header="YOLO图像分割(_S)" cm:Message.Attach="YoloSegment()" />
@@ -166,9 +167,6 @@
                     <MenuItem Header="Super特征(_P)" cm:Message.Attach="ComputeSuper()" />
                     <MenuItem Header="Disk特征(_D)" cm:Message.Attach="ComputeDisk()" />
                     <MenuItem Header="XFeat特征(_X)" cm:Message.Attach="ComputeXFeat()" />
-                </MenuItem>
-                <MenuItem Header="绘制(_P)">
-                    <MenuItem Header="绘制形状(_S)" cm:Message.Attach="DrawShapes()" />
                 </MenuItem>
                 <MenuItem Header="分割(_J)">
                     <MenuItem Header="阈值分割(_T)" cm:Message.Attach="ThresholdSegment()" />
