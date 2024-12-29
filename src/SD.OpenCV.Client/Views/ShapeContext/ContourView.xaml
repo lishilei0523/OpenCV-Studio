@@ -36,46 +36,46 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <WrapPanel Grid.Column="0" Margin="4,0,0,0" VerticalAlignment="Center">
-                    <ToggleButton ToolTip="缩放" IsChecked="{Binding ScaleChecked}" 
-                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                              cm:Message.Attach="OnScaleClick()">
+                    <ToggleButton ToolTip="缩放" x:Name="ScaleChecked" IsChecked="True"
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
                     </ToggleButton>
-                    <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
-                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                              cm:Message.Attach="OnDragClick()">
+                    <ToggleButton ToolTip="拖拽" x:Name="DragChecked"
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="Navigation" />
                     </ToggleButton>
-                    <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
-                              Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                              cm:Message.Attach="OnResizeClick()">
+                    <ToggleButton ToolTip="编辑" x:Name="ResizeChecked"
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
                     </ToggleButton>
                 </WrapPanel>
                 <WrapPanel Grid.Column="1" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="检测模式：" />
                     <ComboBox ItemsSource="{Binding RetrievalModes}"
-                          DisplayMemberPath="Value"
-                          SelectedValuePath="Key"
-                          SelectedValue="{Binding RetrievalMode}"
-                          mah:TextBoxHelper.ClearTextButton="False"
-                          mah:TextBoxHelper.Watermark="请选择" 
+                              DisplayMemberPath="Value"
+                              SelectedValuePath="Key"
+                              SelectedValue="{Binding RetrievalMode}"
+                              mah:TextBoxHelper.ClearTextButton="False"
+                              mah:TextBoxHelper.Watermark="请选择" 
                           Width="150"
                           Style="{StaticResource ComboBox.Styles.Default}" />
                     <TextBlock Text="近似模式：" Margin="10,0,0,0" />
                     <ComboBox ItemsSource="{Binding ApproxModes}"
-                          DisplayMemberPath="Value"
-                          SelectedValuePath="Key"
-                          SelectedValue="{Binding ApproxMode}"
-                          mah:TextBoxHelper.ClearTextButton="False"
-                          mah:TextBoxHelper.Watermark="请选择" 
-                          Width="150"
+                              DisplayMemberPath="Value"
+                              SelectedValuePath="Key"
+                              SelectedValue="{Binding ApproxMode}"
+                              mah:TextBoxHelper.ClearTextButton="False"
+                              mah:TextBoxHelper.Watermark="请选择" 
+                              Width="150"
                           Style="{StaticResource ComboBox.Styles.Default}" />
-                    <TextBlock Text="面积阈值：" Margin="10,0,0,0" />
-                    <mah:NumericUpDown Minimum="0" Maximum="2000000"
-                                   Value="{Binding AreaThreshold, UpdateSourceTrigger=PropertyChanged}"
-                                   Width="150"
-                                   Style="{StaticResource NumericUpDown.Styles.Default}" />
+                    <TextBlock Text="最小周长：" Margin="10,0,0,0" />
+                    <mah:NumericUpDown Minimum="0" Maximum="2000000" Width="150"
+                                       Value="{Binding MinLength, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource NumericUpDown.Styles.Default}" />
+                    <TextBlock Text="最大周长：" Margin="10,0,0,0" />
+                    <mah:NumericUpDown Minimum="0" Maximum="2000000" Width="150"
+                                       Value="{Binding MaxLength, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource NumericUpDown.Styles.Default}" />
                     <Button Content="查找" cm:Message.Attach="FindContours()" Style="{StaticResource Button.Styles.Fluent.Focus}" />
                 </WrapPanel>
             </Grid>
@@ -89,14 +89,16 @@
                 </Grid.ColumnDefinitions>
                 <!--图像画布-->
                 <GroupBox Grid.Column="0" Header="图像画布" Margin="4,4,2,4" Background="LightGray">
-                    <sd:CanvasEx Mode="{Binding CanvasMode}" ItemsSource="{Binding Shapes}" 
-                                 cm:Message.Attach="
-                                 [Event ElementDrag] = [Action OnDragElement($source)];
-                                 [Event ElementResize] = [Action OnResizeElement($source)];">
+                    <sd:DrawableCanvasEx ScaleChecked="{Binding ElementName=ScaleChecked, Path=IsChecked, Mode=TwoWay}"
+                                         DragChecked="{Binding ElementName=DragChecked, Path=IsChecked, Mode=TwoWay}"
+                                         ResizeChecked="{Binding ElementName=ResizeChecked, Path=IsChecked, Mode=TwoWay}"
+                                         ItemsSource="{Binding Shapes}" 
+                                         DatasSource="{Binding ShapeLs}"
+                                         cm:Message.Attach="[Event ShapeClick] = [Action OnShapeMouseLeftDown($source,$eventArgs)];">
                         <sd:CanvasEx.BackgroundImage>
                             <Image Source="{Binding BitmapSource}" />
                         </sd:CanvasEx.BackgroundImage>
-                    </sd:CanvasEx>
+                    </sd:DrawableCanvasEx>
                 </GroupBox>
                 <!--轮廓列表-->
                 <GroupBox Grid.Column="1" Header="轮廓列表" Margin="2,4,4,4">

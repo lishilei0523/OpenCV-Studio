@@ -7,18 +7,17 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
+using SD.Infrastructure.WPF.Models;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.ViewModels.CommonContext;
-using SourceChord.FluentWPF.Animations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Point = System.Windows.Point;
 
@@ -56,38 +55,6 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
 
         #region # 属性
 
-        #region 操作模式 —— CanvasMode CanvasMode
-        /// <summary>
-        /// 操作模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode CanvasMode { get; set; }
-        #endregion
-
-        #region 选中缩放 —— bool ScaleChecked
-        /// <summary>
-        /// 选中缩放
-        /// </summary>
-        [DependencyProperty]
-        public bool ScaleChecked { get; set; }
-        #endregion
-
-        #region 选中拖拽 —— bool DragChecked
-        /// <summary>
-        /// 选中拖拽
-        /// </summary>
-        [DependencyProperty]
-        public bool DragChecked { get; set; }
-        #endregion
-
-        #region 选中编辑 —— bool ResizeChecked
-        /// <summary>
-        /// 选中编辑
-        /// </summary>
-        [DependencyProperty]
-        public bool ResizeChecked { get; set; }
-        #endregion
-
         #region 查找模式 —— HoughModes HoughMode
         /// <summary>
         /// 查找模式
@@ -96,36 +63,36 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
         public HoughModes HoughMode { get; set; }
         #endregion
 
-        #region 分辨率 —— double? Dp
+        #region 分辨率 —— double Dp
         /// <summary>
         /// 分辨率
         /// </summary>
         [DependencyProperty]
-        public double? Dp { get; set; }
+        public double Dp { get; set; }
         #endregion
 
-        #region 圆心最小距离 —— double? MinDistance
+        #region 圆心最小距离 —— double MinDistance
         /// <summary>
         /// 圆心最小距离
         /// </summary>
         [DependencyProperty]
-        public double? MinDistance { get; set; }
+        public double MinDistance { get; set; }
         #endregion
 
-        #region 最小半径 —— int? MinRadius
+        #region 最小半径 —— int MinRadius
         /// <summary>
         /// 最小半径
         /// </summary>
         [DependencyProperty]
-        public int? MinRadius { get; set; }
+        public int MinRadius { get; set; }
         #endregion
 
-        #region 最大半径 —— int? MaxRadius
+        #region 最大半径 —— int MaxRadius
         /// <summary>
         /// 最大半径
         /// </summary>
         [DependencyProperty]
-        public int? MaxRadius { get; set; }
+        public int MaxRadius { get; set; }
         #endregion
 
         #region 已选形状数据 —— ShapeL SelectedShapeL
@@ -136,17 +103,17 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
         public ShapeL SelectedShapeL { get; set; }
         #endregion
 
-        #region 形状集 —— ObservableCollection<Shape> Shapes
+        #region 形状列表 —— ObservableCollection<Shape> Shapes
         /// <summary>
-        /// 形状集
+        /// 形状列表
         /// </summary>
         [DependencyProperty]
         public ObservableCollection<Shape> Shapes { get; set; }
         #endregion
 
-        #region 形状数据集 —— ObservableCollection<ShapeL> ShapeLs
+        #region 形状数据列表 —— ObservableCollection<ShapeL> ShapeLs
         /// <summary>
-        /// 形状数据集
+        /// 形状数据列表
         /// </summary>
         [DependencyProperty]
         public ObservableCollection<ShapeL> ShapeLs { get; set; }
@@ -173,14 +140,13 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.ScaleChecked = true;
-            this.HoughMode = OpenCvSharp.HoughModes.Gradient;
             this.Dp = 1;
             this.MinDistance = 200;
             this.MinRadius = 0;
             this.MaxRadius = 500;
             this.Shapes = new ObservableCollection<Shape>();
             this.ShapeLs = new ObservableCollection<ShapeL>();
+            this.HoughMode = OpenCvSharp.HoughModes.Gradient;
             this.HoughModes = typeof(HoughModes).GetEnumMembers();
 
             return base.OnInitializeAsync(cancellationToken);
@@ -203,44 +169,26 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
                 MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (!this.Dp.HasValue)
-            {
-                MessageBox.Show("分辨率不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (!this.MinDistance.HasValue)
-            {
-                MessageBox.Show("圆心最小距离不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (!this.MinRadius.HasValue)
-            {
-                MessageBox.Show("最小半径不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (!this.MaxRadius.HasValue)
-            {
-                MessageBox.Show("最大半径不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             #endregion
 
             this.Busy();
 
             //清空圆形
-            this.ShapeLs.Clear();
             this.Shapes.Clear();
+            this.ShapeLs.Clear();
 
             //查找圆形
             using Mat image = this.BitmapSource.ToMat();
-            using Mat grayImage = image.Type() == MatType.CV_8UC1 ? image : image.CvtColor(ColorConversionCodes.BGR2GRAY);
-            CircleSegment[] circles = await Task.Run(() => Cv2.HoughCircles(grayImage, this.HoughMode, this.Dp!.Value, this.MinDistance!.Value, 100D, 100D, this.MinRadius!.Value, this.MaxRadius!.Value));
+            using Mat grayImage = image.Type() == MatType.CV_8UC1
+                ? image
+                : image.CvtColor(ColorConversionCodes.BGR2GRAY);
+            CircleSegment[] circleSegments = await Task.Run(() => Cv2.HoughCircles(grayImage, this.HoughMode, this.Dp, this.MinDistance, 100D, 100D, this.MinRadius, this.MaxRadius));
 
             //绘制圆形
-            for (int index = 0; index < circles.Length; index++)
+            for (int index = 0; index < circleSegments.Length; index++)
             {
-                CircleSegment circleSegment = circles[index];
+                CircleSegment circleSegment = circleSegments[index];
                 OpenCvSharp.Point center = circleSegment.Center.ToPoint();
                 int radius = (int)Math.Ceiling(circleSegment.Radius);
 
@@ -249,16 +197,13 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
                 {
                     Center = new Point(circleSegment.Center.X, circleSegment.Center.Y),
                     Radius = circleSegment.Radius,
-                    Fill = new SolidColorBrush(Colors.Transparent),
-                    Stroke = new SolidColorBrush(_CircleColors[index % 5]),
-                    StrokeThickness = 2,
-                    Tag = circleL
+                    Stroke = new SolidColorBrush(_CircleColors[index % 5])
                 };
 
+                circle.Tag = circleL;
                 circleL.Tag = circle;
-                this.ShapeLs.Add(circleL);
                 this.Shapes.Add(circle);
-                circle.MouseLeftButtonDown += this.OnShapeMouseLeftDown;
+                this.ShapeLs.Add(circleL);
             }
 
             this.Idle();
@@ -316,17 +261,16 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
             this.Busy();
 
             using Mat image = this.BitmapSource.ToMat();
-            using Mat colorImage = image.Type() == MatType.CV_8UC1 ? image.CvtColor(ColorConversionCodes.GRAY2BGR) : image;
-            foreach (Shape shape in this.Shapes)
+            using Mat colorImage = image.Type() == MatType.CV_8UC1
+                ? image.CvtColor(ColorConversionCodes.GRAY2BGR)
+                : image;
+            foreach (CircleVisual2D circle in this.Shapes.OfType<CircleVisual2D>())
             {
-                int thickness = (int)Math.Ceiling(shape.StrokeThickness);
-                SolidColorBrush borderBrush = (SolidColorBrush)shape.Stroke;
+                CircleL circleL = (CircleL)circle.Tag;
+                int thickness = (int)Math.Ceiling(circle.StrokeThickness);
+                SolidColorBrush borderBrush = (SolidColorBrush)circle.Stroke;
                 Scalar borderColor = new Scalar(borderBrush.Color.B, borderBrush.Color.G, borderBrush.Color.R);
-                if (shape is CircleVisual2D circle)
-                {
-                    CircleL circleL = (CircleL)circle.Tag;
-                    await Task.Run(() => image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness));
-                }
+                await Task.Run(() => image.Circle(circleL.X, circleL.Y, circleL.Radius, borderColor, thickness));
             }
 
             this.BitmapSource = colorImage.ToBitmapSource();
@@ -343,11 +287,6 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
         /// </summary>
         public override void Reset()
         {
-            foreach (Shape shape in this.Shapes)
-            {
-                CanvasEx canvasEx = (CanvasEx)shape.Parent;
-                canvasEx.Children.Remove(shape);
-            }
             this.Shapes.Clear();
             this.ShapeLs.Clear();
 
@@ -358,89 +297,6 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
 
         //Events
 
-        #region 缩放点击事件 —— void OnScaleClick()
-        /// <summary>
-        /// 缩放点击事件
-        /// </summary>
-        public void OnScaleClick()
-        {
-            if (this.ScaleChecked)
-            {
-                this.CanvasMode = CanvasMode.Scale;
-
-                this.DragChecked = false;
-                this.ResizeChecked = false;
-            }
-        }
-        #endregion
-
-        #region 拖拽点击事件 —— void OnDragClick()
-        /// <summary>
-        /// 拖拽点击事件
-        /// </summary>
-        public void OnDragClick()
-        {
-            if (this.DragChecked)
-            {
-                this.CanvasMode = CanvasMode.Drag;
-
-                this.ScaleChecked = false;
-                this.ResizeChecked = false;
-            }
-        }
-        #endregion
-
-        #region 编辑点击事件 —— void OnResizeClick()
-        /// <summary>
-        /// 编辑点击事件
-        /// </summary>
-        public void OnResizeClick()
-        {
-            if (this.ResizeChecked)
-            {
-                this.CanvasMode = CanvasMode.Resize;
-
-                this.ScaleChecked = false;
-                this.DragChecked = false;
-            }
-        }
-        #endregion
-
-        #region 拖拽元素事件 —— void OnDragElement(CanvasEx canvas)
-        /// <summary>
-        /// 拖拽元素事件
-        /// </summary>
-        public void OnDragElement(CanvasEx canvas)
-        {
-            double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
-            double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-            if (canvas.SelectedVisual is CircleVisual2D circle)
-            {
-                this.RebuildCircle(circle, leftMargin, topMargin);
-            }
-        }
-        #endregion
-
-        #region 改变元素尺寸事件 —— void OnResizeElement(CanvasEx canvas)
-        /// <summary>
-        /// 改变元素尺寸事件
-        /// </summary>
-        public void OnResizeElement(CanvasEx canvas)
-        {
-            double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
-            double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-
-            if (canvas.SelectedVisual is CircleVisual2D circle)
-            {
-                Point retifiedCenter = new Point(circle.Center.X + leftMargin, circle.Center.Y + topMargin);
-                Vector vector = retifiedCenter - canvas.RectifiedMousePosition!.Value;
-                circle.Radius = Math.Abs(vector.Length);
-
-                this.RebuildCircle(circle, leftMargin, topMargin);
-            }
-        }
-        #endregion
-
         #region 选中形状事件 —— void OnSelectShape()
         /// <summary>
         /// 选中形状事件
@@ -450,64 +306,20 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
             if (this.SelectedShapeL != null)
             {
                 Shape shape = (Shape)this.SelectedShapeL.Tag;
-                if (shape.Stroke is SolidColorBrush brush)
-                {
-                    BrushAnimation brushAnimation = new BrushAnimation
-                    {
-                        From = new SolidColorBrush(brush.Color.Invert()),
-                        To = shape.Stroke,
-                        Duration = new Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard storyboard = new Storyboard();
-                    Storyboard.SetTarget(brushAnimation, shape);
-                    Storyboard.SetTargetProperty(brushAnimation, new PropertyPath(Shape.StrokeProperty));
-                    storyboard.Children.Add(brushAnimation);
-                    storyboard.Begin();
-                }
+                shape.BlinkStroke();
             }
         }
         #endregion
 
-
-        //Private
-
-        #region 重建圆形 —— void RebuildCircle(CircleVisual2D circle, double leftMargin, double topMargin)
-        /// <summary>
-        /// 重建圆形
-        /// </summary>
-        /// <param name="circle">圆形</param>
-        /// <param name="leftMargin">左边距</param>
-        /// <param name="topMargin">上边距</param>
-        private void RebuildCircle(CircleVisual2D circle, double leftMargin, double topMargin)
-        {
-            CircleL circleL = (CircleL)circle.Tag;
-            int index = this.ShapeLs.IndexOf(circleL);
-            if (index != -1)
-            {
-                this.ShapeLs.Remove(circleL);
-
-                int x = (int)Math.Ceiling(circle.Center.X + leftMargin);
-                int y = (int)Math.Ceiling(circle.Center.Y + topMargin);
-                int radius = (int)Math.Ceiling(circle.Radius);
-                CircleL newCircleL = new CircleL(x, y, radius);
-
-                circle.Tag = newCircleL;
-                newCircleL.Tag = circle;
-                this.ShapeLs.Insert(index, newCircleL);
-            }
-        }
-        #endregion
-
-        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(object sender...
+        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(CanvasEx canvas...
         /// <summary>
         /// 形状鼠标左击事件
         /// </summary>
-        private void OnShapeMouseLeftDown(object sender, MouseButtonEventArgs eventArgs)
+        public void OnShapeMouseLeftDown(CanvasEx canvas, ShapeEventArgs eventArgs)
         {
-            if (this.CanvasMode != CanvasMode.Draw)
+            if (canvas.Mode != CanvasMode.Draw)
             {
-                Shape shape = (Shape)sender;
-                ShapeL shapeL = (ShapeL)shape.Tag;
+                ShapeL shapeL = (ShapeL)eventArgs.Shape.Tag;
                 this.SelectedShapeL = null;
                 this.SelectedShapeL = shapeL;
             }

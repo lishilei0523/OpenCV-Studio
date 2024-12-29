@@ -46,35 +46,35 @@
                 <!--ToolBar-->
                 <WrapPanel Grid.Column="1" Margin="0,0,4,0" VerticalAlignment="Center">
                     <ToggleButton ToolTip="缩放" x:Name="ScaleChecked" IsChecked="True"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="ZoomIn" />
                     </ToggleButton>
                     <ToggleButton ToolTip="拖拽" x:Name="DragChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="Navigation" />
                     </ToggleButton>
                     <ToggleButton ToolTip="编辑" x:Name="ResizeChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
                     </ToggleButton>
                     <ToggleButton ToolTip="点" x:Name="PointChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
                     </ToggleButton>
                     <ToggleButton ToolTip="线段" x:Name="LineChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="Remove" />
                     </ToggleButton>
                     <ToggleButton ToolTip="画刷" x:Name="BrushChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="Brush" />
                     </ToggleButton>
                     <ToggleButton ToolTip="矩形" x:Name="RectangleChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
                     </ToggleButton>
                     <ToggleButton ToolTip="旋转矩形" x:Name="RotatedRectangleChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="CropSquare">
                             <iconPacks:PackIconMaterialDesign.RenderTransform>
                                 <RotateTransform Angle="45" CenterX="8" CenterY="8" />
@@ -82,11 +82,11 @@
                         </iconPacks:PackIconMaterialDesign>
                     </ToggleButton>
                     <ToggleButton ToolTip="圆形" x:Name="CircleChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="PanoramaFishEye" />
                     </ToggleButton>
                     <ToggleButton ToolTip="椭圆形" x:Name="EllipseChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="PanoramaFishEye">
                             <iconPacks:PackIconMaterialDesign.RenderTransform>
                                 <ScaleTransform ScaleX="1.3" CenterX="8" />
@@ -94,11 +94,11 @@
                         </iconPacks:PackIconMaterialDesign>
                     </ToggleButton>
                     <ToggleButton ToolTip="多边形" x:Name="PolygonChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="StarBorder" />
                     </ToggleButton>
                     <ToggleButton ToolTip="折线段" x:Name="PolylineChecked"
-                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
+                                  Style="{StaticResource ToggleButton.Styles.ToolBar}">
                         <iconPacks:PackIconMaterialDesign Kind="Timeline" />
                     </ToggleButton>
                 </WrapPanel>
