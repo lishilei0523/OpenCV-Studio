@@ -186,26 +186,15 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
             await Task.Run(() => Cv2.FindContours(grayImage, out contours, out _, this.RetrievalMode, this.ApproxMode));
 
             //绘制轮廓
-            var contourLengths = contours
-                .Select(contour => new
-                {
-                    Contour = contour,
-                    Length = Cv2.ArcLength(contour, true)
-                })
-                .OrderByDescending(contour => contour.Length)
-                .ToArray();
-            for (int index = 0; index < contourLengths.Length; index++)
+            IEnumerable<OpenCvSharp.Point[]> reservedContours =
+                from contour in contours
+                let length = Cv2.ArcLength(contour, true)
+                where length >= this.MinLength && length <= this.MaxLength
+                orderby length descending
+                select contour;
+            int index = 0;
+            foreach (OpenCvSharp.Point[] contour in reservedContours)
             {
-                var contourLength = contourLengths[index];
-                OpenCvSharp.Point[] contour = contourLength.Contour;
-                double length = contourLength.Length;
-
-                //过滤长度
-                if (length < this.MinLength || length > this.MaxLength)
-                {
-                    continue;
-                }
-
                 PointCollection points = new PointCollection();
                 IList<PointL> pointLs = new List<PointL>();
                 foreach (OpenCvSharp.Point point in contour)
@@ -228,6 +217,7 @@ namespace SD.OpenCV.Client.ViewModels.ShapeContext
                 polygonL.Tag = polygon;
                 this.Shapes.Add(polygon);
                 this.ShapeLs.Add(polygonL);
+                index++;
             }
 
             this.Idle();
