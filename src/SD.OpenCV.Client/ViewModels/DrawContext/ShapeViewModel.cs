@@ -1,14 +1,17 @@
 ﻿using Caliburn.Micro;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
+using SD.Infrastructure.WPF.CustomControls;
 using SD.Infrastructure.WPF.Enums;
 using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Models;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.ViewModels.CommonContext;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -44,14 +47,6 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         #endregion
 
         #region # 属性
-
-        #region 操作模式 —— CanvasMode CanvasMode
-        /// <summary>
-        /// 操作模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode CanvasMode { get; set; }
-        #endregion
 
         #region 边框颜色 —— Color BorderColor
         /// <summary>
@@ -103,6 +98,22 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         /// </summary>
         [DependencyProperty]
         public Visibility GuideLinesVisibility { get; set; }
+        #endregion
+
+        #region 鼠标X坐标 —— int? MousePositionX
+        /// <summary>
+        /// 鼠标X坐标
+        /// </summary>
+        [DependencyProperty]
+        public int? MousePositionX { get; set; }
+        #endregion
+
+        #region 鼠标Y坐标 —— int? MousePositionY
+        /// <summary>
+        /// 鼠标Y坐标
+        /// </summary>
+        [DependencyProperty]
+        public int? MousePositionY { get; set; }
         #endregion
 
         #region 已选形状数据 —— ShapeL SelectedShapeL
@@ -194,11 +205,11 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 提交 —— async void Submit()
+        #region 绘制形状 —— async void DrawShapes()
         /// <summary>
-        /// 提交
+        /// 绘制形状
         /// </summary>
-        public async void Submit()
+        public async void DrawShapes()
         {
             #region # 验证
 
@@ -276,8 +287,257 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
             this.BitmapSource = image.ToBitmapSource();
 
             this.Idle();
+        }
+        #endregion
 
-            await base.TryCloseAsync(true);
+        #region 制作掩膜 —— async void MakeMask()
+        /// <summary>
+        /// 制作掩膜
+        /// </summary>
+        public async void MakeMask()
+        {
+            #region # 验证
+
+            if (this.BitmapSource == null)
+            {
+                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!this.Shapes.Any())
+            {
+                MessageBox.Show("形状不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            this.Busy();
+
+            const int thickness = -1;
+            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+            foreach (ShapeL shapeL in this.ShapeLs)
+            {
+                if (shapeL is RectangleL rectangleL)
+                {
+                    Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
+                    await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
+                }
+                if (shapeL is CircleL circleL)
+                {
+                    await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
+                }
+                if (shapeL is EllipseL ellipseL)
+                {
+                    Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
+                    Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
+                    RotatedRect rect = new RotatedRect(center, size, 0);
+                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
+                }
+                if (shapeL is PolygonL polygonL)
+                {
+                    Point[] contour = new Point[polygonL.Points.Count];
+                    for (int index = 0; index < contour.Length; index++)
+                    {
+                        PointL pointL = polygonL.Points.ElementAt(index);
+                        contour[index] = new Point(pointL.X, pointL.Y);
+                    }
+                    await Task.Run(() => mask.DrawContours(new[] { contour }, -1, Scalar.White, thickness));
+                }
+            }
+            this.BitmapSource = mask.ToBitmapSource();
+
+            this.Idle();
+        }
+        #endregion
+
+        #region 应用掩膜 —— async void ApplyMask()
+        /// <summary>
+        /// 应用掩膜
+        /// </summary>
+        public async void ApplyMask()
+        {
+            #region # 验证
+
+            if (this.BitmapSource == null)
+            {
+                MessageBox.Show("图像源不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!this.Shapes.Any())
+            {
+                MessageBox.Show("形状不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            #endregion
+
+            const int thickness = -1;
+            using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+            foreach (ShapeL shapeL in this.ShapeLs)
+            {
+                if (shapeL is RectangleL rectangleL)
+                {
+                    Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
+                    await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
+                }
+                if (shapeL is CircleL circleL)
+                {
+                    await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
+                }
+                if (shapeL is EllipseL ellipseL)
+                {
+                    Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
+                    Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
+                    RotatedRect rect = new RotatedRect(center, size, 0);
+                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
+                }
+                if (shapeL is PolygonL polygonL)
+                {
+                    Point[] contour = new Point[polygonL.Points.Count];
+                    for (int index = 0; index < polygonL.Points.Count; index++)
+                    {
+                        PointL pointL = polygonL.Points.ElementAt(index);
+                        contour[index] = new Point(pointL.X, pointL.Y);
+                    }
+                    await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
+                }
+            }
+
+            //提取有效区域
+            using Mat result = new Mat();
+            this.Image.CopyTo(result, mask);
+            this.BitmapSource = result.ToBitmapSource();
+        }
+        #endregion
+
+        #region 分割图像 —— async void SegmentImage()
+        /// <summary>
+        /// 分割图像
+        /// </summary>
+        public async void SegmentImage()
+        {
+            CommonOpenFileDialog folderDialog = new CommonOpenFileDialog
+            {
+                Title = "请选择目标文件夹",
+                IsFolderPicker = true
+            };
+            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                this.Busy();
+
+                const int thickness = -1;
+                IList<Mat> results = new List<Mat>();
+                foreach (ShapeL shapeL in this.ShapeLs)
+                {
+                    if (shapeL is RectangleL rectangleL)
+                    {
+                        //生成掩膜
+                        using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+                        Rect rect = new Rect(rectangleL.X, rectangleL.Y, rectangleL.Width, rectangleL.Height);
+                        await Task.Run(() => mask.Rectangle(rect, Scalar.White, thickness));
+
+                        //适用掩膜
+                        using Mat canvas = new Mat();
+                        this.Image.CopyTo(canvas, mask);
+
+                        //提取有效区域
+                        Mat result = canvas[rect];
+                        results.Add(result);
+                    }
+                    if (shapeL is RotatedRectangleL rotatedRectangleL)
+                    {
+                        //生成掩膜
+                        using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+                        Point[] contour = new Point[4];
+                        contour[0] = new Point(rotatedRectangleL.TopLeft.X, rotatedRectangleL.TopLeft.Y);
+                        contour[1] = new Point(rotatedRectangleL.TopRight.X, rotatedRectangleL.TopRight.Y);
+                        contour[2] = new Point(rotatedRectangleL.BottomRight.X, rotatedRectangleL.BottomRight.Y);
+                        contour[3] = new Point(rotatedRectangleL.BottomLeft.X, rotatedRectangleL.BottomLeft.Y);
+                        await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
+
+                        //适用掩膜
+                        using Mat canvas = new Mat();
+                        this.Image.CopyTo(canvas, mask);
+
+                        //提取有效区域
+                        Rect boundingRect = Cv2.BoundingRect(contour);
+                        Mat result = canvas[boundingRect];
+                        results.Add(result);
+                    }
+                    if (shapeL is CircleL circleL)
+                    {
+                        //生成掩膜
+                        using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+                        await Task.Run(() => mask.Circle(circleL.X, circleL.Y, circleL.Radius, Scalar.White, thickness));
+
+                        //适用掩膜
+                        using Mat canvas = new Mat();
+                        this.Image.CopyTo(canvas, mask);
+
+                        //提取有效区域
+                        int x = circleL.X - circleL.Radius;
+                        int y = circleL.Y - circleL.Radius;
+                        int sideSize = circleL.Radius * 2;
+                        Rect boundingRect = new Rect(x, y, sideSize, sideSize);
+                        Mat result = canvas[boundingRect];
+                        results.Add(result);
+                    }
+                    if (shapeL is EllipseL ellipseL)
+                    {
+                        //生成掩膜
+                        using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+                        Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
+                        Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
+                        RotatedRect rect = new RotatedRect(center, size, 0);
+                        await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
+
+                        //适用掩膜
+                        using Mat canvas = new Mat();
+                        this.Image.CopyTo(canvas, mask);
+
+                        //提取有效区域
+                        int x = ellipseL.X - ellipseL.RadiusX;
+                        int y = ellipseL.Y - ellipseL.RadiusY;
+                        int width = ellipseL.RadiusX * 2;
+                        int height = ellipseL.RadiusY * 2;
+                        Rect boundingRect = new Rect(x, y, width, height);
+                        Mat result = canvas[boundingRect];
+                        results.Add(result);
+                    }
+                    if (shapeL is PolygonL polygonL)
+                    {
+                        //生成掩膜
+                        using Mat mask = Mat.Zeros(this.Image.Size(), MatType.CV_8UC1);
+                        Point[] contour = new Point[polygonL.Points.Count];
+                        for (int index = 0; index < polygonL.Points.Count; index++)
+                        {
+                            PointL pointL = polygonL.Points.ElementAt(index);
+                            contour[index] = new Point(pointL.X, pointL.Y);
+                        }
+                        await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
+
+                        //适用掩膜
+                        using Mat canvas = new Mat();
+                        this.Image.CopyTo(canvas, mask);
+
+                        //提取有效区域
+                        Rect boundingRect = Cv2.BoundingRect(contour);
+                        Mat result = canvas[boundingRect];
+                        results.Add(result);
+                    }
+                }
+
+                for (int index = 0; index < results.Count; index++)
+                {
+                    using Mat result = results[index];
+
+                    string imagePartPath = $@"{folderDialog.FileName}\{index + 1}.jpg";
+                    await Task.Run(() => result.SaveImage(imagePartPath));
+                }
+
+                this.Idle();
+                this.ToastSuccess("已保存！");
+            }
         }
         #endregion
 
@@ -298,18 +558,30 @@ namespace SD.OpenCV.Client.ViewModels.DrawContext
         }
         #endregion
 
-        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(ShapeEventArgs eventArgs)
+        #region 形状鼠标左击事件 —— void OnShapeMouseLeftDown(CanvasEx canvas...
         /// <summary>
         /// 形状鼠标左击事件
         /// </summary>
-        public void OnShapeMouseLeftDown(ShapeEventArgs eventArgs)
+        public void OnShapeMouseLeftDown(CanvasEx canvas, ShapeEventArgs eventArgs)
         {
-            ShapeL shapeL = (ShapeL)eventArgs.Shape.Tag;
-            if (this.CanvasMode != CanvasMode.Draw)
+            if (canvas.Mode != CanvasMode.Draw)
             {
+                ShapeL shapeL = (ShapeL)eventArgs.Shape.Tag;
                 this.SelectedShapeL = null;
                 this.SelectedShapeL = shapeL;
             }
+        }
+        #endregion
+
+        #region 画布鼠标移动事件 —— void OnCanvasMouseMove(CanvasEx canvas)
+        /// <summary>
+        /// 画布鼠标移动事件
+        /// </summary>
+        public void OnCanvasMouseMove(CanvasEx canvas)
+        {
+            System.Windows.Point rectifiedPosition = canvas.RectifiedMousePosition!.Value;
+            this.MousePositionX = (int)Math.Ceiling(rectifiedPosition.X);
+            this.MousePositionY = (int)Math.Ceiling(rectifiedPosition.Y);
         }
         #endregion
 

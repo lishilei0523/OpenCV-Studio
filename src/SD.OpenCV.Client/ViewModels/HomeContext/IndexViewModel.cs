@@ -3363,36 +3363,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
         }
         #endregion
 
-        #region 绘制掩膜 —— async void DrawMask()
-        /// <summary>
-        /// 绘制掩膜
-        /// </summary>
-        public async void DrawMask()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            DrawContext.MaskViewModel viewModel = ResolveMediator.Resolve<DrawContext.MaskViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
 
         //分割
 
@@ -3540,96 +3510,6 @@ namespace SD.OpenCV.Client.ViewModels.HomeContext
             this.Busy();
 
             ColorViewModel viewModel = ResolveMediator.Resolve<ColorViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 矩形分割 —— async void RectangleSegment()
-        /// <summary>
-        /// 矩形分割
-        /// </summary>
-        public async void RectangleSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            RectangleViewModel viewModel = ResolveMediator.Resolve<RectangleViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 轮廓分割 —— async void ContourSegment()
-        /// <summary>
-        /// 轮廓分割
-        /// </summary>
-        public async void ContourSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            SegmentContext.ContourViewModel viewModel = ResolveMediator.Resolve<SegmentContext.ContourViewModel>();
-            viewModel.Load(this.EffectiveImage);
-            bool? result = await this._windowManager.ShowDialogAsync(viewModel);
-            if (result == true)
-            {
-                this.EffectiveImage = viewModel.BitmapSource;
-            }
-
-            this.Idle();
-        }
-        #endregion
-
-        #region 掩膜分割 —— async void MaskSegment()
-        /// <summary>
-        /// 掩膜分割
-        /// </summary>
-        public async void MaskSegment()
-        {
-            #region # 验证
-
-            if (this.EffectiveImage == null)
-            {
-                MessageBox.Show("图像未加载！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            #endregion
-
-            this.Busy();
-
-            SegmentContext.MaskViewModel viewModel = ResolveMediator.Resolve<SegmentContext.MaskViewModel>();
             viewModel.Load(this.EffectiveImage);
             bool? result = await this._windowManager.ShowDialogAsync(viewModel);
             if (result == true)
