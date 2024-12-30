@@ -45,6 +45,9 @@
 
 ## 推荐
 
+> 关联项目，标注工具：
+> [LabelSharp](https://gitee.com/lishilei0523/LabelSharp)
+
 > 关联项目，点云工作室：
 > [PointCloud Studio](https://gitee.com/lishilei0523/PointCloud-Studio)
 
