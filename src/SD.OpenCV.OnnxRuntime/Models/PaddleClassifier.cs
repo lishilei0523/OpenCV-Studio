@@ -2,7 +2,7 @@
 using Microsoft.ML.OnnxRuntime.Tensors;
 using OpenCvSharp;
 using SD.OpenCV.OnnxRuntime.Base;
-using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.OnnxRuntime.Results;
 using SD.OpenCV.Primitives.Extensions;
 using System;
 using System.Collections.Generic;

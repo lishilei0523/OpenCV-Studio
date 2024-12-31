@@ -8,7 +8,7 @@ using SD.Infrastructure.WPF.Extensions;
 using SD.Infrastructure.WPF.Visual2Ds;
 using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
-using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.OnnxRuntime.Results;
 using SD.OpenCV.Primitives.Extensions;
 using System.Collections.ObjectModel;
 using System.Linq;

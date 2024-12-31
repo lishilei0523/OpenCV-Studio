@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SD.OpenCV.OnnxRuntime.Values
+namespace SD.OpenCV.OnnxRuntime.Results
 {
     /// <summary>
     /// 预测结果

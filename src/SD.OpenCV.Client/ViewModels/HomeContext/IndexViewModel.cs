@@ -24,7 +24,7 @@ using SD.OpenCV.Client.ViewModels.SegmentContext;
 using SD.OpenCV.Client.ViewModels.ShapeContext;
 using SD.OpenCV.Client.ViewModels.SpaceBlurContext;
 using SD.OpenCV.OnnxRuntime.Models;
-using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.OnnxRuntime.Results;
 using SD.OpenCV.Primitives.Calibrations;
 using SD.OpenCV.Primitives.Extensions;
 using SD.OpenCV.Primitives.Models;

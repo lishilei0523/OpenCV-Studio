@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenCvSharp;
 using SD.OpenCV.OnnxRuntime.Models;
-using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.OnnxRuntime.Results;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

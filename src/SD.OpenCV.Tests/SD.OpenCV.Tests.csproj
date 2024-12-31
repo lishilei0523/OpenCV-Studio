@@ -42,7 +42,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SD.OpenCV.Primitives\SD.OpenCV.Primitives.csproj" />
     <ProjectReference Include="..\SD.OpenCV.OnnxRuntime\SD.OpenCV.OnnxRuntime.csproj" />
-    <ProjectReference Include="..\SD.OpenCV.Reconstructions\SD.OpenCV.Reconstructions.csproj" />
     <ProjectReference Include="..\SD.OpenCV.SkiaSharp\SD.OpenCV.SkiaSharp.csproj" />
   </ItemGroup>
 </Project>

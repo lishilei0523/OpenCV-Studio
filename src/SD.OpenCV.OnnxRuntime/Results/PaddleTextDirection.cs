@@ -1,4 +1,4 @@
-﻿namespace SD.OpenCV.OnnxRuntime.Values
+﻿namespace SD.OpenCV.OnnxRuntime.Results
 {
     /// <summary>
     /// Paddle文本方向

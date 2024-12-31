@@ -5,8 +5,6 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.SkiaSharp", "src\SD.OpenCV.SkiaSharp\SD.OpenCV.SkiaSharp.csproj", "{7FFF0A75-AC87-4341-8B33-E3004A6E9817}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Reconstructions", "src\SD.OpenCV.Reconstructions\SD.OpenCV.Reconstructions.csproj", "{660EDF13-673E-46C3-A81A-25E6A275C636}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Primitives", "src\SD.OpenCV.Primitives\SD.OpenCV.Primitives.csproj", "{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.OpenCV.Client", "src\SD.OpenCV.Client\SD.OpenCV.Client.csproj", "{190621B6-5E6B-47CC-9A82-BA027BCDBBA7}"
@@ -25,10 +23,6 @@ Global
 		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FFF0A75-AC87-4341-8B33-E3004A6E9817}.Release|Any CPU.Build.0 = Release|Any CPU
-		{660EDF13-673E-46C3-A81A-25E6A275C636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{660EDF13-673E-46C3-A81A-25E6A275C636}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{660EDF13-673E-46C3-A81A-25E6A275C636}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{660EDF13-673E-46C3-A81A-25E6A275C636}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC44FE8-82C6-44C9-8069-E83C0E5A7D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU

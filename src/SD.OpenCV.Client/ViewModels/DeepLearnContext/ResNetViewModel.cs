@@ -6,7 +6,7 @@ using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
 using SD.OpenCV.Client.Models;
 using SD.OpenCV.OnnxRuntime.Models;
-using SD.OpenCV.OnnxRuntime.Values;
+using SD.OpenCV.OnnxRuntime.Results;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
