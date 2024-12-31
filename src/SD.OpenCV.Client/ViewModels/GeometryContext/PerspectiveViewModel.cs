@@ -5,21 +5,16 @@ using OpenCvSharp.WpfExtensions;
 using SD.Infrastructure.Shapes;
 using SD.Infrastructure.WPF.Caliburn.Aspects;
 using SD.Infrastructure.WPF.Caliburn.Base;
-using SD.Infrastructure.WPF.CustomControls;
-using SD.Infrastructure.WPF.Enums;
-using SD.Infrastructure.WPF.Visual2Ds;
 using SD.IOC.Core.Mediators;
 using SD.OpenCV.Client.ViewModels.CommonContext;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Point = System.Windows.Point;
+using System.Windows.Shapes;
 using Size = OpenCvSharp.Size;
 
 namespace SD.OpenCV.Client.ViewModels.GeometryContext
@@ -64,54 +59,6 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         public BitmapSource TargetImage { get; set; }
         #endregion
 
-        #region 参考操作模式 —— CanvasMode SourceCanvasMode
-        /// <summary>
-        /// 参考操作模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode SourceCanvasMode { get; set; }
-        #endregion
-
-        #region 目标操作模式 —— CanvasMode TargetCanvasMode
-        /// <summary>
-        /// 目标操作模式
-        /// </summary>
-        [DependencyProperty]
-        public CanvasMode TargetCanvasMode { get; set; }
-        #endregion
-
-        #region 参考选中拖拽 —— bool SourceDragChecked
-        /// <summary>
-        /// 参考选中拖拽
-        /// </summary>
-        [DependencyProperty]
-        public bool SourceDragChecked { get; set; }
-        #endregion
-
-        #region 参考选中点 —— bool SourcePointChecked
-        /// <summary>
-        /// 参考选中点
-        /// </summary>
-        [DependencyProperty]
-        public bool SourcePointChecked { get; set; }
-        #endregion
-
-        #region 目标选中拖拽 —— bool TargetDragChecked
-        /// <summary>
-        /// 目标选中拖拽
-        /// </summary>
-        [DependencyProperty]
-        public bool TargetDragChecked { get; set; }
-        #endregion
-
-        #region 目标选中点 —— bool TargetPointChecked
-        /// <summary>
-        /// 目标选中点
-        /// </summary>
-        [DependencyProperty]
-        public bool TargetPointChecked { get; set; }
-        #endregion
-
         #region 透视变换矩阵 —— Mat PerspectiveMatrix
         /// <summary>
         /// 透视变换矩阵
@@ -119,36 +66,36 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         public Mat PerspectiveMatrix { get; set; }
         #endregion
 
-        #region 参考点集 —— ObservableCollection<PointVisual2D> SourcePoints
+        #region 参考形状列表 —— ObservableCollection<Shape> SourceShapes
         /// <summary>
-        /// 参考点集
+        /// 参考形状列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<PointVisual2D> SourcePoints { get; set; }
+        public ObservableCollection<Shape> SourceShapes { get; set; }
         #endregion
 
-        #region 参考点数据集 —— ObservableCollection<PointL> SourcePointLs
+        #region 参考形状数据列表 —— ObservableCollection<ShapeL> SourceShapeLs
         /// <summary>
-        /// 参考点数据集
+        /// 参考形状数据列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<PointL> SourcePointLs { get; set; }
+        public ObservableCollection<ShapeL> SourceShapeLs { get; set; }
         #endregion
 
-        #region 目标点集 —— ObservableCollection<PointVisual2D> TargetPoints
+        #region 目标形状列表 —— ObservableCollection<Shape> TargetShapes
         /// <summary>
-        /// 目标点集
+        /// 目标形状列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<PointVisual2D> TargetPoints { get; set; }
+        public ObservableCollection<Shape> TargetShapes { get; set; }
         #endregion
 
-        #region 目标点数据集 —— ObservableCollection<PointL> TargetPointLs
+        #region 目标形状数据列表 —— ObservableCollection<ShapeL> TargetShapeLs
         /// <summary>
-        /// 目标点数据集
+        /// 目标形状数据列表
         /// </summary>
         [DependencyProperty]
-        public ObservableCollection<PointL> TargetPointLs { get; set; }
+        public ObservableCollection<ShapeL> TargetShapeLs { get; set; }
         #endregion
 
         #endregion
@@ -164,14 +111,10 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         protected override Task OnInitializeAsync(CancellationToken cancellationToken)
         {
             //默认值
-            this.SourcePoints = new ObservableCollection<PointVisual2D>();
-            this.SourcePointLs = new ObservableCollection<PointL>();
-            this.TargetPoints = new ObservableCollection<PointVisual2D>();
-            this.TargetPointLs = new ObservableCollection<PointL>();
-            this.SourcePointChecked = true;
-            this.TargetPointChecked = true;
-            this.OnSourcePointClick();
-            this.OnTargetPointClick();
+            this.SourceShapes = new ObservableCollection<Shape>();
+            this.SourceShapeLs = new ObservableCollection<ShapeL>();
+            this.TargetShapes = new ObservableCollection<Shape>();
+            this.TargetShapeLs = new ObservableCollection<ShapeL>();
 
             return base.OnInitializeAsync(cancellationToken);
         }
@@ -236,27 +179,27 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         {
             #region # 验证
 
-            if (!this.SourcePointLs.Any())
+            if (!this.SourceShapeLs.Any())
             {
                 MessageBox.Show("参考点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.SourcePointLs.Count < 4)
+            if (this.SourceShapeLs.Count < 4)
             {
                 MessageBox.Show("参考点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (!this.TargetPointLs.Any())
+            if (!this.TargetShapeLs.Any())
             {
                 MessageBox.Show("目标点不可为空！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.TargetPointLs.Count < 4)
+            if (this.TargetShapeLs.Count < 4)
             {
                 MessageBox.Show("目标点数量不可小于4！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (this.SourcePointLs.Count != this.TargetPointLs.Count)
+            if (this.SourceShapeLs.Count != this.TargetShapeLs.Count)
             {
                 MessageBox.Show("参考点与目标点数量不一致！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -266,8 +209,8 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
 
             this.Busy();
 
-            IEnumerable<Point2f> sourcePoints = this.SourcePointLs.Select(point => new Point2f(point.X, point.Y));
-            IEnumerable<Point2f> targetPoints = this.TargetPointLs.Select(point => new Point2f(point.X, point.Y));
+            IEnumerable<Point2f> sourcePoints = this.SourceShapeLs.OfType<PointL>().Select(point => new Point2f(point.X, point.Y));
+            IEnumerable<Point2f> targetPoints = this.TargetShapeLs.OfType<PointL>().Select(point => new Point2f(point.X, point.Y));
             this.PerspectiveMatrix = await Task.Run(() => Cv2.GetPerspectiveTransform(targetPoints, sourcePoints));
 
             using Mat targetImage = this.TargetImage.ToMat();
@@ -316,266 +259,17 @@ namespace SD.OpenCV.Client.ViewModels.GeometryContext
         /// </summary>
         public void Reset()
         {
+            this.PerspectiveMatrix?.Dispose();
             this.PerspectiveMatrix = null;
-            foreach (PointVisual2D point in this.SourcePoints)
-            {
-                CanvasEx canvasEx = point.Parent as CanvasEx;
-                canvasEx?.Children.Remove(point);
-            }
-            foreach (PointVisual2D point in this.TargetPoints)
-            {
-                CanvasEx canvasEx = point.Parent as CanvasEx;
-                canvasEx?.Children.Remove(point);
-            }
-
-            this.SourcePointLs.Clear();
-            this.TargetPointLs.Clear();
-        }
-        #endregion
-
-
-        //Events
-
-        #region 参考拖拽点击事件 —— void OnSourceDragClick()
-        /// <summary>
-        /// 参考拖拽点击事件
-        /// </summary>
-        public void OnSourceDragClick()
-        {
-            if (this.SourceDragChecked)
-            {
-                this.SourceCanvasMode = CanvasMode.Drag;
-                this.SourcePointChecked = false;
-            }
-        }
-        #endregion
-
-        #region 参考点点击事件 —— void OnSourcePointClick()
-        /// <summary>
-        /// 参考点点击事件
-        /// </summary>
-        public void OnSourcePointClick()
-        {
-            if (this.SourcePointChecked)
-            {
-                this.SourceCanvasMode = CanvasMode.Draw;
-                this.SourceDragChecked = false;
-            }
-        }
-        #endregion
-
-        #region 目标拖拽点击事件 —— void OnTargetDragClick()
-        /// <summary>
-        /// 目标拖拽点击事件
-        /// </summary>
-        public void OnTargetDragClick()
-        {
-            if (this.TargetDragChecked)
-            {
-                this.TargetCanvasMode = CanvasMode.Drag;
-                this.TargetPointChecked = false;
-            }
-        }
-        #endregion
-
-        #region 目标点点击事件 —— void OnTargetPointClick()
-        /// <summary>
-        /// 目标点点击事件
-        /// </summary>
-        public void OnTargetPointClick()
-        {
-            if (this.TargetPointChecked)
-            {
-                this.TargetCanvasMode = CanvasMode.Draw;
-                this.TargetDragChecked = false;
-            }
-        }
-        #endregion
-
-        #region 参考拖拽元素事件 —— void OnSourceDragElement(CanvasEx canvas)
-        /// <summary>
-        /// 参考拖拽元素事件
-        /// </summary>
-        public void OnSourceDragElement(CanvasEx canvas)
-        {
-            if (this.SourceImage == null)
-            {
-                return;
-            }
-
-            double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
-            double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-
-            if (canvas.SelectedVisual is PointVisual2D point)
-            {
-                this.RebuildSourcePoint(point, leftMargin, topMargin);
-            }
-        }
-        #endregion
-
-        #region 参考绘制开始事件 —— void OnSourceDraw(CanvasEx canvas)
-        /// <summary>
-        /// 参考绘制开始事件
-        /// </summary>
-        public void OnSourceDraw(CanvasEx canvas)
-        {
-            if (this.SourceImage == null)
-            {
-                return;
-            }
-            if (this.SourcePointChecked)
-            {
-                this.DrawSourcePoint(canvas);
-            }
-        }
-        #endregion
-
-        #region 目标拖拽元素事件 —— void OnTargetDragElement(CanvasEx canvas)
-        /// <summary>
-        /// 目标拖拽元素事件
-        /// </summary>
-        public void OnTargetDragElement(CanvasEx canvas)
-        {
-            if (this.TargetImage == null)
-            {
-                return;
-            }
-
-            double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
-            double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-            if (canvas.SelectedVisual is PointVisual2D point)
-            {
-                this.RebuildTargetPoint(point, leftMargin, topMargin);
-            }
-        }
-        #endregion
-
-        #region 目标绘制开始事件 —— void OnTargetDraw(CanvasEx canvas)
-        /// <summary>
-        /// 目标绘制开始事件
-        /// </summary>
-        public void OnTargetDraw(CanvasEx canvas)
-        {
-            if (this.TargetImage == null)
-            {
-                return;
-            }
-
-            if (this.TargetPointChecked)
-            {
-                this.DrawTargetPoint(canvas);
-            }
+            this.SourceShapes.Clear();
+            this.SourceShapeLs.Clear();
+            this.TargetShapes.Clear();
+            this.TargetShapeLs.Clear();
         }
         #endregion
 
 
         //Private
-
-        #region 参考重建点 —— void RebuildSourcePoint(PointVisual2D point, double leftMargin, double topMargin)
-        /// <summary>
-        /// 参考重建点
-        /// </summary>
-        /// <param name="point">点</param>
-        /// <param name="leftMargin">左边距</param>
-        /// <param name="topMargin">上边距</param>
-        private void RebuildSourcePoint(PointVisual2D point, double leftMargin, double topMargin)
-        {
-            PointL pointL = (PointL)point.Tag;
-            int index = this.SourcePointLs.IndexOf(pointL);
-            if (index != -1)
-            {
-                this.SourcePointLs.Remove(pointL);
-
-                int x = (int)Math.Ceiling(point.X + leftMargin);
-                int y = (int)Math.Ceiling(point.Y + topMargin);
-                PointL newPointL = new PointL(x, y);
-
-                point.Tag = newPointL;
-                this.SourcePointLs.Insert(index, newPointL);
-            }
-        }
-        #endregion
-
-        #region 参考绘制点 —— void DrawSourcePoint(CanvasEx canvas)
-        /// <summary>
-        /// 参考绘制点
-        /// </summary>
-        private void DrawSourcePoint(CanvasEx canvas)
-        {
-            Point rectifiedVertex = canvas.RectifiedStartPosition!.Value;
-            int x = (int)Math.Ceiling(rectifiedVertex.X);
-            int y = (int)Math.Ceiling(rectifiedVertex.Y);
-
-            PointL pointL = new PointL(x, y);
-            PointVisual2D point = new PointVisual2D
-            {
-                X = rectifiedVertex.X,
-                Y = rectifiedVertex.Y,
-                Fill = new SolidColorBrush(Colors.Black),
-                Stroke = new SolidColorBrush(Colors.Red),
-                RenderTransform = canvas.MatrixTransform,
-                Tag = pointL
-            };
-            canvas.Children.Add(point);
-
-            pointL.Tag = point;
-            this.SourcePointLs.Add(pointL);
-            this.SourcePoints.Add(point);
-        }
-        #endregion
-
-        #region 目标重建点 —— void RebuildTargetPoint(PointVisual2D point, double leftMargin, double topMargin)
-        /// <summary>
-        /// 目标重建点
-        /// </summary>
-        /// <param name="point">点</param>
-        /// <param name="leftMargin">左边距</param>
-        /// <param name="topMargin">上边距</param>
-        private void RebuildTargetPoint(PointVisual2D point, double leftMargin, double topMargin)
-        {
-            PointL pointL = (PointL)point.Tag;
-            int index = this.TargetPointLs.IndexOf(pointL);
-            if (index != -1)
-            {
-                this.TargetPointLs.Remove(pointL);
-
-                int x = (int)Math.Ceiling(point.X + leftMargin);
-                int y = (int)Math.Ceiling(point.Y + topMargin);
-                PointL newPointL = new PointL(x, y);
-
-                point.Tag = newPointL;
-                this.TargetPointLs.Insert(index, newPointL);
-            }
-        }
-        #endregion
-
-        #region 目标绘制点 —— void DrawTargetPoint(CanvasEx canvas)
-        /// <summary>
-        /// 目标绘制点
-        /// </summary>
-        private void DrawTargetPoint(CanvasEx canvas)
-        {
-            Point rectifiedVertex = canvas.RectifiedStartPosition!.Value;
-            int x = (int)Math.Ceiling(rectifiedVertex.X);
-            int y = (int)Math.Ceiling(rectifiedVertex.Y);
-
-            PointL pointL = new PointL(x, y);
-            PointVisual2D point = new PointVisual2D
-            {
-                X = rectifiedVertex.X,
-                Y = rectifiedVertex.Y,
-                Fill = new SolidColorBrush(Colors.Black),
-                Stroke = new SolidColorBrush(Colors.Red),
-                RenderTransform = canvas.MatrixTransform,
-                Tag = pointL
-            };
-            canvas.Children.Add(point);
-
-            pointL.Tag = point;
-            this.TargetPointLs.Add(pointL);
-            this.TargetPoints.Add(point);
-        }
-        #endregion
 
         #region 页面失活事件 —— override Task OnDeactivateAsync(bool close...
         /// <summary>

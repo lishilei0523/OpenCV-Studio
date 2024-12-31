@@ -51,25 +51,24 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <WrapPanel Grid.Row="0" Margin="4,4,0,0" VerticalAlignment="Center">
-                        <ToggleButton ToolTip="拖拽" IsChecked="{Binding SourceDragChecked}" 
-                                      Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                                      cm:Message.Attach="OnSourceDragClick()">
+                        <ToggleButton ToolTip="拖拽" x:Name="SourceDragChecked" 
+                                      Style="{StaticResource ToggleButton.Styles.ToolBar}">
                             <iconPacks:PackIconMaterialDesign Kind="Navigation" />
                         </ToggleButton>
-                        <ToggleButton ToolTip="点" IsChecked="{Binding SourcePointChecked}" 
-                                      Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                                      cm:Message.Attach="OnSourcePointClick()">
+                        <ToggleButton ToolTip="点" x:Name="SourcePointChecked" IsChecked="True"
+                                      Style="{StaticResource ToggleButton.Styles.ToolBar}">
                             <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
                         </ToggleButton>
                     </WrapPanel>
                     <GroupBox Grid.Row="1" Header="参考图像" Margin="4,4,2,4" Background="LightGray">
-                        <sd:CanvasEx Mode="{Binding SourceCanvasMode}" cm:Message.Attach="
-                                     [Event ElementDrag] = [Action OnSourceDragElement($source)];
-                                     [Event Draw] = [Action OnSourceDraw($source)];">
+                        <sd:DrawableCanvasEx DragChecked="{Binding ElementName=SourceDragChecked, Path=IsChecked, Mode=TwoWay}"
+                                             PointChecked="{Binding ElementName=SourcePointChecked, Path=IsChecked, Mode=TwoWay}"
+                                             ItemsSource="{Binding SourceShapes}"
+                                             DatasSource="{Binding SourceShapeLs}">
                             <sd:CanvasEx.BackgroundImage>
                                 <Image Source="{Binding SourceImage}" />
                             </sd:CanvasEx.BackgroundImage>
-                        </sd:CanvasEx>
+                        </sd:DrawableCanvasEx>
                     </GroupBox>
                 </Grid>
                 <Grid Grid.Column="1">
@@ -78,25 +77,24 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <WrapPanel Grid.Row="0" Margin="2,4,0,0" VerticalAlignment="Center">
-                        <ToggleButton ToolTip="拖拽" IsChecked="{Binding TargetDragChecked}" 
-                                      Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                                      cm:Message.Attach="OnTargetDragClick()">
+                        <ToggleButton ToolTip="拖拽" x:Name="TargetDragChecked" 
+                                      Style="{StaticResource ToggleButton.Styles.ToolBar}">
                             <iconPacks:PackIconMaterialDesign Kind="Navigation" />
                         </ToggleButton>
-                        <ToggleButton ToolTip="点" IsChecked="{Binding TargetPointChecked}" 
-                                      Style="{StaticResource ToggleButton.Styles.ToolBar}"
-                                      cm:Message.Attach="OnTargetPointClick()">
+                        <ToggleButton ToolTip="点" x:Name="TargetPointChecked" IsChecked="True"
+                                      Style="{StaticResource ToggleButton.Styles.ToolBar}">
                             <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
                         </ToggleButton>
                     </WrapPanel>
                     <GroupBox Grid.Row="1" Header="目标图像" Margin="2,4,4,4" Background="LightGray">
-                        <sd:CanvasEx Mode="{Binding TargetCanvasMode}" cm:Message.Attach="
-                                     [Event ElementDrag] = [Action OnTargetDragElement($source)];
-                                     [Event Draw] = [Action OnTargetDraw($source)];">
+                        <sd:DrawableCanvasEx DragChecked="{Binding ElementName=TargetDragChecked, Path=IsChecked, Mode=TwoWay}"
+                                             PointChecked="{Binding ElementName=TargetPointChecked, Path=IsChecked, Mode=TwoWay}"
+                                             ItemsSource="{Binding TargetShapes}"
+                                             DatasSource="{Binding TargetShapeLs}">
                             <sd:CanvasEx.BackgroundImage>
                                 <Image Source="{Binding TargetImage}" />
                             </sd:CanvasEx.BackgroundImage>
-                        </sd:CanvasEx>
+                        </sd:DrawableCanvasEx>
                     </GroupBox>
                 </Grid>
             </Grid>
