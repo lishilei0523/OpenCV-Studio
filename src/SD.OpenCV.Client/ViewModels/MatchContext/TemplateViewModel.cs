@@ -14,10 +14,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Point = System.Windows.Point;
 using Rect = OpenCvSharp.Rect;
 using Size = System.Windows.Size;
@@ -96,12 +93,12 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         public bool RectangleChecked { get; set; }
         #endregion
 
-        #region 参考矩形 —— Rectangle SourceRectangle
+        #region 参考矩形 —— RectangleVisual2D SourceRectangle
         /// <summary>
         /// 参考矩形
         /// </summary>
         [DependencyProperty]
-        public Rectangle SourceRectangle { get; set; }
+        public RectangleVisual2D SourceRectangle { get; set; }
         #endregion
 
         #region 参考矩形数据 —— RectangleL SourceRectangleL
@@ -373,7 +370,7 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         {
             double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
             double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-            if (canvas.SelectedVisual is Rectangle rectangle)
+            if (canvas.SelectedVisual is RectangleVisual2D rectangle)
             {
                 this.RebuildRectangle(rectangle, leftMargin, topMargin);
             }
@@ -386,22 +383,17 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         /// </summary>
         public void OnResizeElement(CanvasEx canvas)
         {
-            double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
-            double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
-
-            if (canvas.SelectedVisual is Rectangle rectangle)
+            if (canvas.SelectedVisual is RectangleVisual2D rectangle)
             {
-                Point retifiedVertex = new Point(leftMargin, topMargin);
+                double leftMargin = canvas.GetRectifiedLeft(canvas.SelectedVisual);
+                double topMargin = canvas.GetRectifiedTop(canvas.SelectedVisual);
+                Point retifiedVertex = new Point(rectangle.Location.X + leftMargin, rectangle.Location.Y + topMargin);
+
                 double width = canvas.RectifiedMousePosition!.Value.X - retifiedVertex.X;
                 double height = canvas.RectifiedMousePosition!.Value.Y - retifiedVertex.Y;
-
-                if (width > 0)
+                if (width > 0 && height > 0)
                 {
-                    rectangle.Width = width;
-                }
-                if (height > 0)
-                {
-                    rectangle.Height = height;
+                    rectangle.Size = new Size(width, height);
                 }
 
                 this.RebuildRectangle(rectangle, leftMargin, topMargin);
@@ -434,20 +426,22 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
 
         //Private
 
-        #region 重建矩形 —— void RebuildRectangle(Rectangle rectangle, double leftMargin, double topMargin)
+        #region 重建矩形 —— void RebuildRectangle(RectangleVisual2D rectangle...
         /// <summary>
         /// 重建矩形
         /// </summary>
         /// <param name="rectangle">矩形</param>
         /// <param name="leftMargin">左边距</param>
         /// <param name="topMargin">上边距</param>
-        private void RebuildRectangle(Rectangle rectangle, double leftMargin, double topMargin)
+        private void RebuildRectangle(RectangleVisual2D rectangle, double leftMargin, double topMargin)
         {
-            int x = (int)Math.Ceiling(leftMargin);
-            int y = (int)Math.Ceiling(topMargin);
-            int width = (int)Math.Ceiling(rectangle.Width);
-            int height = (int)Math.Ceiling(rectangle.Height);
+            int x = (int)Math.Ceiling(rectangle.Location.X + leftMargin);
+            int y = (int)Math.Ceiling(rectangle.Location.Y + topMargin);
+            int width = (int)Math.Ceiling(rectangle.Size.Width);
+            int height = (int)Math.Ceiling(rectangle.Size.Height);
             this.SourceRectangleL = new RectangleL(x, y, width, height);
+            this.SourceRectangle.Tag = rectangle;
+            rectangle.Tag = this.SourceRectangleL;
         }
         #endregion
 
@@ -459,42 +453,36 @@ namespace SD.OpenCV.Client.ViewModels.MatchContext
         {
             if (this.SourceRectangle == null)
             {
-                this.SourceRectangle = new Rectangle
+                this.SourceRectangle = new RectangleVisual2D()
                 {
-                    Fill = new SolidColorBrush(Colors.Transparent),
-                    Stroke = new SolidColorBrush(Colors.Red),
-                    StrokeThickness = 2
+                    RenderTransform = canvas.MatrixTransform
                 };
                 canvas.Children.Add(this.SourceRectangle);
             }
 
             Point rectifiedVertex = canvas.RectifiedStartPosition!.Value;
             Point rectifiedPosition = canvas.RectifiedMousePosition!.Value;
-            int width = (int)Math.Round(Math.Abs(rectifiedPosition.X - rectifiedVertex.X));
-            int height = (int)Math.Round(Math.Abs(rectifiedPosition.Y - rectifiedVertex.Y));
-            this.SourceRectangle.Width = width;
-            this.SourceRectangle.Height = height;
+
             if (rectifiedPosition.X > rectifiedVertex.X && rectifiedPosition.Y > rectifiedVertex.Y)
             {
-                Canvas.SetLeft(this.SourceRectangle, rectifiedVertex.X * canvas.ScaledRatio);
-                Canvas.SetTop(this.SourceRectangle, rectifiedVertex.Y * canvas.ScaledRatio);
+                this.SourceRectangle.Location = rectifiedVertex;
             }
             if (rectifiedPosition.X > rectifiedVertex.X && rectifiedPosition.Y < rectifiedVertex.Y)
             {
-                Canvas.SetLeft(this.SourceRectangle, rectifiedVertex.X * canvas.ScaledRatio);
-                Canvas.SetTop(this.SourceRectangle, rectifiedPosition.Y * canvas.ScaledRatio);
+                this.SourceRectangle.Location = new Point(rectifiedVertex.X, rectifiedPosition.Y);
             }
             if (rectifiedPosition.X < rectifiedVertex.X && rectifiedPosition.Y > rectifiedVertex.Y)
             {
-                Canvas.SetLeft(this.SourceRectangle, rectifiedPosition.X * canvas.ScaledRatio);
-                Canvas.SetTop(this.SourceRectangle, rectifiedVertex.Y * canvas.ScaledRatio);
+                this.SourceRectangle.Location = new Point(rectifiedPosition.X, rectifiedVertex.Y);
             }
             if (rectifiedPosition.X < rectifiedVertex.X && rectifiedPosition.Y < rectifiedVertex.Y)
             {
-                Canvas.SetLeft(this.SourceRectangle, rectifiedPosition.X * canvas.ScaledRatio);
-                Canvas.SetTop(this.SourceRectangle, rectifiedPosition.Y * canvas.ScaledRatio);
+                this.SourceRectangle.Location = rectifiedPosition;
             }
-            this.SourceRectangle.RenderTransform = canvas.MatrixTransform;
+
+            double width = Math.Abs(rectifiedPosition.X - rectifiedVertex.X);
+            double height = Math.Abs(rectifiedPosition.Y - rectifiedVertex.Y);
+            this.SourceRectangle.Size = new Size(width, height);
 
             //重建矩形
             double leftMargin = canvas.GetRectifiedLeft(this.SourceRectangle);
