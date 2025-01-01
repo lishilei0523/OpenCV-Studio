@@ -145,7 +145,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.FasterRcnn.StartSession());
 
                 this.Idle();
-                MessageBox.Show("模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.ToastSuccess("模型已成功加载！");
             }
         }
         #endregion

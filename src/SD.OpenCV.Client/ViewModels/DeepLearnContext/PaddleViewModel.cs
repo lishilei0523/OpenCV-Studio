@@ -153,7 +153,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.Detector.StartSession());
 
                 this.Idle();
-                MessageBox.Show("Paddle文本检测模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.ToastSuccess("Paddle文本检测模型已成功加载！");
             }
         }
         #endregion
@@ -185,7 +185,7 @@ namespace SD.OpenCV.Client.ViewModels.DeepLearnContext
                 await Task.Run(() => this.Recognizer.StartSession());
 
                 this.Idle();
-                MessageBox.Show("Paddle文本识别模型已成功加载！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.ToastSuccess("Paddle文本识别模型已成功加载！");
             }
         }
         #endregion
