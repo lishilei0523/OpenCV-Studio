@@ -39,17 +39,29 @@
                     <ToggleButton ToolTip="拖拽" IsChecked="{Binding DragChecked}" 
                                   Style="{StaticResource ToggleButton.Styles.ToolBar}"
                                   cm:Message.Attach="OnDragClick()">
-                        <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                        <iconPacks:PackIconMaterialDesign Kind="NavigationSharp">
+                            <iconPacks:PackIconMaterialDesign.RenderTransform>
+                                <RotateTransform Angle="-45" CenterX="5" CenterY="9" />
+                            </iconPacks:PackIconMaterialDesign.RenderTransform>
+                        </iconPacks:PackIconMaterialDesign>
                     </ToggleButton>
                     <ToggleButton ToolTip="编辑" IsChecked="{Binding ResizeChecked}" 
                                   Style="{StaticResource ToggleButton.Styles.ToolBar}"
                                   cm:Message.Attach="OnResizeClick()">
-                        <iconPacks:PackIconMaterialDesign Kind="UnfoldMore" />
+                        <iconPacks:PackIconMaterialDesign Kind="UnfoldMoreSharp">
+                            <iconPacks:PackIconMaterialDesign.RenderTransform>
+                                <RotateTransform Angle="-45" CenterX="8" CenterY="8" />
+                            </iconPacks:PackIconMaterialDesign.RenderTransform>
+                        </iconPacks:PackIconMaterialDesign>
                     </ToggleButton>
                     <ToggleButton ToolTip="矩形" IsChecked="{Binding RectangleChecked}" 
                                   Style="{StaticResource ToggleButton.Styles.ToolBar}"
                                   cm:Message.Attach="OnRectangleClick()">
-                        <iconPacks:PackIconMaterialDesign Kind="CropLandscape" />
+                        <iconPacks:PackIconMaterialDesign Kind="Crop75Sharp">
+                            <iconPacks:PackIconMaterialDesign.RenderTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1" CenterX="8" CenterY="8" />
+                            </iconPacks:PackIconMaterialDesign.RenderTransform>
+                        </iconPacks:PackIconMaterialDesign>
                     </ToggleButton>
                 </WrapPanel>
                 <WrapPanel Grid.Column="1" Margin="0,0,4,0" VerticalAlignment="Center">

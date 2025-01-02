@@ -51,7 +51,8 @@
                                                cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="是否归一化：">
-                            <mah:ToggleSwitch IsOn="{Binding NeedToNormalize}" OnContent="是" OffContent="否" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
+                            <mah:ToggleSwitch IsOn="{Binding NeedToNormalize}" OnContent="是" OffContent="否" 
+                                              Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

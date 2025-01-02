@@ -97,8 +97,20 @@ namespace SD.OpenCV.Client.ViewModels.CanvasContext
         /// <summary>
         /// 显示参考线
         /// </summary>
-        [DependencyProperty]
-        public bool ShowGuideLines { get; set; }
+        private bool _showGuideLines;
+
+        /// <summary>
+        /// 显示参考线
+        /// </summary>
+        public bool ShowGuideLines
+        {
+            get => this._showGuideLines;
+            set
+            {
+                this.Set(ref this._showGuideLines, value);
+                this.GuideLinesVisibility = value ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
         #endregion
 
         #region 参考线可见性 —— Visibility GuideLinesVisibility
@@ -187,16 +199,6 @@ namespace SD.OpenCV.Client.ViewModels.CanvasContext
 
 
         //Actions
-
-        #region 切换显示参考线 —— void SwitchGuideLines()
-        /// <summary>
-        /// 切换显示参考线
-        /// </summary>
-        public void SwitchGuideLines()
-        {
-            this.GuideLinesVisibility = this.ShowGuideLines ? Visibility.Visible : Visibility.Collapsed;
-        }
-        #endregion
 
         #region 复制形状 —— void CopyShape()
         /// <summary>

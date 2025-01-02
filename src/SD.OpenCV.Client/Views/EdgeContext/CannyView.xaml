@@ -67,7 +67,8 @@
                                                cm:Message.Attach="[Event ValueChanged] = [Action Apply()]" />
                         </sd:FormItem>
                         <sd:FormItem Label="L2范式：">
-                            <mah:ToggleSwitch IsOn="{Binding L2Gradient}" OnContent="启用" OffContent="停用" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
+                            <mah:ToggleSwitch IsOn="{Binding L2Gradient}" OnContent="启用" OffContent="停用" 
+                                              Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>

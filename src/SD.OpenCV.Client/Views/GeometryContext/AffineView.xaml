@@ -51,13 +51,17 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <WrapPanel Grid.Row="0" Margin="4,4,0,0" VerticalAlignment="Center">
-                        <ToggleButton ToolTip="拖拽" x:Name="SourceDragChecked" 
+                        <ToggleButton ToolTip="拖拽" x:Name="SourceDragChecked"
                                       Style="{StaticResource ToggleButton.Styles.ToolBar}">
-                            <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                            <iconPacks:PackIconMaterialDesign Kind="NavigationSharp">
+                                <iconPacks:PackIconMaterialDesign.RenderTransform>
+                                    <RotateTransform Angle="-45" CenterX="5" CenterY="9" />
+                                </iconPacks:PackIconMaterialDesign.RenderTransform>
+                            </iconPacks:PackIconMaterialDesign>
                         </ToggleButton>
                         <ToggleButton ToolTip="点" x:Name="SourcePointChecked" IsChecked="True"
                                       Style="{StaticResource ToggleButton.Styles.ToolBar}">
-                            <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
+                            <iconPacks:PackIconMaterialDesign Kind="BubbleChartSharp" />
                         </ToggleButton>
                     </WrapPanel>
                     <GroupBox Grid.Row="1" Header="参考图像" Margin="4,4,2,4" Background="LightGray">
@@ -79,11 +83,15 @@
                     <WrapPanel Grid.Row="0" Margin="2,4,0,0" VerticalAlignment="Center">
                         <ToggleButton ToolTip="拖拽" x:Name="TargetDragChecked" 
                                       Style="{StaticResource ToggleButton.Styles.ToolBar}">
-                            <iconPacks:PackIconMaterialDesign Kind="Navigation" />
+                            <iconPacks:PackIconMaterialDesign Kind="NavigationSharp">
+                                <iconPacks:PackIconMaterialDesign.RenderTransform>
+                                    <RotateTransform Angle="-45" CenterX="5" CenterY="9" />
+                                </iconPacks:PackIconMaterialDesign.RenderTransform>
+                            </iconPacks:PackIconMaterialDesign>
                         </ToggleButton>
                         <ToggleButton ToolTip="点" x:Name="TargetPointChecked" IsChecked="True"
                                       Style="{StaticResource ToggleButton.Styles.ToolBar}">
-                            <iconPacks:PackIconMaterialDesign Kind="BubbleChart" />
+                            <iconPacks:PackIconMaterialDesign Kind="BubbleChartSharp" />
                         </ToggleButton>
                     </WrapPanel>
                     <GroupBox Grid.Row="1" Header="目标图像" Margin="2,4,4,4" Background="LightGray">

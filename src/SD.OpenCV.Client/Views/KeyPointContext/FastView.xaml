@@ -45,7 +45,8 @@
                                                Style="{StaticResource NumericUpDown.Styles.Fluent}" />
                         </sd:FormItem>
                         <sd:FormItem Label="非极大值抑制：">
-                            <mah:ToggleSwitch IsOn="{Binding NonmaxSuppression}" OnContent="是" OffContent="否" Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
+                            <mah:ToggleSwitch IsOn="{Binding NonmaxSuppression}" OnContent="是" OffContent="否" 
+                                              Style="{StaticResource ToggleSwitch.Styles.Fluent}" />
                         </sd:FormItem>
                     </StackPanel>
                 </GroupBox>
