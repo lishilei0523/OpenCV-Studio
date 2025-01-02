@@ -565,7 +565,7 @@ namespace SD.OpenCV.Client.ViewModels.CanvasContext
         private async Task DrawMask(Mat mask, IList<ShapeL> shapeLs)
         {
             const int thickness = -1;
-            foreach (ShapeL shapeL in this.ShapeLs)
+            foreach (ShapeL shapeL in shapeLs)
             {
                 if (shapeL is RectangleL rectangleL)
                 {
@@ -589,8 +589,8 @@ namespace SD.OpenCV.Client.ViewModels.CanvasContext
                 {
                     Point2f center = new Point2f(ellipseL.X, ellipseL.Y);
                     Size2f size = new Size2f(ellipseL.RadiusX * 2, ellipseL.RadiusY * 2);
-                    RotatedRect rect = new RotatedRect(center, size, 0);
-                    await Task.Run(() => mask.Ellipse(rect, Scalar.White, thickness));
+                    RotatedRect rotatedRect = new RotatedRect(center, size, 0);
+                    await Task.Run(() => mask.Ellipse(rotatedRect, Scalar.White, thickness));
                 }
                 if (shapeL is PolygonL polygonL)
                 {
@@ -598,6 +598,16 @@ namespace SD.OpenCV.Client.ViewModels.CanvasContext
                     for (int index = 0; index < contour.Length; index++)
                     {
                         PointL pointL = polygonL.Points.ElementAt(index);
+                        contour[index] = new Point(pointL.X, pointL.Y);
+                    }
+                    await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
+                }
+                if (shapeL is PolylineL polylineL)
+                {
+                    Point[] contour = new Point[polylineL.Points.Count];
+                    for (int index = 0; index < contour.Length; index++)
+                    {
+                        PointL pointL = polylineL.Points.ElementAt(index);
                         contour[index] = new Point(pointL.X, pointL.Y);
                     }
                     await Task.Run(() => mask.DrawContours(new[] { contour }, 0, Scalar.White, thickness));
