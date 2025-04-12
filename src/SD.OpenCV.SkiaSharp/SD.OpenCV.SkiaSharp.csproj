@@ -11,16 +11,14 @@
     <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\$(TargetFramework)\SD.OpenCV.SkiaSharp.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\$(TargetFramework)\SD.OpenCV.SkiaSharp.xml</DocumentationFile>
+  <PropertyGroup>
+    <BaseOutputPath>bin\</BaseOutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="3.116.1" />
-    <PackageReference Include="ScottPlot" Version="5.0.54" />
+    <PackageReference Include="ScottPlot" Version="5.0.55" />
   </ItemGroup>
 
   <ItemGroup>
