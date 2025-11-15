@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/SD.OpenCV.Client/SD.OpenCV.Client.csproj" />
+  <Project Path="src/SD.OpenCV.OnnxRuntime/SD.OpenCV.OnnxRuntime.csproj" />
+  <Project Path="src/SD.OpenCV.Primitives/SD.OpenCV.Primitives.csproj" />
+  <Project Path="src/SD.OpenCV.SkiaSharp/SD.OpenCV.SkiaSharp.csproj" />
+  <Project Path="src/SD.OpenCV.Tests/SD.OpenCV.Tests.csproj" />
+</Solution>
