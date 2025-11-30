@@ -1,7 +1,16 @@
 <Solution>
-  <Project Path="src/SD.OpenCV.Client/SD.OpenCV.Client.csproj" />
-  <Project Path="src/SD.OpenCV.OnnxRuntime/SD.OpenCV.OnnxRuntime.csproj" />
-  <Project Path="src/SD.OpenCV.Primitives/SD.OpenCV.Primitives.csproj" />
-  <Project Path="src/SD.OpenCV.SkiaSharp/SD.OpenCV.SkiaSharp.csproj" />
-  <Project Path="src/SD.OpenCV.Tests/SD.OpenCV.Tests.csproj" />
+  <Folder Name="/00 - Global/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/01 - Clients/">
+    <Project Path="src/SD.OpenCV.Client/SD.OpenCV.Client.csproj" />
+  </Folder>
+  <Folder Name="/02 - Libraries/">
+    <Project Path="src/SD.OpenCV.OnnxRuntime/SD.OpenCV.OnnxRuntime.csproj" />
+    <Project Path="src/SD.OpenCV.Primitives/SD.OpenCV.Primitives.csproj" />
+    <Project Path="src/SD.OpenCV.SkiaSharp/SD.OpenCV.SkiaSharp.csproj" />
+  </Folder>
+  <Folder Name="/03 - Tests/">
+    <Project Path="src/SD.OpenCV.Tests/SD.OpenCV.Tests.csproj" />
+  </Folder>
 </Solution>

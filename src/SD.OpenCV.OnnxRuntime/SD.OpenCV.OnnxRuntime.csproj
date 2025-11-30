@@ -3,23 +3,24 @@
     <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <LangVersion>12.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Authors>Lee</Authors>
-    <Company>SD</Company>
     <Description>SD.Framework OpenCV OnnxRuntime扩展</Description>
-    <Copyright>Copyright © SD 2025</Copyright>
-    <Version>1.2.0</Version>
-    <AssemblyVersion>1.2.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <BaseOutputPath>bin\</BaseOutputPath>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Update="Content\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Labels\*.*">
+      <Pack>True</Pack>
+      <PackagePath>content\Content\Labels\</PackagePath>
+    </None>
+    <None Include="Content\Build\Package.props">
+      <Pack>True</Pack>
+      <PackagePath>build\net462\$(PackageId).props</PackagePath>
+    </None>
+    <None Include="Content\Build\Package.props">
+      <Pack>True</Pack>
+      <PackagePath>build\netstandard2.0\$(PackageId).props</PackagePath>
     </None>
   </ItemGroup>
 
