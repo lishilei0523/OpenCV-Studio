@@ -7,6 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
-    <PackageReference Include="SD.Toolkits.Mathematics" Version="1.0.0" />
+    <PackageReference Include="SD.Toolkits.Mathematics" Version="4.0.0" />
   </ItemGroup>
 </Project>
