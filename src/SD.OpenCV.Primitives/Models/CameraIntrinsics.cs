@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace SD.OpenCV.Primitives.Models
 {
@@ -6,6 +7,7 @@ namespace SD.OpenCV.Primitives.Models
     /// 相机内参
     /// </summary>
     [Serializable]
+    [DataContract]
     public class CameraIntrinsics
     {
         #region # 构造器
@@ -45,6 +47,7 @@ namespace SD.OpenCV.Primitives.Models
         /// <summary>
         /// 相机Id
         /// </summary>
+        [DataMember]
         public string CameraId { get; private set; }
         #endregion
 
@@ -52,6 +55,7 @@ namespace SD.OpenCV.Primitives.Models
         /// <summary>
         /// 标定重投影误差
         /// </summary>
+        [DataMember]
         public double CalibratedReprojectionError { get; private set; }
         #endregion
 
@@ -59,6 +63,7 @@ namespace SD.OpenCV.Primitives.Models
         /// <summary>
         /// 重投影误差
         /// </summary>
+        [DataMember]
         public double ReprojectionError { get; private set; }
         #endregion
 
@@ -67,14 +72,16 @@ namespace SD.OpenCV.Primitives.Models
         /// 畸变向量
         /// </summary>
         /// <remarks>5x1向量: 一维数组</remarks>
+        [DataMember]
         public double[] DistortionVector { get; private set; }
-        #endregion 
+        #endregion
 
         #region 内参矩阵 —— double[,] IntrinsicMatrix
         /// <summary>
         /// 内参矩阵
         /// </summary>
         /// <remarks>3x3矩阵: 二维数组</remarks>
+        [DataMember]
         public double[,] IntrinsicMatrix { get; private set; }
         #endregion
 
