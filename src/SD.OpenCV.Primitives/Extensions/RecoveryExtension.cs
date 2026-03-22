@@ -50,7 +50,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //修复图像
             Mat result = new Mat();
-            Cv2.Inpaint(matrix, mask, result, 5, InpaintMethod.Telea);
+            Cv2.Inpaint(matrix, mask, result, 5, InpaintTypes.Telea);
 
             return result;
         }
@@ -70,7 +70,7 @@ namespace SD.OpenCV.Primitives.Extensions
 
             //修复图像
             Mat result = new Mat();
-            Cv2.Inpaint(matrix, mask, result, 5, InpaintMethod.Telea);
+            Cv2.Inpaint(matrix, mask, result, 5, InpaintTypes.Telea);
 
             return result;
         }
