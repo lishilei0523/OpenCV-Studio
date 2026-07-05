@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260318" />
-    <PackageReference Include="SD.Toolkits.Mathematics" Version="4.0.1" />
+    <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260627" />
+    <PackageReference Include="SD.Toolkits.Mathematics" Version="4.0.2" />
   </ItemGroup>
 </Project>

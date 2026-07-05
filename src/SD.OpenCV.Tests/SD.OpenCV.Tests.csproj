@@ -19,19 +19,19 @@
   <ItemGroup Condition="$(TargetFramework.Equals('net48'))">
     <Reference Include="PresentationCore" />
     <Reference Include="WindowsBase" />
-    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.13.0.20260318" />
+    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.13.0.20260627" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
-    <PackageReference Include="coverlet.collector" Version="8.0.1">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.3" />
+    <PackageReference Include="coverlet.collector" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.24.4" />
-    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.13.0.20260302" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.27.0" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.13.0.20260627" />
   </ItemGroup>
 
   <ItemGroup>
